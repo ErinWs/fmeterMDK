@@ -1,0 +1,39 @@
+{
+    "configurations": [
+        {
+            "name": "WIN32",
+            "includePath": [
+                "${workspaceFolder}/driver/inc",
+                "${workspaceFolder}/user",
+                "${workspaceFolder}/common",
+                "C:/Users/Administrator/AppData/Local/Arm/Packs/ARM/CMSIS/5.9.0/CMSIS/Core/Include",
+                "C:/Users/Administrator/AppData/Local/Arm/Packs/ARM/CMSIS/5.9.0/CMSIS/Driver/Include",
+                "C:/Keil_v5/ARM/ARMCLANG/include"
+            ],
+            "defines": [
+                "_DEBUG",                // 调试模式
+                "UNICODE",               // 使用 Unicode 编码
+                "_UNICODE",              // 宽字符支持
+               // "__CORTEX_M=0",          // Cortex-M0+ 内核
+               // "__FPU_USED=0",          // 无浮点单元
+                "__ARM_ARCH_6M__",       // ARMv6-M 架构
+                "__CMSIS_VERSION=0x050900", // CMSIS 版本
+                "__ARMCC_VERSION=6190000L", //clang 版本
+                "__STDC__",              // 标准 C 宏
+                "__STDC_VERSION__=199901L", // C99 标准
+                "__STDC_HOSTED__",       // 表示运行时环境支持完整标准库
+                "__MICROLIB",            // 使用 ARM Microlib
+                "__NVIC_PRIO_BITS=2",    // NVIC 优先级位数
+                "__Vendor_SysTickConfig=0", // 使用默认的 SysTick 配置
+                "MD_LIQUID=0",
+                "MD_GASES=1",
+                "MD_MEASURE_TYPE=MD_GASES"
+            ],
+            "compilerPath": "C:/Program Files (x86)/Arm GNU Toolchain arm-none-eabi/14.2 rel1/bin/arm-none-eabi-gcc.exe",
+            "cStandard": "c11",
+            "cppStandard": "gnu++14",
+            "intelliSenseMode": "gcc-arm"
+        }
+    ],
+    "version": 4
+}
