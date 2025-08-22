@@ -1,0 +1,575 @@
+
+var=0;
+if(var<len)
+{
+	if(!netMisc.AT_Waiting)
+	{
+		reset_net_deive_rcvbuf();
+		TX_ATCommand("\r\nAT+QIACT=1\r\n",150);
+	} 
+	else if(!netComps.AckTmr)
+	{
+		HandleErr();
+	}
+	else if(check_net_device_ack("OK\r\n"))
+	{
+	   netMisc.AT_Waiting=0;
+       netMisc.NoAckTimes=0;
+       netMisc.err_count=0;
+	   var++;
+	   if(var==len)
+	   {
+			netMisc.Flag_St++;
+			var=0;
+	   }
+	}
+	else if(check_net_device_ack("ERROR"))
+	{
+		HandleErr();
+	}
+	
+}
+break;
+
+AT+QMTCFG="dataformat",<client_idx>[,<send_mode>,<recv_mode>]
+AT+QMTCFG="recv/mode",<client_idx>[,<msg_recv_mode>[,<msg_len_enable>]]
+//AT+QMTCFG="version",<client_idx>[,<vsn>]
+AT+QMTCFG="ssl",<client_idx>[,<SSL_enable>[,<SSL_ctx_idx>]]
+AT+QMTCFG="dataformat",<client_idx>[,<send_mode>,<recv_mode>]
+
+一、AT+QMTOPEN=<client_idx>,<host_name>,<port>
+
+<client_idx> 整型。MQTT 客户端标识符。范围：0~5。
+<host_name> 字符串类型。服务器地址，可以是 IP 地址或者域名。最大长度：100 字节。
+<port> 整型。服务器端口。范围：1~65535。
+<result> 整型。命令执行结果。
+-1 打开网络失败
+0 打开网络成功
+1 参数错误
+2 MQTT 标识符被占用
+3 激活 PDP 失败
+4 域名解析失败
+5 网络断开导致错误
+
+二、AT+QMTCONN=<client_idx>,<clientid>[,<username>,<password>]
+
+三、AT+QMTSUB=<client_idx>,<msgid>,<topic1>,<qos1>[,<topic2>,<qos2>…]
+
+四、AT+QMTPUBEX=<client_idx>,<msgid>,<qos>,<retain>,<topic>,<length>
+
+五、 AT+QMTRECV=<client_idx>[,<recv_id>]
+响应
++QMTRECV: <client_idx>,<msgid>,<topic>[,<payload_len>],<payload>
+
+
+URC
++QMTRECV: <client_idx>,<recv_id> 
+
+六、AT+QMTDISC=<client_idx>
+
+[2024-07-08 17:26:09.749]# RECV ASCII/7 from COM4 <<<
+
+RDY
+
+[2024-07-08 17:26:10.353]# RECV ASCII/11 from COM4 <<<
+ATE1
+
+OK
+
+[2024-07-08 17:26:11.363]# RECV ASCII/173 from COM4 <<<
+ATI
+
+Quectel
+EC200M
+Revision: EC200MCNGBR06A04M08
+
+OK
+AT+CGSN
+
+861535078138206
+
+OK
+AT+ICCID
+
++ICCID: 89860818102370340327
+
+OK
+AT+CIMI
+
+460088820700527
+
+OK
+
+[2024-07-08 17:26:12.352]# RECV ASCII/119 from COM4 <<<
+AT+CSQ
+
++CSQ: 28,99
+
+OK
+AT+CREG?
+
++CREG: 0,0
+
+OK
+AT+CGREG?
+
++CGREG: 0,0
+
+OK
+AT+CEREG?
+
++CEREG: 0,0
+
+OK
+
+[2024-07-08 17:26:13.392]# RECV ASCII/250 from COM4 <<<
+AT+CSQ
+
++CSQ: 28,99
+
+OK
+AT+CREG?
+
++CREG: 0,1
+
+OK
+AT+CGREG?
+
++CGREG: 0,1
+
+OK
+AT+CEREG?
+
++CEREG: 0,1
+
+OK
+AT+QLTS=2
+
++QLTS: "2024/07/08,17:26:12+32,0"
+
+OK
+AT+QNWINFO
+
++QNWINFO: "FDD LTE","46000","LTE BAND 3",1300
+
+OK
+AT+QICSGP=1
+
+[2024-07-08 17:26:13.502]# RECV ASCII/61 from COM4 <<<
+
++QICSGP: 3,"","","",0
+
+OK
+AT+QIDEACT=1
+
+OK
+AT+QIACT=1
+
+[2024-07-08 17:26:14.574]# RECV ASCII/54 from COM4 <<<
+
+OK
+AT+QIDNSGIP=1,"10506828.non-nb.ctwing.cn"
+
+OK
+
+[2024-07-08 17:27:02.730]# RECV ASCII/65 from COM4 <<<
+
++QIURC: "dnsgip",0,1,10
+
++QIURC: "dnsgip","180.109.255.252"
+
+[2024-07-08 17:27:02.854]# RECV ASCII/212 from COM4 <<<
+AT+QISDE=0
+
+OK
+AT+QICLOSE=0
+
+OK
+AT+QMTCFG="dataformat",0,0,0
+
+OK
+AT+QMTCFG="recv/mode",0,1,1
+
+OK
+AT+QMTCFG="ssl",0,0
+
+OK
+AT+QMTCFG="pdpcid",0,1
+
+OK
+AT+QMTOPEN=0,"10506828.non-nb.ctwing.cn",1883
+
+OK
+
+[2024-07-08 17:27:34.987]# RECV ASCII/105 from COM4 <<<
+
++QMTOPEN: 0,0
+AT+QMTCONN=0,"170886332","xianyuyi","7Zzn7HSnkvZzx-ZZQJ5kFs6t0MAicI191VvAp5c_Duk"
+
+OK
+
+[2024-07-08 17:27:35.110]# RECV ASCII/104 from COM4 <<<
+
++QMTCONN: 0,0,0
+
++QMTRECV: 0,0
+
++QMTRECV: 0,1
+
++QMTRECV: 0,2
+
++QMTRECV: 0,3
+
++QMTRECV: 0,4
+
+[2024-07-08 17:27:35.296]# RECV ASCII/44 from COM4 <<<
+AT+QMTSUB=0,2,"xianyunyi\flowmeter",1
+
+OK
+
+[2024-07-08 17:27:35.825]# RECV ASCII/20 from COM4 <<<
+
++QMTSUB: 0,2,0,1
+
+[2024-07-08 17:27:36.306]# RECV ASCII/130 from COM4 <<<
+AT+CSQ
+
++CSQ: 26,99
+
+OK
+AT+QMTPUBEX=0,3,1,1,"custome1",64
+
+> {"tem_ala":25,"pre_ala":26,"liq_ala":27.1,"liqu":28.2,"bat":3.6}
+[2024-07-08 17:27:36.414]# RECV ASCII/26 from COM4 <<<
+
+OK
+
++QMTPUBEX: 0,3,0
+
+[2024-07-08 17:27:36.799]# RECV ASCII/151 from COM4 <<<
+AT+QMTRECV?
+
++QMTRECV: 0,1,1,1,1,1
+
+OK
+AT+QMTRECV=0,0
+
++QMTRECV: 0,1,"pressure_upper_limit",41,"{"taskId":83,"payload":{"upper_limit":1}}"
+
+OK
+
+[2024-07-08 17:27:37.295]# RECV ASCII/107 from COM4 <<<
+AT+CSQ
+
++CSQ: 26,99
+
+OK
+AT+QMTPUBEX=0,4,1,1,"wzy_ack",42
+
+> {"taskId":83,"resultPayload":{"result":0}}
+[2024-07-08 17:27:37.405]# RECV ASCII/26 from COM4 <<<
+
+OK
+
++QMTPUBEX: 0,4,0
+
+[2024-07-08 17:27:37.806]# RECV ASCII/130 from COM4 <<<
+AT+QMTRECV?
+
++QMTRECV: 0,0,1,1,1,1
+
+OK
+AT+QMTRECV=0,1
+
++QMTRECV: 0,2,"alarm",35,"{"taskId":84,"payload":{"alarm":1}}"
+
+OK
+
+[2024-07-08 17:27:38.298]# RECV ASCII/107 from COM4 <<<
+AT+CSQ
+
++CSQ: 26,99
+
+OK
+AT+QMTPUBEX=0,5,1,1,"wzy_ack",42
+
+> {"taskId":84,"resultPayload":{"result":0}}
+[2024-07-08 17:27:38.405]# RECV ASCII/26 from COM4 <<<
+
+OK
+
++QMTPUBEX: 0,5,0
+
+[2024-07-08 17:27:38.806]# RECV ASCII/148 from COM4 <<<
+AT+QMTRECV?
+
++QMTRECV: 0,0,0,1,1,1
+
+OK
+AT+QMTRECV=0,2
+
++QMTRECV: 0,3,"history_switch",44,"{"taskId":85,"payload":{"history_switch":1}}"
+
+OK
+
+[2024-07-08 17:27:39.301]# RECV ASCII/107 from COM4 <<<
+AT+CSQ
+
++CSQ: 26,99
+
+OK
+AT+QMTPUBEX=0,6,1,1,"wzy_ack",42
+
+> {"taskId":85,"resultPayload":{"result":0}}
+[2024-07-08 17:27:39.410]# RECV ASCII/26 from COM4 <<<
+
+OK
+
++QMTPUBEX: 0,6,0
+
+[2024-07-08 17:27:39.797]# RECV ASCII/152 from COM4 <<<
+AT+QMTRECV?
+
++QMTRECV: 0,0,0,0,1,1
+
+OK
+AT+QMTRECV=0,3
+
++QMTRECV: 0,4,"once_report_cmd",47,"{"taskId":86,"payload":{"once_report_act":"1"}}"
+
+OK
+
+[2024-07-08 17:27:40.295]# RECV ASCII/107 from COM4 <<<
+AT+CSQ
+
++CSQ: 26,99
+
+OK
+AT+QMTPUBEX=0,7,1,1,"wzy_ack",42
+
+> {"taskId":86,"resultPayload":{"result":0}}
+[2024-07-08 17:27:40.402]# RECV ASCII/26 from COM4 <<<
+
+OK
+
++QMTPUBEX: 0,7,0
+
+[2024-07-08 17:27:40.804]# RECV ASCII/162 from COM4 <<<
+AT+QMTRECV?
+
++QMTRECV: 0,0,0,0,0,1
+
+OK
+AT+QMTRECV=0,4
+
++QMTRECV: 0,5,"pressure_alarm_switch",51,"{"taskId":87,"payload":{"pressure_alarm_switch":1}}"
+
+OK
+
+[2024-07-08 17:27:41.301]# RECV ASCII/107 from COM4 <<<
+AT+CSQ
+
++CSQ: 26,99
+
+OK
+AT+QMTPUBEX=0,8,1,1,"wzy_ack",42
+
+> {"taskId":87,"resultPayload":{"result":0}}
+[2024-07-08 17:27:41.409]# RECV ASCII/26 from COM4 <<<
+
+OK
+
++QMTPUBEX: 0,8,0
+
+[2024-07-08 17:27:41.796]# RECV ASCII/43 from COM4 <<<
+AT+QMTRECV?
+
++QMTRECV: 0,0,0,0,0,0
+
+OK
+
+[2024-07-08 17:27:42.291]# RECV ASCII/43 from COM4 <<<
+AT+QMTRECV?
+
++QMTRECV: 0,0,0,0,0,0
+
+OK
+
+[2024-07-08 17:27:42.785]# RECV ASCII/43 from COM4 <<<
+AT+QMTRECV?
+
++QMTRECV: 0,0,0,0,0,0
+
+OK
+
+[2024-07-08 17:27:43.297]# RECV ASCII/43 from COM4 <<<
+AT+QMTRECV?
+
++QMTRECV: 0,0,0,0,0,0
+
+OK
+
+[2024-07-08 17:27:43.794]# RECV ASCII/43 from COM4 <<<
+AT+QMTRECV?
+
++QMTRECV: 0,0,0,0,0,0
+
+OK
+
+[2024-07-08 17:27:44.292]# RECV ASCII/43 from COM4 <<<
+AT+QMTRECV?
+
++QMTRECV: 0,0,0,0,0,0
+
+OK
+
+[2024-07-08 17:27:44.793]# RECV ASCII/43 from COM4 <<<
+AT+QMTRECV?
+
++QMTRECV: 0,0,0,0,0,0
+
+OK
+
+[2024-07-08 17:27:45.290]# RECV ASCII/43 from COM4 <<<
+AT+QMTRECV?
+
++QMTRECV: 0,0,0,0,0,0
+
+OK
+
+[2024-07-08 17:27:45.788]# RECV ASCII/43 from COM4 <<<
+AT+QMTRECV?
+
++QMTRECV: 0,0,0,0,0,0
+
+OK
+
+[2024-07-08 17:27:46.285]# RECV ASCII/43 from COM4 <<<
+AT+QMTRECV?
+
++QMTRECV: 0,0,0,0,0,0
+
+OK
+
+[2024-07-08 17:27:46.784]# RECV ASCII/43 from COM4 <<<
+AT+QMTRECV?
+
++QMTRECV: 0,0,0,0,0,0
+
+OK
+
+[2024-07-08 17:27:47.281]# RECV ASCII/43 from COM4 <<<
+AT+QMTRECV?
+
++QMTRECV: 0,0,0,0,0,0
+
+OK
+
+[2024-07-08 17:27:47.794]# RECV ASCII/43 from COM4 <<<
+AT+QMTRECV?
+
++QMTRECV: 0,0,0,0,0,0
+
+OK
+
+[2024-07-08 17:27:48.290]# RECV ASCII/43 from COM4 <<<
+AT+QMTRECV?
+
++QMTRECV: 0,0,0,0,0,0
+
+OK
+
+[2024-07-08 17:27:48.785]# RECV ASCII/43 from COM4 <<<
+AT+QMTRECV?
+
++QMTRECV: 0,0,0,0,0,0
+
+OK
+
+[2024-07-08 17:27:49.279]# RECV ASCII/43 from COM4 <<<
+AT+QMTRECV?
+
++QMTRECV: 0,0,0,0,0,0
+
+OK
+
+[2024-07-08 17:27:49.791]# RECV ASCII/43 from COM4 <<<
+AT+QMTRECV?
+
++QMTRECV: 0,0,0,0,0,0
+
+OK
+
+[2024-07-08 17:27:50.288]# RECV ASCII/43 from COM4 <<<
+AT+QMTRECV?
+
++QMTRECV: 0,0,0,0,0,0
+
+OK
+
+[2024-07-08 17:27:50.783]# RECV ASCII/43 from COM4 <<<
+AT+QMTRECV?
+
++QMTRECV: 0,0,0,0,0,0
+
+OK
+
+[2024-07-08 17:27:51.280]# RECV ASCII/43 from COM4 <<<
+AT+QMTRECV?
+
++QMTRECV: 0,0,0,0,0,0
+
+OK
+
+[2024-07-08 17:27:51.791]# RECV ASCII/43 from COM4 <<<
+AT+QMTRECV?
+
++QMTRECV: 0,0,0,0,0,0
+
+OK
+
+[2024-07-08 17:27:52.287]# RECV ASCII/43 from COM4 <<<
+AT+QMTRECV?
+
++QMTRECV: 0,0,0,0,0,0
+
+OK
+
+[2024-07-08 17:27:52.784]# RECV ASCII/43 from COM4 <<<
+AT+QMTRECV?
+
++QMTRECV: 0,0,0,0,0,0
+
+OK
+
+[2024-07-08 17:27:53.277]# RECV ASCII/43 from COM4 <<<
+AT+QMTRECV?
+
++QMTRECV: 0,0,0,0,0,0
+
+OK
+
+[2024-07-08 17:27:53.790]# RECV ASCII/43 from COM4 <<<
+AT+QMTRECV?
+
++QMTRECV: 0,0,0,0,0,0
+
+OK
+
+[2024-07-08 17:27:54.287]# RECV ASCII/55 from COM4 <<<
+AT+QMTDISC=0
+
+OK
+AT+QIDEACT=1
+
+OK
+
++QMTOPEN: 0,3
+
+[2024-07-08 17:27:56.134]# RECV ASCII/16 from COM4 <<<
+
+POWERED DOWN
+
+[2024-07-08 17:33:39.182]# 设备已拔出!
+
+
