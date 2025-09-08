@@ -45,8 +45,8 @@ typedef struct _LORA_COMPONENTS
 	    {  
             LORA_EM_WORK_MODE=0,
 	        LORA_EM_CFG_MODE,
-	        LORA_EM_CAD_MODE
-	       
+	        LORA_EM_CAD_MODE,
+	        LORA_EM_SLEEP_MODE
 	    } mode;
 	    enum
 	    {

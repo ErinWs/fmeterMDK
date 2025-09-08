@@ -4444,6 +4444,16 @@ static void flush_display_buffer(void)
         I2C_MasterWriteData(MD_LCD_I2CX_SEL, data, sizeof(data));
     }
 }
+static void App_Rst_IC_Display(void)
+{
+    uint8_t data[37] = {0};
+    data[0] = 0x80;
+    MD_LCD_POWER_PIN_ENABLE;
+    App_Disp_IC_Init();
+    memcpy(data + 2, hum_comps.device_driver_ram, 35);
+    memcpy(hum_comps.last_display_buff, hum_comps.device_driver_ram, 35);
+    I2C_MasterWriteData(MD_LCD_I2CX_SEL, data, sizeof(data));
+}
 static void hum_comps_task_handle(void)////Execution interval is 50 ms
 {
 	
@@ -4462,7 +4472,7 @@ static void hum_comps_task_handle(void)////Execution interval is 50 ms
 	    handle_key(this);
 		if(this->count==93+100)
         {
-            App_Disp_IC_Init();
+            App_Rst_IC_Display();
             this->count=93;
         }
 		handle_lcd_refresh();

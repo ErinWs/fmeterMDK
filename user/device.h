@@ -68,7 +68,7 @@
 #define  MD_4G                   0
 #define  MD_LORA                 1
 #define  MD_NO_IOT               2
-#define  MD_PRODUCT_NAME         MD_4G //
+#define  MD_PRODUCT_NAME         MD_LORA //
 
 
 

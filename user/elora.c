@@ -27,6 +27,7 @@
 static void enter_loar_cad_mode(void);
 static void enter_loar_work_mode(void);
 static void enter_loar_config_mode(void);
+static void enter_loar_sleep_mode(void);
 #define MD_AS32_WORK_MODE_RECV_DELAY_MS 50 // ms
 
 /*******************************************PORTABLE***************************************/
@@ -411,9 +412,8 @@ static uint8_t Pro_lora(uint8_t Cmd, uint8_t *buf, uint8_t len)
             else
             {
                 loraMisc.ack_delay_tmr = (MD_AS32_WORK_MODE_RECV_DELAY_MS / 50 + 9 + 3);
-                loraMisc.config_cmd = 0;
             }
-            enter_loar_config_mode();
+            enter_loar_sleep_mode();
 #endif
             loraMisc.ack_delay_init_const_tmr = loraMisc.ack_delay_tmr;
             loraMisc.cmd = Cmd;
@@ -792,6 +792,15 @@ static void lora_comps_task_50ms(void)
 
 #elif (MD_ELORA_VER_SEL == MD_ELORA_VER_AS32)
 #define MD_BACK
+static void enter_loar_sleep_mode(void)
+{
+    MD_LORA_MD0_PIN_SET;
+    MD_LORA_MD1_PIN_SET;
+    disable_lora_com();
+    loraComps.sw._bit.runing = 0;
+    loraComps.work_st.mode = LORA_EM_SLEEP_MODE;
+    MD_LORA_INTP_DISABLE();
+}
 static void enter_loar_config_mode(void)
 {
     MD_LORA_MD0_PIN_SET;
@@ -1212,7 +1221,7 @@ static void lora_comps_task_50ms(void)
         }
         if (loraMisc.ack_delay_tmr == loraMisc.ack_delay_init_const_tmr - MD_AS32_WORK_MODE_RECV_DELAY_MS / 50 - 9)
         {
-            enter_loar_config_mode();
+            enter_loar_sleep_mode();
             loraComps.op_window_time = 0;
             loraMisc.config_cmd = 0;
         }
@@ -1295,7 +1304,7 @@ void PortC_IRQHandler(void)
             if (loraComps.work_st.mode == LORA_EM_CAD_MODE)
             {
                 lora_awake_mcu_mode();
-                loraComps.op_window_time = 10;
+                loraComps.op_window_time = 3;
             }
         }
         Gpio_ClearIrq(MD_LORA_AUX_PORT, MD_LORA_AUX_PIN);

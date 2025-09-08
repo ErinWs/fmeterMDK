@@ -15,15 +15,14 @@
 #include "adx.h"
 #include "system.h"
 
-typedef struct _TASK_COMPONENTS
+typedef struct task_comps_t
 {
     char *desc;
     int_fast8_t             run_flag;
     volatile int_fast16_t   timer;          //50ms timer counter
     const int_fast16_t      interval_time;  //*50ms timer counter
-    pfun * const    		task_hook;
-    boolean_t            	isRealTime;//TRUE FALSE
-    //void (* *const task_hook)(void);
+    pfun * const            task_hook;
+    boolean_t               isRealTime;     //TRUE FALSE
 }task_comps_t;
 
 
@@ -47,9 +46,9 @@ static void enter_pwd_mode(void)
     }
 }
 
-pfun const pwd_mode_task=enter_pwd_mode;
-pfun const _hlaf_s_task_handle=_0_5s_task_handle;
-pfun const delay_task_50ms=_50ms_task_handle;
+static pfun const pwd_mode_task=enter_pwd_mode;
+static pfun const _hlaf_s_task_handle=_0_5s_task_handle;
+static pfun const delay_task_50ms=_50ms_task_handle;
 
 
 
