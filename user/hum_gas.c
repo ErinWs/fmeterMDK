@@ -91,6 +91,7 @@ static en_result_t App_Lcd_I2cCfg(M0P_I2C_TypeDef *I2CX)
 
 static en_result_t I2C_MasterWriteData(M0P_I2C_TypeDef *I2CX, uint8_t *pu8Data, uint32_t u32Len)
 {
+    int32_t delay_cnt=0;
     en_result_t enRet = Error;
     uint8_t u8i = 0, u8ErrCnt = 0, u8State;
     if (u32Len == 0)
@@ -102,55 +103,58 @@ static en_result_t I2C_MasterWriteData(M0P_I2C_TypeDef *I2CX, uint8_t *pu8Data, 
     {
         while (0 == I2C_GetIrq(I2CX))
         {
-            ;
-        }
-        u8State = I2C_GetState(I2CX);
-        switch (u8State)
-        {
-        case 0x08:
-            I2C_ClearFunc(I2CX, I2cStart_En);
-            I2C_WriteByte(I2CX, (MD_LCD_I2C_DEV_ADDR << 1));
-            break;
-        case 0x10:
-            I2C_ClearFunc(I2CX, I2cStart_En);
-            I2C_WriteByte(I2CX, (MD_LCD_I2C_DEV_ADDR << 1));
-            break;
-        case 0x18:
-        case 0x28:
-            if (u8i < u32Len)
-            {
-                I2C_WriteByte(I2CX, pu8Data[u8i]);
-            }
-            u8i++;
-            break;
-        case 0x20:
-        case 0x38:
-            if (u8ErrCnt < 2)
-            {
-                u8ErrCnt++;
-                I2C_SetFunc(I2CX, I2cStart_En);
-            }
-            else
+            delay_cnt++;
+            if(delay_cnt>100)
             {
                 return enRet;
             }
-            break;
-        case 0x30:
-            I2C_SetFunc(I2CX, I2cStop_En);
-            delay100us(1);
-            return enRet;
-            break;
-        default:
-            break;
         }
-        if (u8i > u32Len)
+        delay_cnt=0;
+        u8State = I2C_GetState(I2CX);
+        switch (u8State)
         {
-            I2C_SetFunc(I2CX, I2cStop_En);
-            delay100us(1);
+            case 0x08:
+                I2C_ClearFunc(I2CX, I2cStart_En);
+                I2C_WriteByte(I2CX, (MD_LCD_I2C_DEV_ADDR << 1));
+                break;
+            case 0x10:
+                I2C_ClearFunc(I2CX, I2cStart_En);
+                I2C_WriteByte(I2CX, (MD_LCD_I2C_DEV_ADDR << 1));
+                break;
+            case 0x18:
+            case 0x28:
+                if (u8i < u32Len)
+                {
+                    I2C_WriteByte(I2CX, pu8Data[u8i]);
+                }
+                u8i++;
+                break;
+            case 0x20:
+            case 0x30:
+            case 0x38:
+            default:
+                if(u8ErrCnt < 2)
+                {
+                    u8ErrCnt++;
+                    I2C_SetFunc(I2CX, I2cStart_En);
+                }
+                else
+                {
+                    I2C_ClearFunc(I2CX, I2cStart_En);
+                    I2C_ClearIrq(I2CX);
+                    return enRet;
+                }
+                break;
+        }
+        I2C_ClearIrq(I2CX);
+        if(u8i>u32Len)
+        {
+            I2C_SetFunc(I2CX,I2cStop_En);
+            delay10us(1);
+            I2C_ClearFunc(I2CX, I2cStop_En);
             I2C_ClearIrq(I2CX);
             break;
         }
-        I2C_ClearIrq(I2CX);
     }
     enRet = Ok;
     return enRet;
@@ -1605,6 +1609,10 @@ static void pwd_mode_on_m_key(void)
 static void pwd_mode_on_j_key(void)
 {
     *(&hum_comps.dig0_0 + hum_comps.cursor_0) = (*(&hum_comps.dig0_0 + hum_comps.cursor_0) + 1) % 10;
+}
+static void pwd_mode_on_long_s_key(void)
+{
+    enter_default_mode(0);
 }
 static void pwd_mode_on_long_m_key(void)
 {
@@ -4184,19 +4192,16 @@ static void hum_comps_task_handle(void) ////Execution interval is 50 ms
 }
 
 #define BK_LN
-mode_comps_t mode_comps[] = // Handling of keys in different modes
-    {                       // mode_comps_t  mode_comps[5];
-        {"normal mode", EM_NORMAL_MODE, normal_mode_on_s_key, normal_mode_on_m_key, normal_mode_on_j_key, normal_mode_on_long_s_key, normal_mode_on_long_m_key, normal_mode_on_long_j_key, normal_mode_on_long_s_and_j_key, normal_mode_display, 0, 0},
-        {"debug mode", EM_DEBUG_MODE, debug_mode_on_s_key, debug_mode_on_m_key, debug_mode_on_j_key, nop, debug_mode_on_long_m_key, nop, debug_mode_on_long_s_and_j_key, debug_mode_display, 0, 0},
-        {"password mode", EM_PWD_MODE, pwd_mode_on_s_key, pwd_mode_on_m_key, pwd_mode_on_j_key, nop, pwd_mode_on_long_m_key, nop, nop, pwd_mode_display, 0, 0},
-        {"cal_query mode", EM_CAL_QUERY_MODE, cal_query_mode_on_s_key, cal_query_mode_on_m_key, cal_query_mode_on_j_key, nop, cal_query_mode_on_long_m_key, nop, nop, cal_query_mode_display, 0, 0},
-        {"cal_modify mode", EM_CAL_MODIFY_MODE, cal_modify_mode_on_s_key, cal_modify_mode_on_m_key, cal_modify_mode_on_j_key, cal_modify_mode_on_long_s_key, nop, nop, nop, cal_modify_mode_display, 0, 0},
-
-        {"param_query mode", EM_PARAM_QUERY_MODE, param_query_mode_on_s_key, param_query_mode_on_m_key, nop, nop, param_query_mode_on_long_m_key, nop, nop, param_query_mode_display, 0, 0},
-        {"param_modify mode", EM_PARAM_MODIFY_MODE, param_modify_mode_on_s_key, param_modify_mode_on_m_key, param_modify_mode_on_j_key, param_modify_mode_on_long_s_key, nop, nop, nop, param_modify_mode_display, 0, 0},
-        {"self_test_mode", EM_SELF_TEST_MODE, nop, nop, nop, nop, nop, nop, nop, self_test_mode_display, 0, 0},
-        {"report_mode", EM_REPORT_MODE, nop, nop, nop, nop, nop, nop, nop, report_mode_display, 0, 0}
-
+mode_comps_t mode_comps[] = {
+    {"normal mode"      , EM_NORMAL_MODE      , normal_mode_on_s_key       , normal_mode_on_m_key                , normal_mode_on_j_key         , normal_mode_on_long_s_key      , normal_mode_on_long_m_key      , normal_mode_on_long_j_key         , normal_mode_on_long_s_and_j_key, normal_mode_display      , 0, 0},
+    {"debug mode"       , EM_DEBUG_MODE       , debug_mode_on_s_key        , debug_mode_on_m_key                 , debug_mode_on_j_key          , nop                            , debug_mode_on_long_m_key       , nop                               , debug_mode_on_long_s_and_j_key , debug_mode_display       , 0, 0},
+    {"password mode"    , EM_PWD_MODE         , pwd_mode_on_s_key          , pwd_mode_on_m_key                   , pwd_mode_on_j_key            , pwd_mode_on_long_s_key         , pwd_mode_on_long_m_key         , nop                               , nop                            , pwd_mode_display         , 0, 0},
+    {"cal_query mode"   , EM_CAL_QUERY_MODE   , cal_query_mode_on_s_key    , cal_query_mode_on_m_key             , cal_query_mode_on_j_key      , nop                            , cal_query_mode_on_long_m_key   , nop                               , nop                            , cal_query_mode_display   , 0, 0},
+    {"cal_modify mode"  , EM_CAL_MODIFY_MODE  , cal_modify_mode_on_s_key   , cal_modify_mode_on_m_key            , cal_modify_mode_on_j_key     , cal_modify_mode_on_long_s_key  , nop                            , nop                               , nop                            , cal_modify_mode_display  , 0, 0},
+    {"param_query mode" , EM_PARAM_QUERY_MODE , param_query_mode_on_s_key  , param_query_mode_on_m_key           , nop                          , nop                            , param_query_mode_on_long_m_key , nop                               , nop                            , param_query_mode_display , 0, 0},
+    {"param_modify mode", EM_PARAM_MODIFY_MODE, param_modify_mode_on_s_key , param_modify_mode_on_m_key          , param_modify_mode_on_j_key   , param_modify_mode_on_long_s_key, nop                            , nop                               , nop                            , param_modify_mode_display, 0, 0},
+    {"self_test_mode"   , EM_SELF_TEST_MODE   , nop                        , nop                                 , nop                          , nop                            , nop                            , nop                               , nop                            , self_test_mode_display   , 0, 0},
+    {"report_mode"      , EM_REPORT_MODE      , nop                        , nop                                 , nop                          , nop                            , nop                            , nop                               , nop                            , report_mode_display      , 0, 0}
 };
 
 hum_comps_t hum_comps =

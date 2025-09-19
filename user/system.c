@@ -34,15 +34,15 @@ static void App_EnterLowPowerModeSet(void)
 
 static void enter_pwd_mode(void)
 {
-    
-    if (!netComps.St._bit.running && 
-      //  !modbusComps.sw._bit.running && 
-        !adx_comps.sw._bit.adc_updated && 
-        !loraComps.sw._bit.runing && 
+
+    if (!netComps.St._bit.running &&
+        !modbusComps.sw._bit.runing &&
+        !adx_comps.sw._bit.adc_updated &&
+        !loraComps.sw._bit.runing &&
         !device_comps.sw._bit.isFreqOuting)
     {
         App_EnterLowPowerModeSet();
-        Lpm_GotoDeepSleep(FALSE); 
+        Lpm_GotoDeepSleep(FALSE);
     }
 }
 
@@ -55,24 +55,23 @@ static pfun const delay_task_50ms=_50ms_task_handle;
 
 static task_comps_t task_comps[]=//50ms
 {
-	{"", 0,1       ,1 ,     (pfun *)&hum_comps.task_handle            ,FALSE},//*50ms  hum_comps.task_handle
-	{"", 0,1       ,4 ,     (pfun *)&device_comps.task_handle         ,FALSE},//delay 100*50ms
-	{"", 0,1       ,10,     (pfun *)&_hlaf_s_task_handle              ,FALSE},
-	{"", 0,1       ,0 ,     (pfun *)&ircComps.task_handle             ,TRUE},//fast exe
- #if(MD_PRODUCT_NAME ==MD_LORA)	
-	{"", 0,1       ,0 ,     (pfun *)&loraComps.task_handle            ,TRUE},//fast exe
-	{"", 0,1       ,1 ,     (pfun *)&loraComps.task_50ms              ,FALSE},
-  #endif        
-	{"", 0,1       ,0 ,     (pfun *)&pwd_mode_task                    ,TRUE},//fast exe
-	{"", 0,1       ,0 ,     (pfun *)&modbusComps.task_handle          ,TRUE},//fast exe
- #if(MD_PRODUCT_NAME ==MD_4G)	
-	{"", 0,1       ,0 ,     (pfun *)&protocolComps.task_handle        ,TRUE},//fast exe
-	{"", 0,1       ,0 ,     (pfun *)&netComps.task_handle             ,TRUE},//fast exe
- #endif		
-	{"", 0,1       ,1 ,     (pfun *)&delay_task_50ms                  ,FALSE},
-	{"" ,0,1       ,0 ,   (pfun *)&adx_comps.task_handle              ,TRUE}//fast exe
-
-	//...TODO......
+    {"", 0,1       ,1 ,     (pfun *)&hum_comps.task_handle            ,FALSE},//*50ms  hum_comps.task_handle
+    {"", 0,1       ,4 ,     (pfun *)&device_comps.task_handle         ,FALSE},//delay 100*50ms
+    {"", 0,1       ,10,     (pfun *)&_hlaf_s_task_handle              ,FALSE},
+    {"", 0,1       ,0 ,     (pfun *)&ircComps.task_handle             ,TRUE},//fast exe
+ #if(MD_PRODUCT_NAME ==MD_LORA)
+    {"", 0,1       ,0 ,     (pfun *)&loraComps.task_handle            ,TRUE},//fast exe
+    {"", 0,1       ,1 ,     (pfun *)&loraComps.task_50ms              ,FALSE},
+  #endif
+    {"", 0,1       ,0 ,     (pfun *)&pwd_mode_task                    ,TRUE},//fast exe
+    {"", 0,1       ,0 ,     (pfun *)&modbusComps.task_handle          ,TRUE},//fast exe
+ #if(MD_PRODUCT_NAME ==MD_4G)
+    {"", 0,1       ,0 ,     (pfun *)&protocolComps.task_handle        ,TRUE},//fast exe
+    {"", 0,1       ,0 ,     (pfun *)&netComps.task_handle             ,TRUE},//fast exe
+ #endif
+    {"", 0,1       ,1 ,     (pfun *)&delay_task_50ms                  ,FALSE},
+    {"" ,0,1       ,0 ,   (pfun *)&adx_comps.task_handle              ,TRUE}//fast exe
+//...TODO......
 };
 
 
@@ -117,7 +116,7 @@ static void task_process(void)
 void user_init(void)
 {
 
-    
+
 }
 
 systemComps_t systemComps=
@@ -125,7 +124,7 @@ systemComps_t systemComps=
     {._bit.is_xt1_running=0},
     0x0e,//uint8_t rst_code;
     user_init,
-    task_process,
+    task_process
 };
 
 void LpTim1_IRQHandler(void)
@@ -136,11 +135,3 @@ void LpTim1_IRQHandler(void)
        call_back_task_remarks();
     }
 }
-
-
-
-
-
-
-
-

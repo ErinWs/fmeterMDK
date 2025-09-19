@@ -463,12 +463,6 @@ static void R_MAIN_UserInit(void)
     //device_comps.buzzer.stop();
     App_unused_peripherals_init();
     App_LPTimer1Init();
-    
-//    while (1)
-//   {
-//			 
-//       Lpm_GotoDeepSleep(FALSE); 
-//   }
     __enable_irq();
     
   /* End user code. Do not edit comment generated here */

@@ -124,7 +124,7 @@ static void  r_LPuart0_callback_sendend(void)
 {
     if(!modbusComps.sw._bit.runing)
     {
-       // enable_irc_receive(); 
+       __NOP(); 
     }
     else
     {

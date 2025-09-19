@@ -1,7 +1,7 @@
 #ifndef  DEVICE_H
 #define  DEVICE_H
 
-#define   MD_FL_VER                      21
+#define   MD_FL_VER                      30
 #define   MD_BACK_LED_ON      SetBit(((uint32_t)&M0P_GPIO->PAOUT + MD_BACK_LED_PORT), MD_BACK_LED_PIN, TRUE)
 #define   MD_BACK_LED_OFF     SetBit(((uint32_t)&M0P_GPIO->PAOUT + MD_BACK_LED_PORT), MD_BACK_LED_PIN, FALSE)
 
@@ -68,7 +68,7 @@
 #define  MD_4G                   0
 #define  MD_LORA                 1
 #define  MD_NO_IOT               2
-#define  MD_PRODUCT_NAME         MD_LORA //
+#define  MD_PRODUCT_NAME         MD_NO_IOT //
 
 
 

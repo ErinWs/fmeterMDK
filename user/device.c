@@ -505,6 +505,7 @@ static void stop_buzzer(void)
 
  static int16_t get_batt(void)
  {
+	  int cnt=0;
     stc_adc_cfg_t              stcAdcCfg;
     int16_t batt;
     uint32_t adc;
@@ -529,15 +530,19 @@ static void stop_buzzer(void)
     Adc_Init(&stcAdcCfg);
 
     Adc_CfgSglChannel(AdcExInputCH4);
-    Adc_EnableIrq();
-    EnableNvic(ADC_DAC_IRQn, IrqLevel3, TRUE);
+    //Adc_EnableIrq();
+   // EnableNvic(ADC_DAC_IRQn, IrqLevel3, TRUE);
     __NOP();__NOP();__NOP();__NOP();__NOP();__NOP();__NOP();__NOP();__NOP();__NOP();
     Adc_SGL_Start();
-    device_comps.sw._bit.adc_busy=1;
-    while(device_comps.sw._bit.adc_busy);
+   // device_comps.sw._bit.adc_busy=1;
+		
+  //  while(device_comps.sw._bit.adc_busy)
+	//	{
+				delay10us(1);
+	//	}
     adc = Adc_GetSglResult();
-    
-    Adc_DisableIrq();
+    //EnableNvic(ADC_DAC_IRQn, IrqLevel3, FALSE)
+    //Adc_DisableIrq();
     stcAdcCfg.enAdcRefVolSel    = AdcMskRefVolSelExtern1;
     stcAdcCfg.enInRef           = AdcMskInRefDisable;        ///<内部参考电压关闭
     Adc_Init(&stcAdcCfg);
@@ -2757,12 +2762,14 @@ static void device_comps_task_handle(void)//Execution interval is 200 ms
 		{
             //int32_t delta_adc=0;
             uint16_t cnt;
+            uint16_t temp;
 			this->count=0;
           //  __disable_irq();
             cnt=Pcnt_GetCnt() ;
-            if(cnt -this->s1_pre_cnt > this->flow_meter.sensor_low_freq_cutoff/10)
+            temp=cnt - this->s1_pre_cnt;
+            if (temp > this->flow_meter.sensor_low_freq_cutoff /10)
             {
-                this->flow_freq_cur=this->s1_cnt_value[this->s1_pos++]=(cnt -this->s1_pre_cnt);
+                this->flow_freq_cur=this->s1_cnt_value[this->s1_pos++]=temp;
             }
             else
             {
@@ -2770,7 +2777,7 @@ static void device_comps_task_handle(void)//Execution interval is 200 ms
             }
             this->s1_pre_cnt=cnt;
         //    __enable_irq();
-            if(this->s1_pos==device_comps.flow_meter.avg_freq_filter_timer%10+1)
+            if(this->s1_pos>=device_comps.flow_meter.avg_freq_filter_timer%10+1)
             {
                 this->s1_pos=0;
             }
@@ -3378,7 +3385,7 @@ void _50ms_task_handle(void)
            }
        }
     }
-    if(++modbusComps.recv_timeout_timer > 40)
+    if(++modbusComps.recv_timeout_timer > 10)
     {
         modbusComps.recv_timeout_callback();
         modbusComps.recv_timeout_timer=0;

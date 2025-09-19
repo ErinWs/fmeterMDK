@@ -1375,74 +1375,72 @@ static uint8_t Pro_modbus(uint8_t Cmd,uint8_t *buf,int16_t len)
 	
 }
 
-static uint8_t Check_modbus_Com(uint8_t *Rec_Data,uint8_t Rec_Pos)
+static uint8_t Check_modbus_Com(uint8_t *Rec_Data, uint8_t Rec_Pos)
 {
     int16_t len;
-//	if(modbusComps.sw._bit.busy)
-//	{
-//	    return 0;
-//	}
-	if(Rec_Pos<2)
-	{
-		return 0;
-	}
-	if(Rec_Data[0]!=modbusMisc.param.addr&&Rec_Data[0]!=0)
-	{
-		return 1;
-	}
-	if(Rec_Data[1]!=0x03&&Rec_Data[1]!=0x06 && Rec_Data[1]!=0x10 && Rec_Data[1]!=0x11)
-	{
-		return 1;
-	}
-	if(Rec_Pos<8)
-	{
-		return 0;
-	}
-	if(Rec_Data[1]==0x10)
-	{
-        if(Rec_Data[6]!=8 &&Rec_Data[6]!=4 && Rec_Data[6]!=2)
-        {
-            return 1;
-        }
-        if(Rec_Data[5]*2!=Rec_Data[6])
-        {
-            return 1;
-        }
-        if(Rec_Pos<Rec_Data[6]+9) 
-        {
-            return 0;
-        }
-        len=Rec_Data[6]+9;
-	}
-    else if(Rec_Data[1]==0x11)
+    //	if(modbusComps.sw._bit.busy)
+    //	{
+    //	    return 0;
+    //	}
+    if (Rec_Pos < 2)
     {
-       
-        if(Rec_Data[6]>2+MD_FLOW_MAX_CAL_POS*6)
+        return 0;
+    }
+    if (Rec_Data[0] != modbusMisc.param.addr && Rec_Data[0] != 0)
+    {
+        return 1;
+    }
+    if (Rec_Data[1] != 0x03 && Rec_Data[1] != 0x06 && Rec_Data[1] != 0x10 && Rec_Data[1] != 0x11)
+    {
+        return 1;
+    }
+    if (Rec_Pos < 8)
+    {
+        return 0;
+    }
+    if (Rec_Data[1] == 0x10)
+    {
+        if (Rec_Data[6] != 8 && Rec_Data[6] != 4 && Rec_Data[6] != 2)
         {
             return 1;
         }
-        if(Rec_Data[5]*2!=Rec_Data[6])
+        if (Rec_Data[5] * 2 != Rec_Data[6])
         {
             return 1;
         }
-        if(Rec_Pos<Rec_Data[6]+9) 
+        if (Rec_Pos < Rec_Data[6] + 9)
         {
             return 0;
         }
-        len=Rec_Data[6]+9;
-    
+        len = Rec_Data[6] + 9;
     }
-	else 
-	{
-	  len=8;
-	}
-	if(((uint16_t)Rec_Data[len-1]<<8)+Rec_Data[len-2]!=generateCRC(Rec_Data,len-2))
-	{
-		return 1;
-	}
-	return Pro_modbus(Rec_Data[1],Rec_Data,len);
-}
+    else if (Rec_Data[1] == 0x11)
+    {
 
+        if (Rec_Data[6] > 2 + MD_FLOW_MAX_CAL_POS * 6)
+        {
+            return 1;
+        }
+        if (Rec_Data[5] * 2 != Rec_Data[6])
+        {
+            return 1;
+        }
+        if (Rec_Pos < Rec_Data[6] + 9)
+        {
+            return 0;
+        }
+        len = Rec_Data[6] + 9;
+    }
+    else
+    {
+        len = 8;
+    }
+    if (((uint16_t)Rec_Data[len - 1] << 8) + Rec_Data[len - 2] != generateCRC(Rec_Data, len - 2))
+    {
+        return 1;
+    }
+    return Pro_modbus(Rec_Data[1], Rec_Data, len);
+}
 
 static uint8_t pro_modbus_config(uint8_t cmd,uint8_t *buf,int16_t len)
 {
@@ -1529,18 +1527,25 @@ static uint8_t Check_modbus_cfg_Com(uint8_t *Rec_Data,uint8_t Rec_Pos)
 
 static void Deal_modbus(void)
 {
-	uint8_t err=0;
-	do
-	{
-		err=Check_modbus_Com(modbusMisc.recv_buf,modbusMisc.recv_pos); 
-		if(err>0)
-		{	
-			__disable_irq();
-			memcpy(modbusMisc.recv_buf,modbusMisc.recv_buf+err,modbusMisc.recv_pos-=err);
-			__enable_irq();
+    uint8_t err = 0;
+    do
+    {
+        err = Check_modbus_Com(modbusMisc.recv_buf, modbusMisc.recv_pos);
+        if (err > 0)
+        {
+            __disable_irq();
+            if (err > modbusMisc.recv_pos)
+            {
+                err = modbusMisc.recv_pos;
+            }
+            modbusMisc.recv_pos -= err;
+            if (modbusMisc.recv_pos > 0)
+            {
+                memmove(modbusMisc.recv_buf, modbusMisc.recv_buf + err, modbusMisc.recv_pos);
+            }
+            __enable_irq();
         }
-    }
-    while (err>0);
+    } while (err > 0);
 
     // do
 	// {
@@ -1643,18 +1648,30 @@ static void  modbusComps_task_handle(void)
 
  void store_modbus_buffer(uint8_t data)
 {
-    if(modbusMisc.recv_pos<MD_MODBUS_MAX_RECV_BUF_POS)
+    __disable_irq();
+    if (modbusMisc.recv_pos < MD_MODBUS_MAX_RECV_BUF_POS)
     {
-        modbusMisc.recv_buf[modbusMisc.recv_pos++]=data;
+        modbusMisc.recv_buf[modbusMisc.recv_pos++] = data;
+        if (modbusMisc.recv_pos >= MD_MODBUS_MAX_RECV_BUF_POS)
+        {
+            modbusMisc.recv_pos = 0;
+            memset(modbusMisc.recv_buf,0,sizeof(modbusMisc.recv_buf));
+        }
     }
-    modbusComps.recv_timeout_timer=0;
-        // modbusMisc.recv_buf[modbusMisc.recv_pos]=data;
-        // modbusMisc.recv_pos+=1;
-        // modbusMisc.recv_pos%=MD_MODBUS_MAX_RECV_BUF_POS;
+    else
+    {
+        modbusMisc.recv_pos = 0;
+        modbusMisc.recv_buf[modbusMisc.recv_pos++] = data;
+    }
+    __enable_irq();
+    modbusComps.recv_timeout_timer = 0;
+    // modbusMisc.recv_buf[modbusMisc.recv_pos]=data;
+    // modbusMisc.recv_pos+=1;
+    // modbusMisc.recv_pos%=MD_MODBUS_MAX_RECV_BUF_POS;
 
-        // modbusMisc.recv_cfg_buf[modbusMisc.recv_cfg_pos]=data;
-        // modbusMisc.recv_cfg_pos+=1;
-        // modbusMisc.recv_cfg_pos%=MD_MODBUS_MAX_CFG_RECV_BUF_POS;
+    // modbusMisc.recv_cfg_buf[modbusMisc.recv_cfg_pos]=data;
+    // modbusMisc.recv_cfg_pos+=1;
+    // modbusMisc.recv_cfg_pos%=MD_MODBUS_MAX_CFG_RECV_BUF_POS;
 }
 
 
@@ -1662,8 +1679,9 @@ static void modbus_recv_timeout_call_back(void)
 {
     if(modbusComps.sw._bit.runing)
     {
-        modbusMisc.recv_pos=0;
-        MD_RESET_RS_485_T_R;
+			__NOP();
+      modbusMisc.recv_pos=0;
+      MD_RESET_RS_485_T_R;
     }
 }
 modbusComps_t modbusComps=
