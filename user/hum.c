@@ -18,6 +18,9 @@
 #include "device.h"
 #include "modbus.h"
 #include "ertc.h"
+#include "sci_master.h"
+#include "net_adapter.h"
+#include "app_trans.h"
 
 
 
@@ -1252,6 +1255,30 @@ static uint8_t lg(const int32_t n)
     {
         return 3;
     }
+    if(n==10000)
+    {
+        return 4;
+    }
+    if(n==100000)
+    {
+        return 5;
+    }
+    if(n==1000000)
+    {
+        return 6;
+    }
+    if(n==10000000)
+    {
+        return 7;
+    }
+    if(n==100000000)
+    {
+        return 8;
+    }
+    if(n==1000000000)
+    {
+        return 9;
+    }
     return 1;
 }
 
@@ -1309,7 +1336,7 @@ static float32_t f_div(float32_t a,float32_t b)
 {
     return a/b;
 }
-static int32_t dis_range[][2]= { {    -99999,    999999},
+static const int32_t dis_range[][2]= { {    -99999,    999999},
        							 {         0,         9},
        							 {        -9,        99},
        							 {       -99,       999},
@@ -1702,7 +1729,21 @@ static void  enter_report_mode(void)
     
 }
 
-
+static void enter_net_adapter_report_mode(void)
+{
+    
+    hum_comps.current_mode=EM_NET_ADAPTER_REPORT_MODE;
+    mode_comps[hum_comps.current_mode].dis_option=0;
+    hum_comps.dis_oper_mark._bit.cur0=0;
+    hum_comps.dis_oper_mark._bit.cur1=0;
+    hum_comps.dis_oper_mark._bit.cur2=0;
+    hum_comps.dis_oper_mark._bit.cur3=0;
+    hum_comps.dis_oper_mark._bit.cur4=0;
+    hum_comps.dis_oper_mark._bit.cur5=0;
+    mode_comps[hum_comps.current_mode].displayTimer=0;
+    clr_lcd();
+    
+}
 
 /*********************************start  key function************************************************************/
 
@@ -1743,6 +1784,7 @@ static void normal_mode_on_j_key(void)
 static void normal_mode_on_long_s_key(void)
 {
    protocolComps.triggerIrq._bit.key=1;
+   hum_comps.trigger_req._bit.normal_mode_on_long_s_key = 1;
   // device_comps.buzzer.start(61);
    
 }
@@ -2390,7 +2432,7 @@ static void param_modify_mode_on_m_key(void)
                case 1:
                     device_comps.meter_backup.total_int=device_comps.meter.total_int=device_comps.meter.total_int+num/1000000;
                     device_comps.meter_backup.total_dec=device_comps.meter.total_dec=f_div(num%1000000,1000.f);//unit:L
-                    device_comps.meter_backup.total_intN=device_comps.meter.total_intN=device_comps.meter.total_int+num/1000000;
+                    device_comps.meter_backup.total_intN=device_comps.meter.total_intN=device_comps.meter.total_intN+num/1000000;
                     device_comps.meter_backup.total_decN=device_comps.meter.total_decN=f_div(num%1000000,1000.f);//unit:L
                     save_data_type=EM_METER;
                     break;
@@ -2970,8 +3012,8 @@ static void display_current_total(uint8_t opt)
 //         {
 //             hide_line3_all_unit();
 //             hum_comps.dot3_pos = 1;
-//             hum_comps.dig3_0 = MD_FL_VER % 10;
-//             hum_comps.dig3_1 = MD_FL_VER / 10 % 10;
+//             hum_comps.dig3_0 = MD_FL_VERSION % 10;
+//             hum_comps.dig3_1 = MD_FL_VERSION / 10 % 10;
 //             hum_comps.dig3_2 = MD_HIDE_DISP - 1;
 //             hum_comps.dig3_3 = 0x0f;
 //             hum_comps.dig3_4 = MD_HIDE_DISP;
@@ -3081,8 +3123,8 @@ static void  display_soft_ver(void)
 {
     hide_line3_all_unit();
     hum_comps.dot3_pos = 1;
-    hum_comps.dig3_0 = MD_FL_VER % 10;
-    hum_comps.dig3_1 = MD_FL_VER / 10 % 10;
+    hum_comps.dig3_0 = MD_FL_VERSION % 10;
+    hum_comps.dig3_1 = MD_FL_VERSION / 10 % 10;
     hum_comps.dig3_2 = MD_HIDE_DISP - 1;
     hum_comps.dig3_3 = 0x0f;
     hum_comps.dig3_4 = MD_HIDE_DISP;
@@ -3203,7 +3245,7 @@ static void normal_mode_no_iot_product_display(uint8_t opt)
             break;
         default:
             mode_comps[hum_comps.current_mode].dis_option = 0;
-            break;
+            return;
     }
 }
 
@@ -3294,7 +3336,7 @@ static void normal_mode_4G_product_display(uint8_t opt)
             break;
         default:
             mode_comps[hum_comps.current_mode].dis_option = 0;
-            break;
+            return;
     }
 }
 
@@ -3376,7 +3418,7 @@ static void normal_mode_Lora_product_display(uint8_t opt)
             break;
         default:
             mode_comps[hum_comps.current_mode].dis_option = 0;
-            break;
+            return;
     }
 }
 
@@ -3428,32 +3470,31 @@ static void debug_mode_display(uint8_t opt)
                 break;
                 
              case 1:
-                num=device_comps.flow_roll_freq_comped_cur;
-                hide_line1_all_unit();
-                MD_DIS_T4_F;
-                MD_DIS_T5_HZ;
-                hum_comps.dot1_pos=1;
-                calc_seg_value(&hum_comps.dig1_0,5,num,1,hum_comps.dot1_pos+1);    
-                display_line1_data();
+                 num = sci_comps.periph.DM.measure_data.voltage / 10;
+                 hum_comps.dot1_pos = 2;
+                 hide_line1_all_unit();
+                 calc_seg_value(&hum_comps.dig1_0, 4, num, 1, hum_comps.dot1_pos + 1);
+                 display_line1_data();
 
-                num=device_comps.flow_roll_freq_comped_cur/10;
-                hum_comps.dot4_pos=0;
-                calc_seg_value(&hum_comps.dig4_0,4,num,1,hum_comps.dot4_pos+1);    
-                display_line4_data();
+                 num = sci_comps.periph.DM.measure_data.current / 10;
+                 hum_comps.dot4_pos = 2;
+                 calc_seg_value(&hum_comps.dig4_0, 4, num, 1, hum_comps.dot4_pos + 1);
+                 display_line4_data();
 
-                num=get_float_disp_num(device_comps.flow_run_meter_coe,6,&hum_comps.dot3_pos);
-                calc_seg_value(&hum_comps.dig3_0,6,num,0,hum_comps.dot3_pos+1);
+                num = sci_comps.periph.PWM.setting_data.duty;
+                hum_comps.dot3_pos = 0;
+                calc_seg_value(&hum_comps.dig3_0, 6, num, 0, hum_comps.dot3_pos + 1);
                 display_line3_data();
-                    
-        	    num=device_comps.report_param.triggerTimes;
-                hum_comps.dot5_pos=0;//
-                calc_seg_value(&hum_comps.dig5_0,6,num,0,hum_comps.dot5_pos+1);
-                hum_comps.dis_oper_mark._bit.cur5=0;
-                hum_comps.dig5_6=MD_HIDE_DISP-1;
-                hum_comps.dig5_7=MD_DIS_r;
-                hum_comps.dig5_8=MD_DIS_t;
-                display_line5_data();
-                break;
+
+                 num = device_comps.report_param.triggerTimes;
+                 hum_comps.dot5_pos = 0; //
+                 calc_seg_value(&hum_comps.dig5_0, 6, num, 0, hum_comps.dot5_pos + 1);
+                 hum_comps.dis_oper_mark._bit.cur5 = 0;
+                 hum_comps.dig5_6 = MD_HIDE_DISP - 1;
+                 hum_comps.dig5_7 = MD_DIS_r;
+                 hum_comps.dig5_8 = MD_DIS_t;
+                 display_line5_data();
+                 break;
              default:
                 mode_comps[hum_comps.current_mode].dis_option=0;
                 hum_comps.dis_oper_mark._bit.refresh_debug_param=1;
@@ -3785,7 +3826,7 @@ static void param_query_mode_display(uint8_t opt)
                 default:
                     mode_comps[hum_comps.current_mode].dis_option=0;
                     hum_comps.dis_oper_mark._bit.refresh_param=1;
-                    break;
+                    return;
                 
             }
            
@@ -3808,7 +3849,7 @@ static void param_query_mode_display(uint8_t opt)
                default:
                     mode_comps[hum_comps.current_mode].dis_option=0;
                     hum_comps.dis_oper_mark._bit.refresh_param=1;
-                    break;      
+                    return;
            }
         }
         else if(device_comps.param_type==EM_PARAM_FACTORY)
@@ -3855,7 +3896,7 @@ static void param_query_mode_display(uint8_t opt)
                default:
                     mode_comps[hum_comps.current_mode].dis_option=0;
                     hum_comps.dis_oper_mark._bit.refresh_param=1;
-                    break;      
+                    return;      
             }
         }
         if(device_comps.param_type==EM_PARAM_USER || device_comps.param_type==EM_PARAM_FACTORY)
@@ -4006,6 +4047,66 @@ static void display_net_op_window_tmr(uint8_t opt)
     calc_seg_value(&hum_comps.dig0_0,3,num,1,hum_comps.dot0_pos+1);    
     display_line0_data();
 
+}
+
+
+static void display_app_trans_session_timeout(uint16_t time_sec)
+{
+    hum_comps.dot0_pos=0;
+    calc_seg_value(&hum_comps.dig0_0,3,(int32_t)time_sec,1,hum_comps.dot0_pos+1);
+    display_line0_data();
+}
+
+static void net_adapter_report_mode_display(uint8_t opt)
+{
+    net_state_t net_state = get_net_adapter_state();
+    net_error_t net_error = get_net_adapter_last_error();
+    net_event_t net_pending_event = get_net_adapter_pending_event();
+    app_trans_status_flag_t flag = get_app_trans_status_flag();
+		uint32_t app_trigger_event;
+    if (net_pending_event == NET_EVENT_NONE)
+    {
+        switch (net_state)
+        {
+            case NET_STATE_ON:
+                app_trigger_event = get_app_trans_pending_event();
+                hum_comps.dis_oper_mark._bit.cur2 = 0;
+                hum_comps.dig5_0 = (app_trigger_event) & 0x0f;
+                hum_comps.dig5_1 = (app_trigger_event >> 4) & 0x0f;
+                hum_comps.dig5_2 = (app_trigger_event >> 8) & 0x0f;
+                hum_comps.dig5_3 = (app_trigger_event >> 12) & 0x0f;
+                hum_comps.dig5_4 = MD_HIDE_DISP - 1;
+                hum_comps.dig5_5 = 0x0A;
+                hum_comps.dig5_6 = MD_HIDE_DISP;
+                hum_comps.dig5_7 = MD_HIDE_DISP;
+                hum_comps.dig5_8 = MD_HIDE_DISP;
+                hum_comps.dot5_pos = 0;
+                break;
+            case NET_STATE_OFF:
+                flag = get_app_trans_status_flag();
+                hum_comps.dig5_0 = flag._bit.is_ip0_push_ok ? 0x0c      : 0x01;
+                hum_comps.dig5_1 = flag._bit.is_ip0_push_ok ? MD_DIS_U  : 0x0a;
+                hum_comps.dig5_2 = flag._bit.is_ip0_push_ok ? 5         : 0x0f;
+                hum_comps.dig5_3 = flag._bit.is_ip1_push_ok ? 0x0c      : 0x01;
+                hum_comps.dig5_4 = flag._bit.is_ip1_push_ok ? MD_DIS_U  : 0x0a;
+                hum_comps.dig5_5 = flag._bit.is_ip1_push_ok ? 5         : 0x0f;
+                break;
+            case NET_STATE_IDLE:
+                enter_default_mode(mode_comps[EM_NORMAL_MODE].dis_option);
+                break;
+            default:
+                hum_comps.dig5_0 = net_error % 10;
+                hum_comps.dig5_1 = net_error / 10 % 10;
+                hum_comps.dig5_2 = 0x0e;
+                hum_comps.dig5_3 = MD_HIDE_DISP - 1;
+                hum_comps.dig5_4 = net_state % 10;
+                hum_comps.dig5_5 = net_state / 10 % 10;
+                hum_comps.dot5_pos = 0;
+                break;
+        }
+        display_line5_data();
+    }
+    display_app_trans_session_timeout(get_app_trans_session_timeout_sec());
 }
 
 static void report_mode_display(uint8_t opt)
@@ -4385,10 +4486,10 @@ static void handle_key(hum_comps_t *this)
 	 				break;
 //            case ~MD_POWER_KEY&MD_KEY_MASK:
 //                  #if (MD_MEASURE_TYPE==MD_ELE_HIGH_PRESS_DIG)
-//                    device_comps.DM.sw._bit.isPowerOnYet=MD_DM_POWER_ON_PIN=!MD_DM_POWER_ON_PIN;
-//                    if(!device_comps.DM.sw._bit.isPowerOnYet)
+//                    device_comps.periph.DM.sw._bit.isPowerOnYet=MD_DM_POWER_ON_PIN=!MD_DM_POWER_ON_PIN;
+//                    if(!device_comps.periph.DM.sw._bit.isPowerOnYet)
 //                    {
-//                        device_comps.DM.sw.All=0;
+//                        device_comps.periph.DM.sw.All=0;
 //                    }
 //                  #endif
 //                    break;
@@ -4503,15 +4604,16 @@ static void hum_comps_task_handle(void)////Execution interval is 50 ms
 #define  BK_LN
 mode_comps_t  mode_comps[] =
 {
-    {"normal mode"       ,EM_NORMAL_MODE        ,normal_mode_on_s_key      ,normal_mode_on_m_key      ,normal_mode_on_j_key      ,normal_mode_on_long_s_key      ,normal_mode_on_long_m_key      ,normal_mode_on_long_j_key      ,normal_mode_on_long_s_and_j_key,normal_mode_display      ,0,0},
-    {"debug mode"        ,EM_DEBUG_MODE         ,debug_mode_on_s_key       ,debug_mode_on_m_key       ,debug_mode_on_j_key       ,nop                            ,debug_mode_on_long_m_key       ,nop                            ,debug_mode_on_long_s_and_j_key ,debug_mode_display       ,0,0},
-    {"password mode"     ,EM_PWD_MODE           ,pwd_mode_on_s_key         ,pwd_mode_on_m_key         ,pwd_mode_on_j_key         ,pwd_mode_on_long_s_key         ,pwd_mode_on_long_m_key         ,nop                            ,nop                            ,pwd_mode_display         ,0,0},
-    {"cal_query mode"    ,EM_CAL_QUERY_MODE     ,cal_query_mode_on_s_key   ,cal_query_mode_on_m_key   ,cal_query_mode_on_j_key   ,nop                            ,cal_query_mode_on_long_m_key   ,nop                            ,nop                            ,cal_query_mode_display   ,0,0},
-    {"cal_modify mode"   ,EM_CAL_MODIFY_MODE    ,cal_modify_mode_on_s_key  ,cal_modify_mode_on_m_key  ,cal_modify_mode_on_j_key  ,cal_modify_mode_on_long_s_key  ,nop                            ,nop                            ,nop                            ,cal_modify_mode_display  ,0,0},
-    {"param_query mode"  ,EM_PARAM_QUERY_MODE   ,param_query_mode_on_s_key ,param_query_mode_on_m_key ,nop                       ,nop                            ,param_query_mode_on_long_m_key ,nop                            ,nop                            ,param_query_mode_display ,0,0},
-    {"param_modify mode" ,EM_PARAM_MODIFY_MODE  ,param_modify_mode_on_s_key,param_modify_mode_on_m_key,param_modify_mode_on_j_key,param_modify_mode_on_long_s_key,nop                            ,nop                            ,nop                            ,param_modify_mode_display,0,0},
-    {"self_test_mode"    ,EM_SELF_TEST_MODE     ,nop                       ,nop                       ,nop                       ,nop                            ,nop                            ,nop                            ,nop                            ,self_test_mode_display   ,0,0},
-    {"report_mode"       ,EM_REPORT_MODE        ,nop                       ,nop                       ,nop                       ,nop                            ,nop                            ,nop                            ,nop                            ,report_mode_display      ,0,0}
+    {"normal mode"       ,EM_NORMAL_MODE                 ,normal_mode_on_s_key      ,normal_mode_on_m_key      ,normal_mode_on_j_key      ,normal_mode_on_long_s_key      ,normal_mode_on_long_m_key      ,normal_mode_on_long_j_key      ,normal_mode_on_long_s_and_j_key,normal_mode_display                ,0,0},
+    {"debug mode"        ,EM_DEBUG_MODE                  ,debug_mode_on_s_key       ,debug_mode_on_m_key       ,debug_mode_on_j_key       ,nop                            ,debug_mode_on_long_m_key       ,nop                            ,debug_mode_on_long_s_and_j_key ,debug_mode_display                 ,0,0},
+    {"password mode"     ,EM_PWD_MODE                    ,pwd_mode_on_s_key         ,pwd_mode_on_m_key         ,pwd_mode_on_j_key         ,pwd_mode_on_long_s_key         ,pwd_mode_on_long_m_key         ,nop                            ,nop                            ,pwd_mode_display                   ,0,0},
+    {"cal_query mode"    ,EM_CAL_QUERY_MODE              ,cal_query_mode_on_s_key   ,cal_query_mode_on_m_key   ,cal_query_mode_on_j_key   ,nop                            ,cal_query_mode_on_long_m_key   ,nop                            ,nop                            ,cal_query_mode_display             ,0,0},
+    {"cal_modify mode"   ,EM_CAL_MODIFY_MODE             ,cal_modify_mode_on_s_key  ,cal_modify_mode_on_m_key  ,cal_modify_mode_on_j_key  ,cal_modify_mode_on_long_s_key  ,nop                            ,nop                            ,nop                            ,cal_modify_mode_display            ,0,0},
+    {"param_query mode"  ,EM_PARAM_QUERY_MODE            ,param_query_mode_on_s_key ,param_query_mode_on_m_key ,nop                       ,nop                            ,param_query_mode_on_long_m_key ,nop                            ,nop                            ,param_query_mode_display           ,0,0},
+    {"param_modify mode" ,EM_PARAM_MODIFY_MODE           ,param_modify_mode_on_s_key,param_modify_mode_on_m_key,param_modify_mode_on_j_key,param_modify_mode_on_long_s_key,nop                            ,nop                            ,nop                            ,param_modify_mode_display          ,0,0},
+    {"self_test_mode"    ,EM_SELF_TEST_MODE              ,nop                       ,nop                       ,nop                       ,nop                            ,nop                            ,nop                            ,nop                            ,self_test_mode_display             ,0,0},
+    {"report_mode"       ,EM_REPORT_MODE                 ,nop                       ,nop                       ,nop                       ,nop                            ,nop                            ,nop                            ,nop                            ,report_mode_display                ,0,0},
+    {"adapter_report"    ,EM_NET_ADAPTER_REPORT_MODE     ,nop                       ,nop                       ,nop                       ,nop                            ,nop                            ,nop                            ,nop                            ,net_adapter_report_mode_display    ,0,0},
     
 };
 
@@ -4538,6 +4640,7 @@ hum_comps_t hum_comps=
     8,//    uint8_t dig0_6;
     8,//    uint8_t dig0_7;
     8,//    uint8_t dig0_8;
+		8,//    uint8_t dig0_9;
     0,//uint8_t dot0_pos;
 	
 	8,//uint8_t dig1_0;
@@ -4610,10 +4713,11 @@ hum_comps_t hum_comps=
 	
 	0,//int16_t up_key;
     MD_KEY_MASK,//int16_t down_key;
-	
+	{0},//hum_trigger_req_t trigger_req;
     enter_report_mode,
     enter_default_mode,//    void (*enter_default_mode)(int16_t opt);
     enter_cal_modify_mode,//    void (*enter_cal_modify_momde)(int16_t opt);
+    enter_net_adapter_report_mode,
     hum_comps_task_handle //void (*const task_handle)(void);
 	
 	//TODO

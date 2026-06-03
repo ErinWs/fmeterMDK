@@ -64,6 +64,7 @@ MD_STATUS R_LPUART0_Send(uint8_t * const tx_buf, uint16_t tx_num);
 MD_STATUS R_LPUART0_Receive(uint8_t * const rx_buf, uint16_t rx_num);
 
 void App_LpUart1Cfg(uint32_t baud,int16_t parity);
+void App_LpUart1DeCfg(void);
 void R_LPUART1_Start(void);
 void R_LPUART1_Stop(void);
 MD_STATUS R_LPUART1_Send(uint8_t * const tx_buf, uint16_t tx_num);
@@ -110,14 +111,11 @@ void disable_uart2(void);
 void disable_uart3(void);
 void enable_uart3(void);
 
-
-
-//void enable_irc_receive(void);
-//void disable_irc_receive(void);
-//void disable_irc(void);
-//void enable_irc(void);
-//int16_t irc_modify_baud(int16_t baud,int16_t parity);
-
-
+extern uint8_t LPUart0_is_running;
+extern uint8_t LPUart1_is_running;
+extern uint8_t Uart0_is_running;
+extern uint8_t Uart1_is_running;
+extern uint8_t Uart2_is_running;
+extern uint8_t Uart3_is_running;
 /* End user code. Do not edit comment generated here */
 #endif

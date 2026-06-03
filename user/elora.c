@@ -1,23 +1,13 @@
 #include "ddl.h"
 #include "rtc.h"
 #include "gpio.h"
-#include "pcnt.h"
-#include "lptim.h"
-#include "bgr.h"
-#include "adc.h"
-#include "wdt.h"
 
 #include "device.h"
 #include "r_cg_sau.h"
 #include "elora.h"
-#include "protocol.h"
-#include "net.h"
-#include "irc.h"
-#include "hum.h"
-#include "collector.h"
+#include "sci_master.h"
 #include "24cxx.h"
-#include "adx.h"
-#include "modbus.h"
+
 
 #include "string.h"
 #include "math.h"
@@ -31,7 +21,9 @@ static void enter_loar_sleep_mode(void);
 #define MD_AS32_WORK_MODE_RECV_DELAY_MS 50 // ms
 
 /*******************************************PORTABLE***************************************/
-
+#define MD_ENTER_CRITICAL_SECTION() DI()
+#define MD_EXIT_CRITICAL_SECTION() EI()
+#define nop()  __NOP()
 #define MD_LORA_AUX_PORT_IRQN PORTC_E_IRQn
 #define MD_LORA_INTP_ENABLE()                                              \
     do                                                                     \
@@ -55,7 +47,7 @@ static void enter_loar_sleep_mode(void);
 #define MD_LORA_MD1_PIN_RESET SetBit(((uint32_t)&M0P_GPIO->PAOUT + MD_LORA_MD1_PORT), MD_LORA_MD1_PIN, FALSE)
 #define MD_LORA_MD1_PIN_SET SetBit(((uint32_t)&M0P_GPIO->PAOUT + MD_LORA_MD1_PORT), MD_LORA_MD1_PIN, TRUE)
 
-static void write_lora(uint8_t *const buf, uint16_t len)
+static void write_lora_com(uint8_t *const buf, uint16_t len)
 {
     // loraComps.sw._bit.busy=1;
     R_UART1_Send(buf, len);
@@ -77,34 +69,30 @@ static uint32_t config_lora_com(uint32_t baud, int16_t parity)
     return baud;
 }
 
-static void lora_delay(uint16_t nNops)
-{
-    while (nNops--)
-    {
-        __NOP();
-    }
-}
+
 
 /*************************************PORTABLE END****************************/
-#define MD_DATA_ID_READ_MEASURE_INFO 0x901f
-#define MD_DATA_ID_READ_BASIC_INFO 0x9020
-#define MD_DATA_ID_READ_ALARM_PARAM 0x9021
-#define MD_DATA_ID_READ_RPORT_PARAM 0x9022
 
-#define MD_DATA_ID_READ_ACCESS_ADDR 0x9023
+#define MD_DATA_ID_READ_MEASURE_INFO 0x901f
+//#define MD_DATA_ID_READ_BASIC_INFO 0x9020
+#define MD_DATA_ID_READ_ALARM_PARAM 0x9021
+//#define MD_DATA_ID_READ_RPORT_PARAM 0x9022
+//#define MD_DATA_ID_READ_ACCESS_ADDR 0x9023
+#define MD_DATA_ID_READ_DPF_INFO   0x9025
 #define MD_DATA_ID_READ_HIGH_INFO 0x9026
 #define MD_DATA_ID_READ_4_20MA_INFO 0x9027
 #define MD_DATA_ID_READ_AUX_HIGH_H3_INFO 0x9028
+#define MD_DATA_ID_READ_RADAR_INFO 0x9029
 #define MD_DATA_ID_READ_FLOW_METER_INFO 0x9030
 
-#define MD_DATA_ID_SET_DEVICE_ADDR 0x9018
-#define MD_DATA_ID_SET_ACCESS_ADDR 0x9005
-#define MD_DATA_ID_ENTER_CAL_MODE 0xfa55     //
-#define MD_DATA_ID_ENTER_NORMAL_MODE 0xfa99  //
-#define MD_DATA_ID_WRITE_ALARM_PARAM 0x9001  //
-#define MD_DATA_ID_WRITE_CAL_DATA 0x9002     //
-#define MD_DATA_ID_WRITE_REPORT_PARAM 0x9003 //
-#define MD_DATA_ID_WRITE_DEVICE_TIME 0x9004
+// #define MD_DATA_ID_SET_DEVICE_ADDR 0x9018
+// #define MD_DATA_ID_SET_ACCESS_ADDR 0x9005
+// #define MD_DATA_ID_ENTER_CAL_MODE 0xfa55     //
+// #define MD_DATA_ID_ENTER_NORMAL_MODE 0xfa99  //
+ #define MD_DATA_ID_WRITE_ALARM_PARAM 0x9001  //
+// #define MD_DATA_ID_WRITE_CAL_DATA 0x9002     //
+// #define MD_DATA_ID_WRITE_REPORT_PARAM 0x9003 //
+ #define MD_DATA_ID_WRITE_DEVICE_TIME 0x9004
 
 static struct
 {
@@ -303,7 +291,9 @@ static int16_t add_measure_data(uint8_t Cmd, uint16_t DataId, uint8_t *buf)
     switch (DataId)
     {
     case MD_DATA_ID_READ_FLOW_METER_INFO:
-        fp = (uint8_t *)&device_comps.current_flow;
+
+        datx = f_div(device_comps.current_flow, pwr(device_comps.flow_cal_param.dot));
+        fp = (uint8_t *)&datx;
         buf[i++] = fp[3];
         buf[i++] = fp[2];
         buf[i++] = fp[1];
@@ -336,7 +326,8 @@ static int16_t add_measure_data(uint8_t Cmd, uint16_t DataId, uint8_t *buf)
         buf[i++] = fp[1];
         buf[i++] = fp[0];
 
-        fp = (uint8_t *)&device_comps.current_flowN;
+        datx = f_div(device_comps.current_flowN, pwr(device_comps.flow_cal_param.dot));
+        fp = (uint8_t *)&datx;
         buf[i++] = fp[3];
         buf[i++] = fp[2];
         buf[i++] = fp[1];
@@ -424,7 +415,7 @@ static uint8_t Pro_lora(uint8_t Cmd, uint8_t *buf, uint8_t len)
         default:
             return 1;
         }
-        // write_lora(loraMisc.send_buf,i);
+        // write_lora_com(loraMisc.send_buf,i);
         return len;
     }
     return 1;
@@ -657,7 +648,7 @@ static void init_lora(void)
                 loraMisc.send_buf[i++] = 0;
                 loraMisc.send_buf[i++] = 4;
                 loraMisc.send_buf[i++] = 0x1e;
-                write_lora(loraMisc.send_buf, i);
+                write_lora_com(loraMisc.send_buf, i);
                 loraComps.op_window_time = 20; // 16*50ms=800ms
                 loraMisc.sw._bit.initing = 1;
             }
@@ -686,7 +677,7 @@ static void init_lora(void)
             if (!loraMisc.sw._bit.initing)
             {
                 i = load_lora_cfg_data_to_buf(loraMisc.send_buf);
-                write_lora(loraMisc.send_buf, 61);
+                write_lora_com(loraMisc.send_buf, 61);
                 loraComps.op_window_time = 20; // 16*50ms=800ms
                 loraMisc.sw._bit.initing = 1;
             }
@@ -775,7 +766,7 @@ static void lora_comps_task_50ms(void)
             loraMisc.send_buf[0] = 0;
             loraMisc.send_buf[1] = 1;
             loraMisc.send_buf[2] = 1;
-            write_lora(loraMisc.send_buf, 3); // read_rssi
+            write_lora_com(loraMisc.send_buf, 3); // read_rssi
         }
         if (loraMisc.ack_delay_tmr == 1)
         {
@@ -785,7 +776,7 @@ static void lora_comps_task_50ms(void)
         if (!loraMisc.ack_delay_tmr)
         {
             i = add_measure_data(loraMisc.cmd, loraMisc.readDataId, loraMisc.send_buf);
-            write_lora(loraMisc.send_buf, i);
+            write_lora_com(loraMisc.send_buf, i);
         }
     }
 }
@@ -1083,7 +1074,7 @@ static void init_lora(void)
                 loraMisc.send_buf[i++] = 0xc1;
                 loraMisc.send_buf[i++] = 0xc1;
                 loraMisc.config_cmd = 0xc1;
-                write_lora(loraMisc.send_buf, i);
+                write_lora_com(loraMisc.send_buf, i);
                 loraComps.op_window_time = 20; // 16*50ms=800ms
                 loraMisc.sw._bit.initing = 1;
             }
@@ -1113,7 +1104,7 @@ static void init_lora(void)
             {
                 i = load_lora_cfg_data_to_buf(loraMisc.send_buf);
                 loraMisc.config_cmd = 0xc0;
-                write_lora(loraMisc.send_buf, i);
+                write_lora_com(loraMisc.send_buf, i);
                 loraComps.op_window_time = 20; // 16*50ms=800ms
                 loraMisc.sw._bit.initing = 1;
             }
@@ -1203,7 +1194,7 @@ static void lora_comps_task_50ms(void)
             loraMisc.send_buf[i++] = 0xaf;
             loraMisc.send_buf[i++] = 0xf4;
             loraMisc.config_cmd = 0x74;
-            write_lora(loraMisc.send_buf, i);
+            write_lora_com(loraMisc.send_buf, i);
             loraComps.op_window_time = 15;
             return;
         }
@@ -1216,7 +1207,7 @@ static void lora_comps_task_50ms(void)
             loraMisc.send_buf[i++] = 0xaf;
             loraMisc.send_buf[i++] = 0xf3;
             loraMisc.config_cmd = 0x73;
-            write_lora(loraMisc.send_buf, i); // read_rssi
+            write_lora_com(loraMisc.send_buf, i); // read_rssi
             return;
         }
         if (loraMisc.ack_delay_tmr == loraMisc.ack_delay_init_const_tmr - MD_AS32_WORK_MODE_RECV_DELAY_MS / 50 - 9)
@@ -1234,7 +1225,7 @@ static void lora_comps_task_50ms(void)
         if (loraMisc.ack_delay_tmr == 0)
         {
             i = add_measure_data(loraMisc.cmd, loraMisc.readDataId, loraMisc.send_buf);
-            write_lora(loraMisc.send_buf, i);
+            write_lora_com(loraMisc.send_buf, i);
         }
     }
 }

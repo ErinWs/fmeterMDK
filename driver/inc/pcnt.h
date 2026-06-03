@@ -184,9 +184,7 @@ extern void Pcnt_ClrItStatus(en_pcnt_itfce_t IT_Src);
 extern uint16_t Pcnt_GetCnt(void);
 extern uint16_t Pcnt_GetTop(void);
 extern uint16_t Pcnt_GetBuf(void);
-extern void Pcnt_SetCnt(uint16_t value);
 extern void Pcnt_SetBuf(uint16_t value);
-extern void Pcnt_SetTop(uint16_t value);
 //@} // PCNT Group
 
 #ifdef __cplusplus

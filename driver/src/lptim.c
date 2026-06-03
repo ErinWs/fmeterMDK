@@ -125,11 +125,12 @@ en_result_t Lptim_Init(M0P_LPTIMER_TypeDef* Lptimx, stc_lptim_cfg_t* InitStruct)
         {
             break;
         }
-    }
-    if(u16TimeOut == 0)
-    {
-        return ErrorTimeout;        
-    }
+    
+		if(u16TimeOut == 0)
+		{
+			return ErrorTimeout;        
+		}
+	}
     Lptimx->ARR_f.ARR = InitStruct->u16Arr;
     return Ok;
 }

@@ -178,7 +178,7 @@ typedef enum en_sysctrl_pll_cycle
  ******************************************************************************/
 typedef enum en_sysctrl_pll_infreq
 {
-    SysctrlPllInFreq4_6MHz   = 0u,                  ///< 4~16MHz
+    SysctrlPllInFreq4_6MHz   = 0u,                  ///< 4~6MHz
     SysctrlPllInFreq6_12MHz  = 1u,                  ///< 6~12MHz
     SysctrlPllInFreq12_20MHz = 2u,                  ///< 12~20MHz
     SysctrlPllInFreq20_24MHz = 3u,                  ///< 20~24MHz  

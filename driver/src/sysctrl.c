@@ -127,6 +127,7 @@ en_result_t Sysctrl_ClkSourceEnable(en_sysctrl_clk_source_t enSource, boolean_t 
             {
                 ;
             }
+			delay1ms(10);
             break;
 
         case SysctrlClkRCL:

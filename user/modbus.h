@@ -1,21 +1,21 @@
 #ifndef  MODBUS_H
 #define  MODBUS_H
-#define MD_SET_RS_485_T_R      SetBit(((uint32_t)&M0P_GPIO->PAOUT + MD_RS485_DIR_PORT)  ,  MD_RS485_DIR_PIN, TRUE)
-#define MD_RESET_RS_485_T_R    SetBit(((uint32_t)&M0P_GPIO->PAOUT + MD_RS485_DIR_PORT)  ,  MD_RS485_DIR_PIN, FALSE)
+#define  MD_SET_SLAVE_RS485_T_R      SetBit(((uint32_t)&M0P_GPIO->PAOUT + MD_SLAVE_RS485_DIR_PORT)  ,  MD_SLAVE_RS485_DIR_PIN, TRUE)
+#define  MD_RESET_SLAVE_RS485_T_R    SetBit(((uint32_t)&M0P_GPIO->PAOUT + MD_SLAVE_RS485_DIR_PORT)  ,  MD_SLAVE_RS485_DIR_PIN, FALSE)
 
 typedef	struct
 {   
     uint8_t addr;
     uint8_t baud;
     uint8_t cs;
-}modebs_param_t;
+}modbus_param_t;
 
 typedef struct 
 {
     uint32_t  op_window_time; 
     uint16_t  cmd_out_raw_4ma_20ma_timer; //unit:s  
     uint16_t  recv_timeout_timer; //unit:50ms
-    modebs_param_t *param_pt;
+    modbus_param_t *param_pt;
     union 
     {
     	uint8_t All;

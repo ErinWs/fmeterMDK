@@ -152,8 +152,6 @@ en_result_t Spi_Init(M0P_SPI_TypeDef* SPIx,stc_spi_cfg_t* pstcSpiCfg);
 //SPI 功能使能禁止函数
 en_result_t Spi_FuncEnable(M0P_SPI_TypeDef* SPIx, en_spi_func_t enFunc);
 en_result_t Spi_FuncDisable(M0P_SPI_TypeDef* SPIx, en_spi_func_t enFunc);
-//SPI关闭函数
-en_result_t Spi_DeInit(M0P_SPI_TypeDef* SPIx);
 
 //SPI 配置主发送的电平
 void Spi_SetCS(M0P_SPI_TypeDef* SPIx,boolean_t bFlag);

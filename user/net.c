@@ -14,7 +14,6 @@
 #include "net.h"
 #include "irc.h"
 #include "hum.h"
-#include "collector.h"
 #include "24cxx.h"
 #include "adx.h"
 #include "modbus.h"
@@ -64,7 +63,10 @@ static uint32_t config_net_com(uint32_t baud, int16_t parity)
     return baud;
 }
 
-
+static MD_STATUS  write_net_com(uint8_t * const tx_buf, uint16_t tx_num)
+{
+    return R_UART1_Send(tx_buf, tx_num);
+}
 
 static struct 
 { 
@@ -85,7 +87,7 @@ static struct
     } St;
     
     int16_t NoAckTimes;
-    uint8_t  AT_Waiting;	//AT?¨¹¨¢?¡¤¡é?¨ª¡À¨º??//
+    uint8_t  AT_Waiting;	//AT?ï¿½ï¿½ï¿½ï¿½?ï¿½ï¿½ï¿½ï¿½?ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½??//
     uint8_t  Flag_St;
     uint8_t _Flag_St;
     uint16_t   reStartTimes;
@@ -140,7 +142,7 @@ netMisc=
     0,
 	0,
 	0,	
-	R_UART1_Send
+	write_net_com
 };
 
 static uint16_t generateCRC(uint8_t *buffer, uint16_t messageLength)
@@ -256,7 +258,7 @@ static void reset_net_deive_rcvbuf(void)
 }
 
 
-static void DealAnalyticCode(int16_t err)//err=0;err£¬err=1,recv ok £¬err=3,no data
+static void DealAnalyticCode(int16_t err)//err=0;errï¿½ï¿½err=1,recv ok ï¿½ï¿½err=3,no data
 {
     if(err==0)//
     {
@@ -737,7 +739,7 @@ static uint8_t GetMsg(char const *buf,int16_t len)
 	netComps.msgLen=len;
 	netComps.St._bit.recvData=1;
 	err=1;
-    return err;////err=0;´íÎó£¬err=1,recv data ok;
+    return err;////err=0;ï¿½ï¿½ï¿½ï¿½err=1,recv data ok;
 }              
 
 static void power_on_net_device(void)
@@ -883,7 +885,7 @@ void power_down_net_deivice(void)
             		*protocolComps.event_index_pt=-1;
             		disable_net_com();
             		hum_comps.enter_default_mode(0);
-                 device_comps.net_power_off_call_back();
+                    device_comps.net_power_off_call_back();
                     
               }	
                break;
@@ -2188,8 +2190,8 @@ static void Srv_GSM(void)
             if(!netMisc.AT_Waiting)
             {
                 char msg[64]="";
-                memcpy(msg+strlen("r\nAT+QLBSCFG=\"token\",\""),device_comps.lbs_param.token,sizeof(device_comps.lbs_param.token));
-                memcpy(msg,"r\nAT+QLBSCFG=\"token\",\"",strlen("r\nAT+QLBSCFG=\"token\",\""));
+                memcpy(msg+strlen("\r\nAT+QLBSCFG=\"token\",\""),device_comps.lbs_param.token,sizeof(device_comps.lbs_param.token));
+                memcpy(msg,"\r\nAT+QLBSCFG=\"token\",\"",strlen("\r\nAT+QLBSCFG=\"token\",\""));
                 sprintf(msg+strlen(msg),"\"%s","\r\n");
                 reset_net_deive_rcvbuf();
                 TX_ATCommand(msg,10);
@@ -2730,7 +2732,7 @@ void net_task_handle(void)
         netComps.St._bit.allow_data_send=0;
 		netMisc.reStartTimes=1;
         netComps.St._bit.running=1;
-        netComps.op_window_tmr = MD_MODULE_OP_MAX_TIME;	//5¡¤??¨®//
+        netComps.op_window_tmr = MD_MODULE_OP_MAX_TIME;	//5ï¿½ï¿½??ï¿½ï¿½//
         netComps.St._bit.on=0;
         
         device_comps.report_param.triggerTimes++;

@@ -13,7 +13,8 @@
 
 #include "string.h"
 #include "stdio.h"
-    
+#define     MD_SCI_SLAVE_COM_VCM_ON      Gpio_WriteOutputIO(MD_SCI_SLAVE_COM_VCM_PORT, MD_SCI_SLAVE_COM_VCM_PIN, TRUE)
+#define     MD_SCI_SLAVE_COM_VCM_OFF     Gpio_WriteOutputIO(MD_SCI_SLAVE_COM_VCM_PORT, MD_SCI_SLAVE_COM_VCM_PIN, FALSE)    
 
 static struct 
 { 
@@ -179,7 +180,7 @@ int32_t format4fixDataToCalDot(int32_t temp,int16_t dot)
 #define  MD_DATA_ID_READ_ACCESS_ADDR                0x9023
 #define  MD_DATA_ID_READ_SYSTEM_TIME                 0x9024
 #define  MD_DATA_ID_READ_HIGH_INFO                  0x9026
-#define  MD_DATA_ID_READ_LORA_AMT_PARAM             0x9027
+#define  MD_DATA_ID_READ_LORA_PARAM             0x9027
 
 #define  MD_DATA_ID_READ_GPS_LOC_INFO               0x9028
 #define  MD_DATA_ID_READ_MANUFACTURER_INFO          0x9029
@@ -202,7 +203,7 @@ int32_t format4fixDataToCalDot(int32_t temp,int16_t dot)
 #define  MD_DATA_ID_WRITE_REPORT_PARAM          0x9003//
 #define  MD_DATA_ID_WRITE_SYSTEM_TIME            0x9004
 #define  MD_DATA_ID_SET_ACCESS_ADDR             0x9005
-#define  MD_DATA_ID_WRITE_LORA_AMT_PARAM        0x9006
+#define  MD_DATA_ID_WRITE_LORA_PARAM        0x9006
 
 #define  MD_DATA_ID_WRITE_GPS_LOC_INFO          0x9007
 #define  MD_DATA_ID_WRITE_MANUFACTURER_INFO     0x9008
@@ -252,7 +253,7 @@ static void write_irc(uint8_t * const buf,uint16_t len)
 {
     if(len>0)
     {
-        MD_SET_RS_485_T_R;
+        MD_SET_SLAVE_RS485_T_R;
         __NOP();__NOP();__NOP();__NOP();__NOP();__NOP();__NOP();__NOP();
         R_LPUART0_Send(buf,len);
     }
@@ -281,9 +282,9 @@ static uint8_t Pro_irc(uint8_t Cmd,uint8_t *buf)
 					i+=16;
 					memcpy(&ircMisc.send_buf[i],netComps.net_info.imsi,16);//ADD IMSI
 					i+=16;
-					ircMisc.send_buf[i++]=MD_FL_VER;//device hwVer
-					ircMisc.send_buf[i++]=MD_FL_VER;//device swVer
-					ircMisc.send_buf[i++]=MD_FL_VER;//protocol swVer
+					ircMisc.send_buf[i++]=MD_FL_VERSION;//device hwVer
+					ircMisc.send_buf[i++]=MD_FL_VERSION;//device swVer
+					ircMisc.send_buf[i++]=MD_FL_VERSION;//protocol swVer
 				
 					memcpy(&ircMisc.send_buf[i],netComps.net_info.firmVer,20);//ADD FireWave ver
 					i+=20;
@@ -432,20 +433,20 @@ static uint8_t Pro_irc(uint8_t Cmd,uint8_t *buf)
 					ircMisc.send_buf[i++]=0x16;
 					VerifyResult=0;
 					break;
-             case MD_DATA_ID_READ_LORA_AMT_PARAM:                //lora param
+             case MD_DATA_ID_READ_LORA_PARAM:                //lora param
 					ircMisc.send_buf[i++]=(buf[9]|0x80);
 					ircMisc.send_buf[i++]=0;//Length
 					ircMisc.send_buf[i++]=buf[11];//dataID
 					ircMisc.send_buf[i++]=buf[12];
-                    ircMisc.send_buf[i++]=loraComps.cfg_info_p->freq>>16;
-                    ircMisc.send_buf[i++]=loraComps.cfg_info_p->freq>>8;
-                    ircMisc.send_buf[i++]=loraComps.cfg_info_p->freq;
-                    ircMisc.send_buf[i++]=loraComps.cfg_info_p->nodeId>>24;
-                    ircMisc.send_buf[i++]=loraComps.cfg_info_p->nodeId>>16;
-                    ircMisc.send_buf[i++]=loraComps.cfg_info_p->nodeId>>8;
-                    ircMisc.send_buf[i++]=loraComps.cfg_info_p->nodeId;
-                    ircMisc.send_buf[i++]=loraComps.cfg_info_p->netId>>8;
-                    ircMisc.send_buf[i++]=loraComps.cfg_info_p->netId;
+                    ircMisc.send_buf[i++]=(uint32_t)loraComps.cfg_info_p->freq>>16;
+                    ircMisc.send_buf[i++]=(uint32_t)loraComps.cfg_info_p->freq>>8;
+                    ircMisc.send_buf[i++]=(uint32_t)loraComps.cfg_info_p->freq;
+                    ircMisc.send_buf[i++]=(uint32_t)loraComps.cfg_info_p->nodeId>>24;
+                    ircMisc.send_buf[i++]=(uint32_t)loraComps.cfg_info_p->nodeId>>16;
+                    ircMisc.send_buf[i++]=(uint32_t)loraComps.cfg_info_p->nodeId>>8;
+                    ircMisc.send_buf[i++]=(uint32_t)loraComps.cfg_info_p->nodeId;
+                    ircMisc.send_buf[i++]=(uint32_t)loraComps.cfg_info_p->netId>>8;
+                    ircMisc.send_buf[i++]=(uint32_t)loraComps.cfg_info_p->netId;
 					///ADD Other Data
 					ircMisc.send_buf[10]=i-11;
 
@@ -1228,7 +1229,7 @@ static uint8_t Pro_irc(uint8_t Cmd,uint8_t *buf)
 				///ADD Other Data
 
 				break;	
-            case MD_DATA_ID_WRITE_LORA_AMT_PARAM:
+            case MD_DATA_ID_WRITE_LORA_PARAM:
                 if(device_comps.sw._bit.e2prom_driver_err)
     			{
     				ircMisc.send_buf[i++]=(buf[9]|0x90);    
@@ -1464,7 +1465,7 @@ static void irc_start(void)
         config_irc_com(0,2);
         enable_irc_com();
         ircComps.sw._bit.runing=1;
-        MD_IR_VCM_ON;
+        MD_SCI_SLAVE_COM_VCM_ON;
     }
     device_comps.buzzer.start(11);
   
@@ -1473,7 +1474,7 @@ static void irc_start(void)
  {
       if(!modbusComps.sw._bit.runing)
       {
-            MD_IR_VCM_OFF;
+            MD_SCI_SLAVE_COM_VCM_OFF;
             ircComps.op_window_time=0;
             
             disable_irc_com();
@@ -1502,13 +1503,10 @@ static void Deal_irc(void)
 
 static void  ircComps_task_handle(void)
 {
-
-
-  if(ircComps.sw._bit.runing||modbusComps.sw._bit.runing)
+   if(ircComps.sw._bit.runing||modbusComps.sw._bit.runing)
    {
         Deal_irc();
    }
-  
 }
 
 

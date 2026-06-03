@@ -4,13 +4,17 @@
 #include "lpm.h"
 #include "lptim.h"
 
+#include "r_cg_sau.h"
+#include "net_adapter.h"
+#include "wifia.h"
+#include "app_trans.h"
 #include "device.h"
 #include "net.h"
 #include "protocol.h"
 #include "hum.h"
 #include "irc.h"
 #include "elora.h"
-#include "collector.h"
+#include "sci_master.h"
 #include "modbus.h"
 #include "adx.h"
 #include "system.h"
@@ -39,7 +43,13 @@ static void enter_pwd_mode(void)
         !modbusComps.sw._bit.runing &&
         !adx_comps.sw._bit.adc_updated &&
         !loraComps.sw._bit.runing &&
-        !device_comps.sw._bit.isFreqOuting)
+        !device_comps.sw._bit.isFreqOuting &&
+        !LPUart0_is_running &&
+        !LPUart1_is_running &&
+        !Uart0_is_running &&
+        !Uart1_is_running &&
+        !Uart2_is_running &&
+        !Uart3_is_running)
     {
         App_EnterLowPowerModeSet();
         Lpm_GotoDeepSleep(FALSE);
@@ -49,6 +59,8 @@ static void enter_pwd_mode(void)
 static pfun const pwd_mode_task=enter_pwd_mode;
 static pfun const _hlaf_s_task_handle=_0_5s_task_handle;
 static pfun const delay_task_50ms=_50ms_task_handle;
+static pfun const net_adapter_task= net_adapter_task_handler;
+static pfun const app_trans_task=app_trans_task_handler;
 
 
 
@@ -62,15 +74,26 @@ static task_comps_t task_comps[]=//50ms
  #if(MD_PRODUCT_NAME ==MD_LORA)
     {"", 0,1       ,0 ,     (pfun *)&loraComps.task_handle            ,TRUE},//fast exe
     {"", 0,1       ,1 ,     (pfun *)&loraComps.task_50ms              ,FALSE},
-  #endif
-    {"", 0,1       ,0 ,     (pfun *)&pwd_mode_task                    ,TRUE},//fast exe
-    {"", 0,1       ,0 ,     (pfun *)&modbusComps.task_handle          ,TRUE},//fast exe
+ #endif
+ 
  #if(MD_PRODUCT_NAME ==MD_4G)
     {"", 0,1       ,0 ,     (pfun *)&protocolComps.task_handle        ,TRUE},//fast exe
     {"", 0,1       ,0 ,     (pfun *)&netComps.task_handle             ,TRUE},//fast exe
  #endif
+
+#if(MD_PRODUCT_NAME ==MD_WIFI)
+    {"", 0,1       ,3 ,     (pfun *)&app_trans_task              ,FALSE},//
+    {"", 0,1       ,3 ,     (pfun *)&net_adapter_task            ,FALSE},//
+#endif
+
+    {"", 0,1       ,1 ,     (pfun *)&sci_comps.task_50ms       ,FALSE},//fast exe
+    {"", 0,1       ,0 ,     (pfun *)&sci_comps.task_handle        ,TRUE},//fast exe
+ 
     {"", 0,1       ,1 ,     (pfun *)&delay_task_50ms                  ,FALSE},
-    {"" ,0,1       ,0 ,   (pfun *)&adx_comps.task_handle              ,TRUE}//fast exe
+  //  {"" ,0,1       ,0 ,     (pfun *)&adx_comps.task_handle            ,TRUE}//fast exe
+
+    {"", 0,1       ,0 ,     (pfun *)&modbusComps.task_handle          ,TRUE},//fast exe
+    {"", 0,1       ,0 ,     (pfun *)&pwd_mode_task                    ,TRUE},//fast exe
 //...TODO......
 };
 

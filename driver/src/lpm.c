@@ -63,7 +63,16 @@
 void Lpm_GotoDeepSleep(boolean_t bOnExit)
 {
     SCB->SCR |= SCB_SCR_SLEEPDEEP_Msk;
-    SCB->SCR |= 1u<<bOnExit;
+	
+	if(bOnExit == TRUE)
+	{
+		SCB->SCR |= SCB_SCR_SLEEPONEXIT_Msk;
+	}
+	else
+	{
+		SCB->SCR &= ~SCB_SCR_SLEEPONEXIT_Msk;
+	}
+
     __WFI();
 }
 
@@ -79,7 +88,15 @@ void Lpm_GotoDeepSleep(boolean_t bOnExit)
 void Lpm_GotoSleep(boolean_t bOnExit)
 {
     SCB->SCR &= ~SCB_SCR_SLEEPDEEP_Msk;
-    SCB->SCR |= 1u<<bOnExit;
+	
+    if(bOnExit == TRUE)
+	{
+		SCB->SCR |= SCB_SCR_SLEEPONEXIT_Msk;
+	}
+	else
+	{
+		SCB->SCR &= ~SCB_SCR_SLEEPONEXIT_Msk;
+	}
     __WFI();
 }
                         

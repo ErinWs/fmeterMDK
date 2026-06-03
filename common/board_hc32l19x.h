@@ -45,7 +45,8 @@
 #define  MD_INVALID_PIN       MD_NC_PIN
 
 /*********************hum***************************/
-
+#ifndef   MD_HUM_PIN_PORT_MAPPING
+#define   MD_HUM_PIN_PORT_MAPPING
 #define   MD_BACK_LED_PORT          GpioPortC
 #define   MD_BACK_LED_PIN           GpioPin13
 #define   MD_KEY_VDD_PORT           MD_INVALID_PORT
@@ -61,6 +62,7 @@
 #define  MD_LCD_I2CX_SEL            M0P_I2C0  
 #define  MD_LCD_POWER_PORT          GpioPortE
 #define  MD_LCD_POWER_PIN           GpioPin5
+
 ///< I2C0 lcd_driver_ic          
 #define  MD_LCD_I2C0_SDA_PORT       GpioPortF
 #define  MD_LCD_I2C0_SDA_PIN        GpioPin0
@@ -69,7 +71,12 @@
 #define  MD_LCD_I2C0_SCL_PIN        GpioPin1
 #define  MD_LCD_I2C0_SCL_PIN_AFN    GpioAf1
 
-
+//simulate  I2C lcd driver port&pin
+#define  MD_SW_LCD_I2C_SCL_PORT          GpioPortD
+#define  MD_SW_LCD_I2C_SCL_PIN           GpioPin9
+#define  MD_SW_LCD_I2C_SDA_PORT          GpioPortD
+#define  MD_SW_LCD_I2C_SDA_PIN           GpioPin10
+#endif
 
 
 /************************************************/
@@ -128,12 +135,6 @@
 
 
 
-#define     MD_IR_VCM_PORT              GpioPortB
-#define     MD_IR_VCM_PIN               GpioPin2
-
-#define     MD_COLLECTOR_VCM_PORT      MD_INVALID_PORT
-#define     MD_COLLECTOR_VCM_PIN       MD_INVALID_PIN
-
 #define     MD_EXT_POWER_CONNECT_DETECT_PORT    GpioPortD 
 #define     MD_EXT_POWER_CONNECT_DETECT_PIN     GpioPin8
 #define     MD_4_20MA_CONNECT_DETECT_PORT   GpioPortC 
@@ -155,6 +156,11 @@
 #define     MD_LORA_MD0_PIN          GpioPin12
 #define     MD_LORA_MD1_PORT         GpioPortE
 #define     MD_LORA_MD1_PIN          GpioPin11
+
+#define     MD_WIFI_SLEEP_PORT         GpioPortE
+#define     MD_WIFI_SLEEP_PIN          GpioPin12
+#define     MD_WIFI_SET_PORT           GpioPortE
+#define     MD_WIFI_SET_PIN            GpioPin11
 
 
 //simulate  I2C XROM
@@ -212,15 +218,32 @@
 //#define MD_LCD_SEG7_PIN    GpioPin13
 
 //lp_uart0 RS485/irc  
+
+
+#define  MD_SCI_SLAVE_COM_VCM_PORT              GpioPortB
+#define  MD_SCI_SLAVE_COM_VCM_PIN               GpioPin2
+
 #define  MD_RS485_M0P_LPUART0_TXD_PORT          GpioPortB
 #define  MD_RS485_M0P_LPUART0_TXD_PIN           GpioPin0
 #define  MD_RS485_M0P_LPUART0_TXD_PIN_AFN       GpioAf3
 #define  MD_RS485_M0P_LPUART0_RXD_PORT          GpioPortC
 #define  MD_RS485_M0P_LPUART0_RXD_PIN           GpioPin5
 #define  MD_RS485_M0P_LPUART0_RXD_PIN_AFN       GpioAf1
-#define  MD_RS485_DIR_PORT                      GpioPortC
-#define  MD_RS485_DIR_PIN                       GpioPin4
+#define  MD_SLAVE_RS485_DIR_PORT                      GpioPortC
+#define  MD_SLAVE_RS485_DIR_PIN                       GpioPin4
 
+
+#define     MD_SCI_MASTER_COM_VCM_PORT         MD_INVALID_PORT// GpioPortB
+#define     MD_SCI_MASTER_COM_VCM_PIN          MD_INVALID_PIN// GpioPin2
+
+#define     MD_RS485_M0P_LPUART1_TXD_PORT          GpioPortA
+#define     MD_RS485_M0P_LPUART1_TXD_PIN           GpioPin0
+#define     MD_RS485_M0P_LPUART1_TXD_PIN_AFN       GpioAf2
+#define     MD_RS485_M0P_LPUART1_RXD_PORT          GpioPortA
+#define     MD_RS485_M0P_LPUART1_RXD_PIN           GpioPin1
+#define     MD_RS485_M0P_LPUART1_RXD_PIN_AFN       GpioAf2
+// #define     MD_MASTER_RS485_DIR_PORT                      GpioPortC
+// #define     MD_MASTER_RS485_DIR_PIN                       GpioPin4
 
 //uart1  iot-lora/4g
 #define  MD_IOT_M0P_UART1_TXD_PORT          GpioPortA
@@ -255,7 +278,7 @@
 
        
 ///< XTH
-#define SYSTEM_XTH         (8*1000*1000u)     
+#define SYSTEM_XTH         (16*1000*1000u)     
 //#define MD_XTHI_PORT       GpioPortF
 //#define MD_XTHI_PIN        GpioPin0
 //#define MD_XTHO_PORT       GpioPortF

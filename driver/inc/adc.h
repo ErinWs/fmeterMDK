@@ -124,11 +124,10 @@ typedef enum en_adc_samp_ch_sel
     AdcExInputCH23   =  23u,       /*!<使用PE15*/
     AdcExInputCH24   =  24u,       /*!<使用PE14*/
     AdcExInputCH25   =  25u,       /*!<使用PE13*/
-
     AdcDacInput      =  26u,       /*!<使用DAC输出(必须使用输入增益)*/                    
     AdcAVccdiv3Input =  27u,       /*!<使用1/3 AVCC(必须使用输入增益)*/
     AdcAiTsInput     =  28u,       /*!<使用内置温度传感器BGR_TS(必须使用输入增益)*/
-    AdcVref1_2Input  =  29u,       /*!<使用内部基准1.2V(必须使用输入增益)*/
+  //  AdcVref1_2Input  =  29u,       /*!<使用内部基准1.2V(必须使用输入增益)*/
 
 }en_adc_samp_ch_sel_t;
 
@@ -167,7 +166,7 @@ typedef enum en_adc_in_ref
 
 /**
  ******************************************************************************
- ** \brief ADC周边模块反射源选择
+ ** \brief ADC周边模块触发源选择
  *****************************************************************************/
 typedef enum en_adc_trig_sel
 {

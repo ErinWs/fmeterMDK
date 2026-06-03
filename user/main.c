@@ -326,14 +326,14 @@ static void App_BoardGPIOInit(void)
     Gpio_Init(MD_BAT_BLUNT_CTL_PORT  , MD_BAT_BLUNT_CTL_PIN     , &GpioInitStruct);
 
 
-    Gpio_Init(MD_IR_VCM_PORT     , MD_IR_VCM_PIN     , &GpioInitStruct);
-    Gpio_Init(MD_COLLECTOR_VCM_PORT  , MD_COLLECTOR_VCM_PIN     , &GpioInitStruct);
+    Gpio_Init(MD_SCI_SLAVE_COM_VCM_PORT     , MD_SCI_SLAVE_COM_VCM_PIN     , &GpioInitStruct);
+    Gpio_Init(MD_SCI_MASTER_COM_VCM_PORT  , MD_SCI_MASTER_COM_VCM_PIN     , &GpioInitStruct);
     
     Gpio_Init(MD_GSM_POWER_PORT    , MD_GSM_POWER_PIN    , &GpioInitStruct);
     Gpio_Init(MD_GSM_RST_PORT      , MD_GSM_RST_PIN     , &GpioInitStruct);
     Gpio_Init(MD_GSM_ON_PORT       , MD_GSM_ON_PIN     , &GpioInitStruct);
 
-    Gpio_Init(MD_RS485_DIR_PORT       , MD_RS485_DIR_PIN     , &GpioInitStruct);
+    Gpio_Init(MD_SLAVE_RS485_DIR_PORT       , MD_SLAVE_RS485_DIR_PIN     , &GpioInitStruct);
 
    
    Gpio_Init(MD_4_20MA_SCI_LATCH_PORT    , MD_4_20MA_SCI_LATCH_PIN, &GpioInitStruct);
@@ -358,9 +358,7 @@ static void App_BoardGPIOInit(void)
     GpioInitStruct.enDir  = GpioDirOut;
     GpioInitStruct.enOD  = GpioOdEnable;
     GpioInitStruct.enPu  = GpioPuEnable;
-    GpioInitStruct.bOutputVal  = TRUE;
-   // Gpio_Init(MD_XROM_I2C_SCL_PORT  , MD_XROM_I2C_SCL_PIN     , &GpioInitStruct);
-   // Gpio_Init(MD_XROM_I2C_SDA_PORT  , MD_XROM_I2C_SDA_PIN     , &GpioInitStruct);   
+    GpioInitStruct.bOutputVal  = TRUE; 
 
 /**********************************INPUT PU*******************************/
     DDL_ZERO_STRUCT(GpioInitStruct);
@@ -374,8 +372,12 @@ static void App_BoardGPIOInit(void)
     Gpio_Init(MD_SW_I2C_SDA_PORT  , MD_SW_I2C_SDA_PIN     , &GpioInitStruct);
     Gpio_Init(MD_SDQ_PORT  , MD_SDQ_PIN     , &GpioInitStruct);
 
+
     Gpio_Init(MD_XROM_I2C_SCL_PORT  , MD_XROM_I2C_SCL_PIN     , &GpioInitStruct);
-    Gpio_Init(MD_XROM_I2C_SDA_PORT  , MD_XROM_I2C_SDA_PIN     , &GpioInitStruct);   
+    Gpio_Init(MD_XROM_I2C_SDA_PORT  , MD_XROM_I2C_SDA_PIN     , &GpioInitStruct);
+    
+    Gpio_Init(MD_SW_LCD_I2C_SCL_PORT  , MD_SW_LCD_I2C_SCL_PIN     , &GpioInitStruct);
+    Gpio_Init(MD_SW_LCD_I2C_SDA_PORT  , MD_SW_LCD_I2C_SDA_PIN     , &GpioInitStruct); 
 
   
    

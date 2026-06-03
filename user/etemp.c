@@ -11,7 +11,7 @@
 #define MD_DQ_CFG_IN      SetBit(((uint32_t)&M0P_GPIO->PADIR + MD_SDQ_PORT), MD_SDQ_PIN, TRUE)
 #define MD_CFG_R1R0       (2)//[0--0.5   1--0.25  2--0.125  3--0.0625]
 
-static void us_delay(uint32_t delay)//  us
+static void us_delay(volatile uint32_t delay)//  us
 {
    while(delay>0)
 	{

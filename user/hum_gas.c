@@ -18,6 +18,7 @@
 #include "device.h"
 #include "modbus.h"
 #include "ertc.h"
+#include "sci_master.h"
 
 
 
@@ -2155,10 +2156,10 @@ static void param_modify_mode_on_m_key(void)
             save_data_type = EM_METER;
             break;
         case 1:
-            device_comps.meter_backup.total_int = device_comps.meter.total_int = device_comps.meter.total_int + num / 1000000;
-            device_comps.meter_backup.total_dec = device_comps.meter.total_dec = f_div(num % 1000000, 1000.f); // unit:L
-            device_comps.meter_backup.total_intN = device_comps.meter.total_intN = device_comps.meter.total_int + num / 1000000;
-            device_comps.meter_backup.total_decN = device_comps.meter.total_decN = f_div(num % 1000000, 1000.f); // unit:L
+            device_comps.meter_backup.total_int = device_comps.meter.total_int = device_comps.meter.total_int + num / 10000;
+            device_comps.meter_backup.total_dec = device_comps.meter.total_dec = f_div(num % 10000, 10.f); // unit:L
+            device_comps.meter_backup.total_intN = device_comps.meter.total_intN = device_comps.meter.total_intN + num / 10000;
+            device_comps.meter_backup.total_decN = device_comps.meter.total_decN = f_div(num % 10000, 10.f); // unit:L
             save_data_type = EM_METER;
             break;
         default:
@@ -2571,14 +2572,70 @@ static void display_current_temp(uint8_t opt)
     display_line4_data();
 }
 
+static void display_current_total(uint8_t opt)
+{
+    int32_t total_int = device_comps.meter.total_int;
+    float32_t total_dec = device_comps.meter.total_dec;
+    int32_t num = total_int;
+    hide_line0_all_unit();
+    // if(num < 100)
+    // {
+    //     num=num*1000000 +(uint32_t)(total_dec*1000) ;
+    //     hum_comps.dot0_pos=6;
+    // }
+    // else if(num < 1000)
+    // {
+    //     num=num*100000  +(uint32_t)(total_dec*100 );
+    //     hum_comps.dot0_pos=5;
+    // }
+    // else 
+    if (num < 10000)
+    {
+        num = num * 10000 + (uint32_t)(total_dec * 10);
+        hum_comps.dot0_pos = 4;
+    }
+    else if (num < 100000)
+    {
+        num = num * 1000 + (uint32_t)total_dec;
+        hum_comps.dot0_pos = 3;
+    }
+    else if (num < 1000000)
+    {
+        num = num * 100 + (uint32_t)total_dec / 10;
+        hum_comps.dot0_pos = 2;
+    }
+    else if (num < 10000000)
+    {
+        num = num * 10 + (uint32_t)total_dec / 100;
+        hum_comps.dot0_pos = 1;
+    }
+    else if (num < 100000000)
+    {
+        num = num * 1 + (uint32_t)total_dec / 1000;
+        hum_comps.dot0_pos = 0;
+    }
+    calc_seg_value(&hum_comps.dig0_0, 8, num, 1, hum_comps.dot0_pos + 1);
+    display_line0_data();
+    MD_DIS_S3_TOTAL_USAGE;
+    MD_DIS_S10_M3;
+}
 static void display_current_totalN(uint8_t opt)
 {
     int32_t total_int = device_comps.meter.total_intN;
     float32_t total_dec = device_comps.meter.total_decN;
     int32_t num = total_int;
     hide_line0_all_unit();
-    // if     (num < 1000)          {num=num*1000000 +(uint32_t)(total_dec*1000) ; hum_comps.dot0_pos=6;}
-    // else if(num < 10000)         {num=num*100000  +(uint32_t)(total_dec*100 ) ; hum_comps.dot0_pos=5;}
+    // if(num < 100)
+    // {
+    //     num=num*1000000 +(uint32_t)(total_dec*1000) ;
+    //     hum_comps.dot0_pos=6;
+    // }
+    // else if(num < 1000)
+    // {
+    //     num=num*100000  +(uint32_t)(total_dec*100 );
+    //     hum_comps.dot0_pos=5;
+    // }
+    // else 
     if (num < 10000)
     {
         num = num * 10000 + (uint32_t)(total_dec * 10);
@@ -2704,8 +2761,8 @@ static void  display_soft_ver(void)
 {
     hide_line0_all_unit();
     hum_comps.dot0_pos = 1;
-    hum_comps.dig0_0 = MD_FL_VER % 10;
-    hum_comps.dig0_1 = MD_FL_VER / 10 % 10;
+    hum_comps.dig0_0 = MD_FL_VERSION % 10;
+    hum_comps.dig0_1 = MD_FL_VERSION / 10 % 10;
     hum_comps.dig0_2 = MD_HIDE_DISP - 1;
     hum_comps.dig0_3 = 0x0f;
     hum_comps.dig0_4 = MD_HIDE_DISP;
@@ -2826,7 +2883,7 @@ static void normal_mode_no_iot_product_display(uint8_t opt)
         break;
     default:
         mode_comps[hum_comps.current_mode].dis_option = 0;
-        break;
+        return;
     }
 }
 
@@ -2917,7 +2974,7 @@ void normal_mode_4G_product_display(uint8_t opt)
             break;
         default:
             mode_comps[hum_comps.current_mode].dis_option = 0;
-            break;
+            return;
     }
 }
 
@@ -2998,7 +3055,7 @@ static void normal_mode_Lora_product_display(uint8_t opt)
             break;
         default:
             mode_comps[hum_comps.current_mode].dis_option = 0;
-            break;
+            return;
     }
 }
 
@@ -3051,18 +3108,20 @@ static void debug_mode_display(uint8_t opt)
             break;
 
         case 1:
-            num = device_comps.flow_roll_freq_cur / 10;
-            hum_comps.dot1_pos = 0;
+            num = sci_comps.periph.DM.measure_data.voltage / 10;
+            hum_comps.dot1_pos = 2;
             calc_seg_value(&hum_comps.dig1_0, 4, num, 4, hum_comps.dot1_pos + 1);
             display_line1_data();
 
-            num = device_comps.flow_roll_freq_comped_cur / 10;
-            hum_comps.dot2_pos = 0;
+            num = sci_comps.periph.DM.measure_data.current / 10;
+            hum_comps.dot2_pos = 2;
             calc_seg_value(&hum_comps.dig2_0, 4, num, 4, hum_comps.dot2_pos + 1);
             display_line2_data();
 
-            num = get_float_disp_num(device_comps.flow_run_meter_coe, 4, &hum_comps.dot3_pos);
-            calc_seg_value(&hum_comps.dig3_0, 6, num, 0, hum_comps.dot3_pos + 1);
+            //num = get_float_disp_num(device_comps.flow_run_meter_coe, 4, &hum_comps.dot3_pos);
+            num = sci_comps.periph.PWM.setting_data.duty;
+            hum_comps.dot3_pos = 0;
+            calc_seg_value(&hum_comps.dig3_0, 4, num, 0, hum_comps.dot3_pos + 1);
             display_line3_data();
 
             num = device_comps.report_param.triggerTimes;
@@ -3402,7 +3461,7 @@ static void param_query_mode_display(uint8_t opt)
             default:
                 mode_comps[hum_comps.current_mode].dis_option = 0;
                 hum_comps.dis_oper_mark._bit.refresh_param = 1;
-                break;
+                return;
             }
         }
         else if (device_comps.param_type == EM_PARAM_USER_A)
@@ -3425,7 +3484,7 @@ static void param_query_mode_display(uint8_t opt)
             default:
                 mode_comps[hum_comps.current_mode].dis_option = 0;
                 hum_comps.dis_oper_mark._bit.refresh_param = 1;
-                break;
+                return;
             }
         }
         else if (device_comps.param_type == EM_PARAM_FACTORY)
@@ -3473,7 +3532,7 @@ static void param_query_mode_display(uint8_t opt)
             default:
                 mode_comps[hum_comps.current_mode].dis_option = 0;
                 hum_comps.dis_oper_mark._bit.refresh_param = 1;
-                break;
+                return;
             }
         }
         if (device_comps.param_type == EM_PARAM_USER || device_comps.param_type == EM_PARAM_FACTORY)
@@ -4075,10 +4134,10 @@ static void handle_key(hum_comps_t *this)
                 break;
                 //            case ~MD_POWER_KEY&MD_KEY_MASK:
                 //                  #if (MD_MEASURE_TYPE==MD_ELE_HIGH_PRESS_DIG)
-                //                    device_comps.DM.sw._bit.isPowerOnYet=MD_DM_POWER_ON_PIN=!MD_DM_POWER_ON_PIN;
-                //                    if(!device_comps.DM.sw._bit.isPowerOnYet)
+                //                    device_comps.periph.DM.sw._bit.isPowerOnYet=MD_DM_POWER_ON_PIN=!MD_DM_POWER_ON_PIN;
+                //                    if(!device_comps.periph.DM.sw._bit.isPowerOnYet)
                 //                    {
-                //                        device_comps.DM.sw.All=0;
+                //                        device_comps.periph.DM.sw.All=0;
                 //                    }
                 //                  #endif
                 //                    break;
@@ -4227,6 +4286,7 @@ hum_comps_t hum_comps =
         9, //    uint8_t dig0_6;
         9, //    uint8_t dig0_7;
         9, //    uint8_t dig0_8;
+				9, //    uint8_t dig0_9;
         0, // uint8_t dot0_pos;
 
         9, // uint8_t dig1_0;
@@ -4251,7 +4311,7 @@ hum_comps_t hum_comps =
         9, // uint8_t dig3_3;
         9, // uint8_t dig3_4;
         9, // uint8_t dig3_5;
-        0, // uint8_t          dot3_pos;
+        0, // uint8_t dot3_pos;
 
         9, //    uint8_t dig4_0;
         9, //    uint8_t dig4_1;
@@ -4259,7 +4319,7 @@ hum_comps_t hum_comps =
         9, //    uint8_t dig4_3;
         9, //    uint8_t dig4_4;
         9, //    uint8_t dig4_5;
-        0, //    uint8_t          dot4_pos;
+        0, //    uint8_t dot4_pos;
            //
         9, //    uint8_t dig5_0;
         9, //    uint8_t dig5_1;
@@ -4270,7 +4330,7 @@ hum_comps_t hum_comps =
         9, //    uint8_t dig5_6;
         9, //    uint8_t dig5_7;
         9, //    uint8_t dig5_8;
-        0, //    uint8_t          dot5_pos;
+        0, //    uint8_t dot5_pos;
 
         {0}, // union dis_oper_mark;
         0,   // int16_t cursor_0;//0 line cursor position
@@ -4288,14 +4348,14 @@ hum_comps_t hum_comps =
         0, // int16_t cursor_5_count;
         /*******************end lcd seg define **************************/
         {0}, // uint8_t device_driver_ram[52];
-		{0},
+        {0},
         0,   // int16_t back_led_timer;
 
         EM_SELF_TEST_MODE, // mode_type_t   current_mode;
 
         0,           // int16_t up_key;
         MD_KEY_MASK, // int16_t down_key;
-
+        {0},//hum_trigger_req_t trigger_req;
         enter_report_mode,
         enter_default_mode,    //    void (*enter_default_mode)(int16_t opt);
         enter_cal_modify_mode, //    void (*enter_cal_modify_momde)(int16_t opt);

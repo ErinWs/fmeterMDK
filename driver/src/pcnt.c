@@ -86,11 +86,12 @@ en_result_t Pcnt_SetB2T(uint16_t value)
         {
             break;
         }
-    }
-    if(u16TimeOut == 0)
-    {
-        return ErrorTimeout;
-    }
+    
+		if(u16TimeOut == 0)
+		{
+			return ErrorTimeout;
+		}
+	}
         return Ok;
 }
 
@@ -114,11 +115,12 @@ en_result_t Pcnt_SetB2C(uint16_t value)
         {
             break;
         }
-    }
-    if(u16TimeOut == 0)
-    {
-        return ErrorTimeout;
-    }
+    
+		if(u16TimeOut == 0)
+		{
+			return ErrorTimeout;
+		}
+	}
     return Ok;
 }
 
@@ -140,11 +142,12 @@ en_result_t Pcnt_SetT2C(void)
         {
             break;
         }
-    }
-    if(u16TimeOut == 0)
-    {
-        return ErrorTimeout;
-    }
+    
+		if(u16TimeOut == 0)
+		{
+			return ErrorTimeout;
+		}
+	}
     return Ok;
 }
 
@@ -158,7 +161,7 @@ en_result_t Pcnt_SetT2C(void)
 ******************************************************************************/
 void Pcnt_SetBuf(uint16_t value)
 {
-    M0P_PCNT->TOP_f.TOP = value;
+    M0P_PCNT->BUF_f.BUF = value;
 }
 
 /**
@@ -175,13 +178,9 @@ void Pcnt_Init(stc_pcnt_initstruct_t*  InitStruct)
     M0P_PCNT->CTRL_f.S0P = InitStruct->Pcnt_S0Sel;
     M0P_PCNT->CTRL_f.CLKSEL = InitStruct->Pcnt_Clk;
     M0P_PCNT->CTRL_f.MODE = InitStruct->Pcnt_Mode;
-    if(InitStruct->Pcnt_Mode == PcntDoubleMode)//如果是双通道正交脉冲计数模式
+    if(InitStruct->Pcnt_Mode != PcntDoubleMode)//如果不是双通道正交脉冲计数模式
     {
-        M0P_PCNT->SR1_f.DIR = InitStruct->Pcnt_Dir;
-    }
-    else
-    {
-        M0P_PCNT->CTRL_f.DIR = InitStruct->Pcnt_Dir;
+		M0P_PCNT->CTRL_f.DIR = InitStruct->Pcnt_Dir;
     }
     M0P_PCNT->FLT_f.EN = InitStruct->Pcnt_FltEn;
     M0P_PCNT->FLT_f.DEBTOP = InitStruct->Pcnt_DebTop;

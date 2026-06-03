@@ -1,0 +1,633 @@
+Dependencies for Project 'fmeter', Target 'GasesB': (DO NOT MODIFY !)
+CompilerVersion: 6240000::V6.24::ARMCLANG
+F (.\common\interrupts_hc32l19x.c)(0x696D797A)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m0plus -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-4 -O0 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ./ -I common -I user -I driver/inc-I./RTE/_GasesB-IC:/Users/Administrator/AppData/Local/Arm/Packs/ARM/CMSIS/6.3.0/CMSIS/Core/Include-IC:/Users/Administrator/AppData/Local/Arm/Packs/HDSC/HC32L19X/1.0.1/Device/Include-D__UVISION_VERSION="543" -D_RTE_ -DMD_MEASURE_TYPE="MD_GASES"-o ./object_gasesb/interrupts_hc32l19x.o -MMD)
+I (driver\inc\ddl.h)(0x6826A3D3)
+I (common\base_types.h)(0x62133A56)
+I (common\board_hc32l19x.h)(0x6A150EDD)
+I (common\system_hc32l19x.h)(0x665E6B12)
+I (common\hc32l19x.h)(0x69539846)
+I (C:\Users\Administrator\AppData\Local\Arm\Packs\ARM\CMSIS\6.3.0\CMSIS\Core\Include\core_cm0plus.h)(0x69E183A6)
+I (driver\inc\sysctrl.h)(0x6953964F)
+I (common\interrupts_hc32l19x.h)(0x61F0D9DD)
+I (user\ddl_device.h)(0x6333D765)
+I (user\elora.h)(0x6969F8F3)
+I (driver\inc\gpio.h)(0x61F0D9D5)
+F (.\common\system_hc32l19x.c)(0x69539BA5)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m0plus -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-4 -O0 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ./ -I common -I user -I driver/inc-I./RTE/_GasesB-IC:/Users/Administrator/AppData/Local/Arm/Packs/ARM/CMSIS/6.3.0/CMSIS/Core/Include-IC:/Users/Administrator/AppData/Local/Arm/Packs/HDSC/HC32L19X/1.0.1/Device/Include-D__UVISION_VERSION="543" -D_RTE_ -DMD_MEASURE_TYPE="MD_GASES"-o ./object_gasesb/system_hc32l19x.o -MMD)
+I (common\base_types.h)(0x62133A56)
+I (common\hc32l19x.h)(0x69539846)
+I (C:\Users\Administrator\AppData\Local\Arm\Packs\ARM\CMSIS\6.3.0\CMSIS\Core\Include\core_cm0plus.h)(0x69E183A6)
+I (common\system_hc32l19x.h)(0x665E6B12)
+I (driver\inc\sysctrl.h)(0x6953964F)
+I (driver\inc\ddl.h)(0x6826A3D3)
+I (common\board_hc32l19x.h)(0x6A150EDD)
+I (common\interrupts_hc32l19x.h)(0x61F0D9DD)
+I (user\ddl_device.h)(0x6333D765)
+F (.\startup_hc32l19x.s)(0x67C01B09)(--target=arm-arm-none-eabi -mcpu=cortex-m0plus -masm=auto  -Wa,armasm,--diag_suppress=A1950W -c-gdwarf-4 -Wa,armasm,--pd,"__MICROLIB SETA 1"-I./RTE/_GasesB-IC:/Users/Administrator/AppData/Local/Arm/Packs/ARM/CMSIS/6.3.0/CMSIS/Core/Include-IC:/Users/Administrator/AppData/Local/Arm/Packs/HDSC/HC32L19X/1.0.1/Device/Include-Wa,armasm,--pd,"__UVISION_VERSION SETA 543" -Wa,armasm,--pd,"_RTE_ SETA 1"-o ./object_gasesb/startup_hc32l19x.o)
+F (.\driver\src\ddl.c)(0x695397C5)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m0plus -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-4 -O0 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ./ -I common -I user -I driver/inc-I./RTE/_GasesB-IC:/Users/Administrator/AppData/Local/Arm/Packs/ARM/CMSIS/6.3.0/CMSIS/Core/Include-IC:/Users/Administrator/AppData/Local/Arm/Packs/HDSC/HC32L19X/1.0.1/Device/Include-D__UVISION_VERSION="543" -D_RTE_ -DMD_MEASURE_TYPE="MD_GASES"-o ./object_gasesb/ddl.o -MMD)
+I (driver\inc\ddl.h)(0x6826A3D3)
+I (common\base_types.h)(0x62133A56)
+I (common\board_hc32l19x.h)(0x6A150EDD)
+I (common\system_hc32l19x.h)(0x665E6B12)
+I (common\hc32l19x.h)(0x69539846)
+I (C:\Users\Administrator\AppData\Local\Arm\Packs\ARM\CMSIS\6.3.0\CMSIS\Core\Include\core_cm0plus.h)(0x69E183A6)
+I (driver\inc\sysctrl.h)(0x6953964F)
+I (common\interrupts_hc32l19x.h)(0x61F0D9DD)
+I (user\ddl_device.h)(0x6333D765)
+F (.\driver\src\sysctrl.c)(0x6954EDFD)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m0plus -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-4 -O0 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ./ -I common -I user -I driver/inc-I./RTE/_GasesB-IC:/Users/Administrator/AppData/Local/Arm/Packs/ARM/CMSIS/6.3.0/CMSIS/Core/Include-IC:/Users/Administrator/AppData/Local/Arm/Packs/HDSC/HC32L19X/1.0.1/Device/Include-D__UVISION_VERSION="543" -D_RTE_ -DMD_MEASURE_TYPE="MD_GASES"-o ./object_gasesb/sysctrl.o -MMD)
+I (driver\inc\sysctrl.h)(0x6953964F)
+I (driver\inc\ddl.h)(0x6826A3D3)
+I (common\base_types.h)(0x62133A56)
+I (common\board_hc32l19x.h)(0x6A150EDD)
+I (common\system_hc32l19x.h)(0x665E6B12)
+I (common\hc32l19x.h)(0x69539846)
+I (C:\Users\Administrator\AppData\Local\Arm\Packs\ARM\CMSIS\6.3.0\CMSIS\Core\Include\core_cm0plus.h)(0x69E183A6)
+I (common\interrupts_hc32l19x.h)(0x61F0D9DD)
+I (user\ddl_device.h)(0x6333D765)
+F (.\driver\src\lptim.c)(0x6953977A)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m0plus -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-4 -O0 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ./ -I common -I user -I driver/inc-I./RTE/_GasesB-IC:/Users/Administrator/AppData/Local/Arm/Packs/ARM/CMSIS/6.3.0/CMSIS/Core/Include-IC:/Users/Administrator/AppData/Local/Arm/Packs/HDSC/HC32L19X/1.0.1/Device/Include-D__UVISION_VERSION="543" -D_RTE_ -DMD_MEASURE_TYPE="MD_GASES"-o ./object_gasesb/lptim.o -MMD)
+I (driver\inc\lptim.h)(0x61F0D9D5)
+I (driver\inc\ddl.h)(0x6826A3D3)
+I (common\base_types.h)(0x62133A56)
+I (common\board_hc32l19x.h)(0x6A150EDD)
+I (common\system_hc32l19x.h)(0x665E6B12)
+I (common\hc32l19x.h)(0x69539846)
+I (C:\Users\Administrator\AppData\Local\Arm\Packs\ARM\CMSIS\6.3.0\CMSIS\Core\Include\core_cm0plus.h)(0x69E183A6)
+I (driver\inc\sysctrl.h)(0x6953964F)
+I (common\interrupts_hc32l19x.h)(0x61F0D9DD)
+I (user\ddl_device.h)(0x6333D765)
+F (.\driver\src\lpm.c)(0x695397A2)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m0plus -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-4 -O0 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ./ -I common -I user -I driver/inc-I./RTE/_GasesB-IC:/Users/Administrator/AppData/Local/Arm/Packs/ARM/CMSIS/6.3.0/CMSIS/Core/Include-IC:/Users/Administrator/AppData/Local/Arm/Packs/HDSC/HC32L19X/1.0.1/Device/Include-D__UVISION_VERSION="543" -D_RTE_ -DMD_MEASURE_TYPE="MD_GASES"-o ./object_gasesb/lpm.o -MMD)
+I (driver\inc\lpm.h)(0x61F0D9D5)
+I (driver\inc\ddl.h)(0x6826A3D3)
+I (common\base_types.h)(0x62133A56)
+I (common\board_hc32l19x.h)(0x6A150EDD)
+I (common\system_hc32l19x.h)(0x665E6B12)
+I (common\hc32l19x.h)(0x69539846)
+I (C:\Users\Administrator\AppData\Local\Arm\Packs\ARM\CMSIS\6.3.0\CMSIS\Core\Include\core_cm0plus.h)(0x69E183A6)
+I (driver\inc\sysctrl.h)(0x6953964F)
+I (common\interrupts_hc32l19x.h)(0x61F0D9DD)
+I (user\ddl_device.h)(0x6333D765)
+F (.\driver\src\gpio.c)(0x61F0D9D5)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m0plus -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-4 -O0 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ./ -I common -I user -I driver/inc-I./RTE/_GasesB-IC:/Users/Administrator/AppData/Local/Arm/Packs/ARM/CMSIS/6.3.0/CMSIS/Core/Include-IC:/Users/Administrator/AppData/Local/Arm/Packs/HDSC/HC32L19X/1.0.1/Device/Include-D__UVISION_VERSION="543" -D_RTE_ -DMD_MEASURE_TYPE="MD_GASES"-o ./object_gasesb/gpio.o -MMD)
+I (driver\inc\gpio.h)(0x61F0D9D5)
+I (driver\inc\ddl.h)(0x6826A3D3)
+I (common\base_types.h)(0x62133A56)
+I (common\board_hc32l19x.h)(0x6A150EDD)
+I (common\system_hc32l19x.h)(0x665E6B12)
+I (common\hc32l19x.h)(0x69539846)
+I (C:\Users\Administrator\AppData\Local\Arm\Packs\ARM\CMSIS\6.3.0\CMSIS\Core\Include\core_cm0plus.h)(0x69E183A6)
+I (driver\inc\sysctrl.h)(0x6953964F)
+I (common\interrupts_hc32l19x.h)(0x61F0D9DD)
+I (user\ddl_device.h)(0x6333D765)
+F (.\driver\src\wdt.c)(0x61F0D9D6)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m0plus -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-4 -O0 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ./ -I common -I user -I driver/inc-I./RTE/_GasesB-IC:/Users/Administrator/AppData/Local/Arm/Packs/ARM/CMSIS/6.3.0/CMSIS/Core/Include-IC:/Users/Administrator/AppData/Local/Arm/Packs/HDSC/HC32L19X/1.0.1/Device/Include-D__UVISION_VERSION="543" -D_RTE_ -DMD_MEASURE_TYPE="MD_GASES"-o ./object_gasesb/wdt.o -MMD)
+I (driver\inc\wdt.h)(0x61F0D9D5)
+I (driver\inc\ddl.h)(0x6826A3D3)
+I (common\base_types.h)(0x62133A56)
+I (common\board_hc32l19x.h)(0x6A150EDD)
+I (common\system_hc32l19x.h)(0x665E6B12)
+I (common\hc32l19x.h)(0x69539846)
+I (C:\Users\Administrator\AppData\Local\Arm\Packs\ARM\CMSIS\6.3.0\CMSIS\Core\Include\core_cm0plus.h)(0x69E183A6)
+I (driver\inc\sysctrl.h)(0x6953964F)
+I (common\interrupts_hc32l19x.h)(0x61F0D9DD)
+I (user\ddl_device.h)(0x6333D765)
+F (.\driver\src\lpuart.c)(0x62D50148)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m0plus -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-4 -O0 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ./ -I common -I user -I driver/inc-I./RTE/_GasesB-IC:/Users/Administrator/AppData/Local/Arm/Packs/ARM/CMSIS/6.3.0/CMSIS/Core/Include-IC:/Users/Administrator/AppData/Local/Arm/Packs/HDSC/HC32L19X/1.0.1/Device/Include-D__UVISION_VERSION="543" -D_RTE_ -DMD_MEASURE_TYPE="MD_GASES"-o ./object_gasesb/lpuart.o -MMD)
+I (driver\inc\lpuart.h)(0x62D508D3)
+I (driver\inc\ddl.h)(0x6826A3D3)
+I (common\base_types.h)(0x62133A56)
+I (common\board_hc32l19x.h)(0x6A150EDD)
+I (common\system_hc32l19x.h)(0x665E6B12)
+I (common\hc32l19x.h)(0x69539846)
+I (C:\Users\Administrator\AppData\Local\Arm\Packs\ARM\CMSIS\6.3.0\CMSIS\Core\Include\core_cm0plus.h)(0x69E183A6)
+I (driver\inc\sysctrl.h)(0x6953964F)
+I (common\interrupts_hc32l19x.h)(0x61F0D9DD)
+I (user\ddl_device.h)(0x6333D765)
+F (.\driver\src\lvd.c)(0x69539770)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m0plus -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-4 -O0 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ./ -I common -I user -I driver/inc-I./RTE/_GasesB-IC:/Users/Administrator/AppData/Local/Arm/Packs/ARM/CMSIS/6.3.0/CMSIS/Core/Include-IC:/Users/Administrator/AppData/Local/Arm/Packs/HDSC/HC32L19X/1.0.1/Device/Include-D__UVISION_VERSION="543" -D_RTE_ -DMD_MEASURE_TYPE="MD_GASES"-o ./object_gasesb/lvd.o -MMD)
+I (driver\inc\lvd.h)(0x61F0D9D5)
+I (driver\inc\ddl.h)(0x6826A3D3)
+I (common\base_types.h)(0x62133A56)
+I (common\board_hc32l19x.h)(0x6A150EDD)
+I (common\system_hc32l19x.h)(0x665E6B12)
+I (common\hc32l19x.h)(0x69539846)
+I (C:\Users\Administrator\AppData\Local\Arm\Packs\ARM\CMSIS\6.3.0\CMSIS\Core\Include\core_cm0plus.h)(0x69E183A6)
+I (driver\inc\sysctrl.h)(0x6953964F)
+I (common\interrupts_hc32l19x.h)(0x61F0D9DD)
+I (user\ddl_device.h)(0x6333D765)
+F (.\driver\src\reset.c)(0x61F0D9D6)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m0plus -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-4 -O0 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ./ -I common -I user -I driver/inc-I./RTE/_GasesB-IC:/Users/Administrator/AppData/Local/Arm/Packs/ARM/CMSIS/6.3.0/CMSIS/Core/Include-IC:/Users/Administrator/AppData/Local/Arm/Packs/HDSC/HC32L19X/1.0.1/Device/Include-D__UVISION_VERSION="543" -D_RTE_ -DMD_MEASURE_TYPE="MD_GASES"-o ./object_gasesb/reset.o -MMD)
+I (driver\inc\reset.h)(0x61F0D9D5)
+I (driver\inc\ddl.h)(0x6826A3D3)
+I (common\base_types.h)(0x62133A56)
+I (common\board_hc32l19x.h)(0x6A150EDD)
+I (common\system_hc32l19x.h)(0x665E6B12)
+I (common\hc32l19x.h)(0x69539846)
+I (C:\Users\Administrator\AppData\Local\Arm\Packs\ARM\CMSIS\6.3.0\CMSIS\Core\Include\core_cm0plus.h)(0x69E183A6)
+I (driver\inc\sysctrl.h)(0x6953964F)
+I (common\interrupts_hc32l19x.h)(0x61F0D9DD)
+I (user\ddl_device.h)(0x6333D765)
+F (.\driver\src\rtc.c)(0x6953973D)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m0plus -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-4 -O0 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ./ -I common -I user -I driver/inc-I./RTE/_GasesB-IC:/Users/Administrator/AppData/Local/Arm/Packs/ARM/CMSIS/6.3.0/CMSIS/Core/Include-IC:/Users/Administrator/AppData/Local/Arm/Packs/HDSC/HC32L19X/1.0.1/Device/Include-D__UVISION_VERSION="543" -D_RTE_ -DMD_MEASURE_TYPE="MD_GASES"-o ./object_gasesb/rtc.o -MMD)
+I (driver\inc\rtc.h)(0x61F0D9D5)
+I (driver\inc\ddl.h)(0x6826A3D3)
+I (common\base_types.h)(0x62133A56)
+I (common\board_hc32l19x.h)(0x6A150EDD)
+I (common\system_hc32l19x.h)(0x665E6B12)
+I (common\hc32l19x.h)(0x69539846)
+I (C:\Users\Administrator\AppData\Local\Arm\Packs\ARM\CMSIS\6.3.0\CMSIS\Core\Include\core_cm0plus.h)(0x69E183A6)
+I (driver\inc\sysctrl.h)(0x6953964F)
+I (common\interrupts_hc32l19x.h)(0x61F0D9DD)
+I (user\ddl_device.h)(0x6333D765)
+F (.\driver\src\lcd.c)(0x61F0D9D5)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m0plus -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-4 -O0 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ./ -I common -I user -I driver/inc-I./RTE/_GasesB-IC:/Users/Administrator/AppData/Local/Arm/Packs/ARM/CMSIS/6.3.0/CMSIS/Core/Include-IC:/Users/Administrator/AppData/Local/Arm/Packs/HDSC/HC32L19X/1.0.1/Device/Include-D__UVISION_VERSION="543" -D_RTE_ -DMD_MEASURE_TYPE="MD_GASES"-o ./object_gasesb/lcd.o -MMD)
+I (driver\inc\lcd.h)(0x61F0D9D5)
+I (driver\inc\ddl.h)(0x6826A3D3)
+I (common\base_types.h)(0x62133A56)
+I (common\board_hc32l19x.h)(0x6A150EDD)
+I (common\system_hc32l19x.h)(0x665E6B12)
+I (common\hc32l19x.h)(0x69539846)
+I (C:\Users\Administrator\AppData\Local\Arm\Packs\ARM\CMSIS\6.3.0\CMSIS\Core\Include\core_cm0plus.h)(0x69E183A6)
+I (driver\inc\sysctrl.h)(0x6953964F)
+I (common\interrupts_hc32l19x.h)(0x61F0D9DD)
+I (user\ddl_device.h)(0x6333D765)
+F (.\driver\src\adc.c)(0x681020D0)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m0plus -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-4 -O0 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ./ -I common -I user -I driver/inc-I./RTE/_GasesB-IC:/Users/Administrator/AppData/Local/Arm/Packs/ARM/CMSIS/6.3.0/CMSIS/Core/Include-IC:/Users/Administrator/AppData/Local/Arm/Packs/HDSC/HC32L19X/1.0.1/Device/Include-D__UVISION_VERSION="543" -D_RTE_ -DMD_MEASURE_TYPE="MD_GASES"-o ./object_gasesb/adc.o -MMD)
+I (driver\inc\adc.h)(0x695396CB)
+I (driver\inc\ddl.h)(0x6826A3D3)
+I (common\base_types.h)(0x62133A56)
+I (common\board_hc32l19x.h)(0x6A150EDD)
+I (common\system_hc32l19x.h)(0x665E6B12)
+I (common\hc32l19x.h)(0x69539846)
+I (C:\Users\Administrator\AppData\Local\Arm\Packs\ARM\CMSIS\6.3.0\CMSIS\Core\Include\core_cm0plus.h)(0x69E183A6)
+I (driver\inc\sysctrl.h)(0x6953964F)
+I (common\interrupts_hc32l19x.h)(0x61F0D9DD)
+I (user\ddl_device.h)(0x6333D765)
+F (.\driver\src\bgr.c)(0x61F0D9D5)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m0plus -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-4 -O0 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ./ -I common -I user -I driver/inc-I./RTE/_GasesB-IC:/Users/Administrator/AppData/Local/Arm/Packs/ARM/CMSIS/6.3.0/CMSIS/Core/Include-IC:/Users/Administrator/AppData/Local/Arm/Packs/HDSC/HC32L19X/1.0.1/Device/Include-D__UVISION_VERSION="543" -D_RTE_ -DMD_MEASURE_TYPE="MD_GASES"-o ./object_gasesb/bgr.o -MMD)
+I (driver\inc\bgr.h)(0x61F0D9D5)
+I (driver\inc\ddl.h)(0x6826A3D3)
+I (common\base_types.h)(0x62133A56)
+I (common\board_hc32l19x.h)(0x6A150EDD)
+I (common\system_hc32l19x.h)(0x665E6B12)
+I (common\hc32l19x.h)(0x69539846)
+I (C:\Users\Administrator\AppData\Local\Arm\Packs\ARM\CMSIS\6.3.0\CMSIS\Core\Include\core_cm0plus.h)(0x69E183A6)
+I (driver\inc\sysctrl.h)(0x6953964F)
+I (common\interrupts_hc32l19x.h)(0x61F0D9DD)
+I (user\ddl_device.h)(0x6333D765)
+F (.\driver\src\uart.c)(0x62D2309A)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m0plus -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-4 -O0 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ./ -I common -I user -I driver/inc-I./RTE/_GasesB-IC:/Users/Administrator/AppData/Local/Arm/Packs/ARM/CMSIS/6.3.0/CMSIS/Core/Include-IC:/Users/Administrator/AppData/Local/Arm/Packs/HDSC/HC32L19X/1.0.1/Device/Include-D__UVISION_VERSION="543" -D_RTE_ -DMD_MEASURE_TYPE="MD_GASES"-o ./object_gasesb/uart.o -MMD)
+I (driver\inc\uart.h)(0x62D23059)
+I (driver\inc\ddl.h)(0x6826A3D3)
+I (common\base_types.h)(0x62133A56)
+I (common\board_hc32l19x.h)(0x6A150EDD)
+I (common\system_hc32l19x.h)(0x665E6B12)
+I (common\hc32l19x.h)(0x69539846)
+I (C:\Users\Administrator\AppData\Local\Arm\Packs\ARM\CMSIS\6.3.0\CMSIS\Core\Include\core_cm0plus.h)(0x69E183A6)
+I (driver\inc\sysctrl.h)(0x6953964F)
+I (common\interrupts_hc32l19x.h)(0x61F0D9DD)
+I (user\ddl_device.h)(0x6333D765)
+F (.\driver\src\pcnt.c)(0x69539758)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m0plus -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-4 -O0 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ./ -I common -I user -I driver/inc-I./RTE/_GasesB-IC:/Users/Administrator/AppData/Local/Arm/Packs/ARM/CMSIS/6.3.0/CMSIS/Core/Include-IC:/Users/Administrator/AppData/Local/Arm/Packs/HDSC/HC32L19X/1.0.1/Device/Include-D__UVISION_VERSION="543" -D_RTE_ -DMD_MEASURE_TYPE="MD_GASES"-o ./object_gasesb/pcnt.o -MMD)
+I (driver\inc\pcnt.h)(0x6953966A)
+I (driver\inc\ddl.h)(0x6826A3D3)
+I (common\base_types.h)(0x62133A56)
+I (common\board_hc32l19x.h)(0x6A150EDD)
+I (common\system_hc32l19x.h)(0x665E6B12)
+I (common\hc32l19x.h)(0x69539846)
+I (C:\Users\Administrator\AppData\Local\Arm\Packs\ARM\CMSIS\6.3.0\CMSIS\Core\Include\core_cm0plus.h)(0x69E183A6)
+I (driver\inc\sysctrl.h)(0x6953964F)
+I (common\interrupts_hc32l19x.h)(0x61F0D9DD)
+I (user\ddl_device.h)(0x6333D765)
+F (.\driver\src\i2c.c)(0x61F0D9D5)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m0plus -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-4 -O0 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ./ -I common -I user -I driver/inc-I./RTE/_GasesB-IC:/Users/Administrator/AppData/Local/Arm/Packs/ARM/CMSIS/6.3.0/CMSIS/Core/Include-IC:/Users/Administrator/AppData/Local/Arm/Packs/HDSC/HC32L19X/1.0.1/Device/Include-D__UVISION_VERSION="543" -D_RTE_ -DMD_MEASURE_TYPE="MD_GASES"-o ./object_gasesb/i2c.o -MMD)
+I (driver\inc\i2c.h)(0x61F0D9D5)
+I (driver\inc\ddl.h)(0x6826A3D3)
+I (common\base_types.h)(0x62133A56)
+I (common\board_hc32l19x.h)(0x6A150EDD)
+I (common\system_hc32l19x.h)(0x665E6B12)
+I (common\hc32l19x.h)(0x69539846)
+I (C:\Users\Administrator\AppData\Local\Arm\Packs\ARM\CMSIS\6.3.0\CMSIS\Core\Include\core_cm0plus.h)(0x69E183A6)
+I (driver\inc\sysctrl.h)(0x6953964F)
+I (common\interrupts_hc32l19x.h)(0x61F0D9DD)
+I (user\ddl_device.h)(0x6333D765)
+F (.\driver\src\bt.c)(0x61F0D9D5)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m0plus -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-4 -O0 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ./ -I common -I user -I driver/inc-I./RTE/_GasesB-IC:/Users/Administrator/AppData/Local/Arm/Packs/ARM/CMSIS/6.3.0/CMSIS/Core/Include-IC:/Users/Administrator/AppData/Local/Arm/Packs/HDSC/HC32L19X/1.0.1/Device/Include-D__UVISION_VERSION="543" -D_RTE_ -DMD_MEASURE_TYPE="MD_GASES"-o ./object_gasesb/bt.o -MMD)
+I (driver\inc\bt.h)(0x61F0D9D5)
+I (driver\inc\ddl.h)(0x6826A3D3)
+I (common\base_types.h)(0x62133A56)
+I (common\board_hc32l19x.h)(0x6A150EDD)
+I (common\system_hc32l19x.h)(0x665E6B12)
+I (common\hc32l19x.h)(0x69539846)
+I (C:\Users\Administrator\AppData\Local\Arm\Packs\ARM\CMSIS\6.3.0\CMSIS\Core\Include\core_cm0plus.h)(0x69E183A6)
+I (driver\inc\sysctrl.h)(0x6953964F)
+I (common\interrupts_hc32l19x.h)(0x61F0D9DD)
+I (user\ddl_device.h)(0x6333D765)
+F (.\user\main.c)(0x6951F060)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m0plus -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-4 -O0 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ./ -I common -I user -I driver/inc-I./RTE/_GasesB-IC:/Users/Administrator/AppData/Local/Arm/Packs/ARM/CMSIS/6.3.0/CMSIS/Core/Include-IC:/Users/Administrator/AppData/Local/Arm/Packs/HDSC/HC32L19X/1.0.1/Device/Include-D__UVISION_VERSION="543" -D_RTE_ -DMD_MEASURE_TYPE="MD_GASES"-o ./object_gasesb/main.o -MMD)
+I (driver\inc\ddl.h)(0x6826A3D3)
+I (common\base_types.h)(0x62133A56)
+I (common\board_hc32l19x.h)(0x6A150EDD)
+I (common\system_hc32l19x.h)(0x665E6B12)
+I (common\hc32l19x.h)(0x69539846)
+I (C:\Users\Administrator\AppData\Local\Arm\Packs\ARM\CMSIS\6.3.0\CMSIS\Core\Include\core_cm0plus.h)(0x69E183A6)
+I (driver\inc\sysctrl.h)(0x6953964F)
+I (common\interrupts_hc32l19x.h)(0x61F0D9DD)
+I (user\ddl_device.h)(0x6333D765)
+I (driver\inc\lptim.h)(0x61F0D9D5)
+I (driver\inc\lpm.h)(0x61F0D9D5)
+I (driver\inc\gpio.h)(0x61F0D9D5)
+I (driver\inc\wdt.h)(0x61F0D9D5)
+I (driver\inc\lpuart.h)(0x62D508D3)
+I (driver\inc\uart.h)(0x62D23059)
+I (driver\inc\lvd.h)(0x61F0D9D5)
+I (driver\inc\reset.h)(0x61F0D9D5)
+I (driver\inc\rtc.h)(0x61F0D9D5)
+I (driver\inc\lcd.h)(0x61F0D9D5)
+I (driver\inc\adc.h)(0x695396CB)
+I (driver\inc\bgr.h)(0x61F0D9D5)
+I (user\system.h)(0x665D2CD7)
+I (user\device.h)(0x6A14106A)
+I (user\elora.h)(0x6969F8F3)
+F (.\user\24cxx.c)(0x68CB9156)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m0plus -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-4 -O0 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ./ -I common -I user -I driver/inc-I./RTE/_GasesB-IC:/Users/Administrator/AppData/Local/Arm/Packs/ARM/CMSIS/6.3.0/CMSIS/Core/Include-IC:/Users/Administrator/AppData/Local/Arm/Packs/HDSC/HC32L19X/1.0.1/Device/Include-D__UVISION_VERSION="543" -D_RTE_ -DMD_MEASURE_TYPE="MD_GASES"-o ./object_gasesb/24cxx.o -MMD)
+I (driver\inc\ddl.h)(0x6826A3D3)
+I (common\base_types.h)(0x62133A56)
+I (common\board_hc32l19x.h)(0x6A150EDD)
+I (common\system_hc32l19x.h)(0x665E6B12)
+I (common\hc32l19x.h)(0x69539846)
+I (C:\Users\Administrator\AppData\Local\Arm\Packs\ARM\CMSIS\6.3.0\CMSIS\Core\Include\core_cm0plus.h)(0x69E183A6)
+I (driver\inc\sysctrl.h)(0x6953964F)
+I (common\interrupts_hc32l19x.h)(0x61F0D9DD)
+I (user\ddl_device.h)(0x6333D765)
+I (driver\inc\gpio.h)(0x61F0D9D5)
+I (user\24cxx.h)(0x665D2602)
+F (.\user\adx.c)(0x69EF288F)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m0plus -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-4 -O0 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ./ -I common -I user -I driver/inc-I./RTE/_GasesB-IC:/Users/Administrator/AppData/Local/Arm/Packs/ARM/CMSIS/6.3.0/CMSIS/Core/Include-IC:/Users/Administrator/AppData/Local/Arm/Packs/HDSC/HC32L19X/1.0.1/Device/Include-D__UVISION_VERSION="543" -D_RTE_ -DMD_MEASURE_TYPE="MD_GASES"-o ./object_gasesb/adx.o -MMD)
+I (driver\inc\ddl.h)(0x6826A3D3)
+I (common\base_types.h)(0x62133A56)
+I (common\board_hc32l19x.h)(0x6A150EDD)
+I (common\system_hc32l19x.h)(0x665E6B12)
+I (common\hc32l19x.h)(0x69539846)
+I (C:\Users\Administrator\AppData\Local\Arm\Packs\ARM\CMSIS\6.3.0\CMSIS\Core\Include\core_cm0plus.h)(0x69E183A6)
+I (driver\inc\sysctrl.h)(0x6953964F)
+I (common\interrupts_hc32l19x.h)(0x61F0D9DD)
+I (user\ddl_device.h)(0x6333D765)
+I (driver\inc\rtc.h)(0x61F0D9D5)
+I (driver\inc\gpio.h)(0x61F0D9D5)
+I (driver\inc\pcnt.h)(0x6953966A)
+I (driver\inc\lptim.h)(0x61F0D9D5)
+I (driver\inc\bgr.h)(0x61F0D9D5)
+I (driver\inc\adc.h)(0x695396CB)
+I (driver\inc\wdt.h)(0x61F0D9D5)
+I (user\device.h)(0x6A14106A)
+I (user\r_cg_sau.h)(0x6951FBDE)
+I (user\elora.h)(0x6969F8F3)
+I (user\protocol.h)(0x69604EFF)
+I (user\net.h)(0x6768BBF5)
+I (user\irc.h)(0x6951D96D)
+I (user\hum.h)(0x69242488)
+I (user\24cxx.h)(0x665D2602)
+I (user\adx.h)(0x66A1C177)
+I (user\modbus.h)(0x6951F2C6)
+F (.\user\device.c)(0x69EF28FB)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m0plus -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-4 -O0 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ./ -I common -I user -I driver/inc-I./RTE/_GasesB-IC:/Users/Administrator/AppData/Local/Arm/Packs/ARM/CMSIS/6.3.0/CMSIS/Core/Include-IC:/Users/Administrator/AppData/Local/Arm/Packs/HDSC/HC32L19X/1.0.1/Device/Include-D__UVISION_VERSION="543" -D_RTE_ -DMD_MEASURE_TYPE="MD_GASES"-o ./object_gasesb/device.o -MMD)
+I (driver\inc\ddl.h)(0x6826A3D3)
+I (common\base_types.h)(0x62133A56)
+I (common\board_hc32l19x.h)(0x6A150EDD)
+I (common\system_hc32l19x.h)(0x665E6B12)
+I (common\hc32l19x.h)(0x69539846)
+I (C:\Users\Administrator\AppData\Local\Arm\Packs\ARM\CMSIS\6.3.0\CMSIS\Core\Include\core_cm0plus.h)(0x69E183A6)
+I (driver\inc\sysctrl.h)(0x6953964F)
+I (common\interrupts_hc32l19x.h)(0x61F0D9DD)
+I (user\ddl_device.h)(0x6333D765)
+I (driver\inc\rtc.h)(0x61F0D9D5)
+I (driver\inc\gpio.h)(0x61F0D9D5)
+I (driver\inc\pcnt.h)(0x6953966A)
+I (driver\inc\lptim.h)(0x61F0D9D5)
+I (driver\inc\bgr.h)(0x61F0D9D5)
+I (driver\inc\adc.h)(0x695396CB)
+I (driver\inc\wdt.h)(0x61F0D9D5)
+I (driver\inc\bt.h)(0x61F0D9D5)
+I (user\device.h)(0x6A14106A)
+I (user\system.h)(0x665D2CD7)
+I (user\net.h)(0x6768BBF5)
+I (user\protocol.h)(0x69604EFF)
+I (user\hum.h)(0x69242488)
+I (user\elora.h)(0x6969F8F3)
+I (user\irc.h)(0x6951D96D)
+I (user\24cxx.h)(0x665D2602)
+I (user\adx.h)(0x66A1C177)
+I (user\sw_i2c.h)(0x6715BD1F)
+I (user\sht4x.h)(0x66714D87)
+I (user\epress.h)(0x687073F0)
+I (user\ertc.h)(0x671A0414)
+I (user\etemp.h)(0x68940DC6)
+I (user\modbus.h)(0x6951F2C6)
+I (user\sci_master.h)(0x69F1636B)
+F (.\user\irc.c)(0x69683ADA)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m0plus -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-4 -O0 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ./ -I common -I user -I driver/inc-I./RTE/_GasesB-IC:/Users/Administrator/AppData/Local/Arm/Packs/ARM/CMSIS/6.3.0/CMSIS/Core/Include-IC:/Users/Administrator/AppData/Local/Arm/Packs/HDSC/HC32L19X/1.0.1/Device/Include-D__UVISION_VERSION="543" -D_RTE_ -DMD_MEASURE_TYPE="MD_GASES"-o ./object_gasesb/irc.o -MMD)
+I (driver\inc\ddl.h)(0x6826A3D3)
+I (common\base_types.h)(0x62133A56)
+I (common\board_hc32l19x.h)(0x6A150EDD)
+I (common\system_hc32l19x.h)(0x665E6B12)
+I (common\hc32l19x.h)(0x69539846)
+I (C:\Users\Administrator\AppData\Local\Arm\Packs\ARM\CMSIS\6.3.0\CMSIS\Core\Include\core_cm0plus.h)(0x69E183A6)
+I (driver\inc\sysctrl.h)(0x6953964F)
+I (common\interrupts_hc32l19x.h)(0x61F0D9DD)
+I (user\ddl_device.h)(0x6333D765)
+I (driver\inc\rtc.h)(0x61F0D9D5)
+I (driver\inc\gpio.h)(0x61F0D9D5)
+I (user\r_cg_sau.h)(0x6951FBDE)
+I (user\device.h)(0x6A14106A)
+I (user\modbus.h)(0x6951F2C6)
+I (user\hum.h)(0x69242488)
+I (user\elora.h)(0x6969F8F3)
+I (user\ertc.h)(0x671A0414)
+I (user\net.h)(0x6768BBF5)
+I (user\irc.h)(0x6951D96D)
+F (.\user\modbus.c)(0x69659D2E)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m0plus -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-4 -O0 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ./ -I common -I user -I driver/inc-I./RTE/_GasesB-IC:/Users/Administrator/AppData/Local/Arm/Packs/ARM/CMSIS/6.3.0/CMSIS/Core/Include-IC:/Users/Administrator/AppData/Local/Arm/Packs/HDSC/HC32L19X/1.0.1/Device/Include-D__UVISION_VERSION="543" -D_RTE_ -DMD_MEASURE_TYPE="MD_GASES"-o ./object_gasesb/modbus.o -MMD)
+I (driver\inc\ddl.h)(0x6826A3D3)
+I (common\base_types.h)(0x62133A56)
+I (common\board_hc32l19x.h)(0x6A150EDD)
+I (common\system_hc32l19x.h)(0x665E6B12)
+I (common\hc32l19x.h)(0x69539846)
+I (C:\Users\Administrator\AppData\Local\Arm\Packs\ARM\CMSIS\6.3.0\CMSIS\Core\Include\core_cm0plus.h)(0x69E183A6)
+I (driver\inc\sysctrl.h)(0x6953964F)
+I (common\interrupts_hc32l19x.h)(0x61F0D9DD)
+I (user\ddl_device.h)(0x6333D765)
+I (driver\inc\rtc.h)(0x61F0D9D5)
+I (driver\inc\gpio.h)(0x61F0D9D5)
+I (user\r_cg_sau.h)(0x6951FBDE)
+I (user\device.h)(0x6A14106A)
+I (user\24cxx.h)(0x665D2602)
+I (user\hum.h)(0x69242488)
+I (user\irc.h)(0x6951D96D)
+I (user\modbus.h)(0x6951F2C6)
+I (user\adx.h)(0x66A1C177)
+I (user\elora.h)(0x6969F8F3)
+I (user\ertc.h)(0x671A0414)
+F (.\user\net.c)(0x6A0AC770)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m0plus -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-4 -O0 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ./ -I common -I user -I driver/inc-I./RTE/_GasesB-IC:/Users/Administrator/AppData/Local/Arm/Packs/ARM/CMSIS/6.3.0/CMSIS/Core/Include-IC:/Users/Administrator/AppData/Local/Arm/Packs/HDSC/HC32L19X/1.0.1/Device/Include-D__UVISION_VERSION="543" -D_RTE_ -DMD_MEASURE_TYPE="MD_GASES"-o ./object_gasesb/net.o -MMD)
+I (driver\inc\ddl.h)(0x6826A3D3)
+I (common\base_types.h)(0x62133A56)
+I (common\board_hc32l19x.h)(0x6A150EDD)
+I (common\system_hc32l19x.h)(0x665E6B12)
+I (common\hc32l19x.h)(0x69539846)
+I (C:\Users\Administrator\AppData\Local\Arm\Packs\ARM\CMSIS\6.3.0\CMSIS\Core\Include\core_cm0plus.h)(0x69E183A6)
+I (driver\inc\sysctrl.h)(0x6953964F)
+I (common\interrupts_hc32l19x.h)(0x61F0D9DD)
+I (user\ddl_device.h)(0x6333D765)
+I (driver\inc\rtc.h)(0x61F0D9D5)
+I (driver\inc\gpio.h)(0x61F0D9D5)
+I (driver\inc\pcnt.h)(0x6953966A)
+I (driver\inc\lptim.h)(0x61F0D9D5)
+I (driver\inc\bgr.h)(0x61F0D9D5)
+I (driver\inc\adc.h)(0x695396CB)
+I (driver\inc\wdt.h)(0x61F0D9D5)
+I (user\device.h)(0x6A14106A)
+I (user\r_cg_sau.h)(0x6951FBDE)
+I (user\elora.h)(0x6969F8F3)
+I (user\protocol.h)(0x69604EFF)
+I (user\net.h)(0x6768BBF5)
+I (user\irc.h)(0x6951D96D)
+I (user\hum.h)(0x69242488)
+I (user\24cxx.h)(0x665D2602)
+I (user\adx.h)(0x66A1C177)
+I (user\modbus.h)(0x6951F2C6)
+I (user\ertc.h)(0x671A0414)
+F (.\user\protocol.c)(0x69D87525)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m0plus -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-4 -O0 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ./ -I common -I user -I driver/inc-I./RTE/_GasesB-IC:/Users/Administrator/AppData/Local/Arm/Packs/ARM/CMSIS/6.3.0/CMSIS/Core/Include-IC:/Users/Administrator/AppData/Local/Arm/Packs/HDSC/HC32L19X/1.0.1/Device/Include-D__UVISION_VERSION="543" -D_RTE_ -DMD_MEASURE_TYPE="MD_GASES"-o ./object_gasesb/protocol.o -MMD)
+I (driver\inc\ddl.h)(0x6826A3D3)
+I (common\base_types.h)(0x62133A56)
+I (common\board_hc32l19x.h)(0x6A150EDD)
+I (common\system_hc32l19x.h)(0x665E6B12)
+I (common\hc32l19x.h)(0x69539846)
+I (C:\Users\Administrator\AppData\Local\Arm\Packs\ARM\CMSIS\6.3.0\CMSIS\Core\Include\core_cm0plus.h)(0x69E183A6)
+I (driver\inc\sysctrl.h)(0x6953964F)
+I (common\interrupts_hc32l19x.h)(0x61F0D9DD)
+I (user\ddl_device.h)(0x6333D765)
+I (driver\inc\rtc.h)(0x61F0D9D5)
+I (driver\inc\gpio.h)(0x61F0D9D5)
+I (driver\inc\pcnt.h)(0x6953966A)
+I (driver\inc\lptim.h)(0x61F0D9D5)
+I (driver\inc\bgr.h)(0x61F0D9D5)
+I (driver\inc\adc.h)(0x695396CB)
+I (driver\inc\wdt.h)(0x61F0D9D5)
+I (user\device.h)(0x6A14106A)
+I (user\r_cg_sau.h)(0x6951FBDE)
+I (user\elora.h)(0x6969F8F3)
+I (user\protocol.h)(0x69604EFF)
+I (user\net.h)(0x6768BBF5)
+I (user\irc.h)(0x6951D96D)
+I (user\hum.h)(0x69242488)
+I (user\sci_master.h)(0x69F1636B)
+I (user\24cxx.h)(0x665D2602)
+I (user\adx.h)(0x66A1C177)
+I (user\modbus.h)(0x6951F2C6)
+F (.\user\r_cg_sau.c)(0x695230F5)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m0plus -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-4 -O0 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ./ -I common -I user -I driver/inc-I./RTE/_GasesB-IC:/Users/Administrator/AppData/Local/Arm/Packs/ARM/CMSIS/6.3.0/CMSIS/Core/Include-IC:/Users/Administrator/AppData/Local/Arm/Packs/HDSC/HC32L19X/1.0.1/Device/Include-D__UVISION_VERSION="543" -D_RTE_ -DMD_MEASURE_TYPE="MD_GASES"-o ./object_gasesb/r_cg_sau.o -MMD)
+I (driver\inc\ddl.h)(0x6826A3D3)
+I (common\base_types.h)(0x62133A56)
+I (common\board_hc32l19x.h)(0x6A150EDD)
+I (common\system_hc32l19x.h)(0x665E6B12)
+I (common\hc32l19x.h)(0x69539846)
+I (C:\Users\Administrator\AppData\Local\Arm\Packs\ARM\CMSIS\6.3.0\CMSIS\Core\Include\core_cm0plus.h)(0x69E183A6)
+I (driver\inc\sysctrl.h)(0x6953964F)
+I (common\interrupts_hc32l19x.h)(0x61F0D9DD)
+I (user\ddl_device.h)(0x6333D765)
+I (driver\inc\lpuart.h)(0x62D508D3)
+I (driver\inc\uart.h)(0x62D23059)
+I (driver\inc\gpio.h)(0x61F0D9D5)
+I (user\r_cg_sau.h)(0x6951FBDE)
+F (.\user\r_cg_sau_user.c)(0x6A150598)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m0plus -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-4 -O0 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ./ -I common -I user -I driver/inc-I./RTE/_GasesB-IC:/Users/Administrator/AppData/Local/Arm/Packs/ARM/CMSIS/6.3.0/CMSIS/Core/Include-IC:/Users/Administrator/AppData/Local/Arm/Packs/HDSC/HC32L19X/1.0.1/Device/Include-D__UVISION_VERSION="543" -D_RTE_ -DMD_MEASURE_TYPE="MD_GASES"-o ./object_gasesb/r_cg_sau_user.o -MMD)
+I (driver\inc\ddl.h)(0x6826A3D3)
+I (common\base_types.h)(0x62133A56)
+I (common\board_hc32l19x.h)(0x6A150EDD)
+I (common\system_hc32l19x.h)(0x665E6B12)
+I (common\hc32l19x.h)(0x69539846)
+I (C:\Users\Administrator\AppData\Local\Arm\Packs\ARM\CMSIS\6.3.0\CMSIS\Core\Include\core_cm0plus.h)(0x69E183A6)
+I (driver\inc\sysctrl.h)(0x6953964F)
+I (common\interrupts_hc32l19x.h)(0x61F0D9DD)
+I (user\ddl_device.h)(0x6333D765)
+I (driver\inc\rtc.h)(0x61F0D9D5)
+I (driver\inc\lpuart.h)(0x62D508D3)
+I (driver\inc\uart.h)(0x62D23059)
+I (user\r_cg_sau.h)(0x6951FBDE)
+I (user\irc.h)(0x6951D96D)
+I (user\net.h)(0x6768BBF5)
+I (user\elora.h)(0x6969F8F3)
+I (user\modbus.h)(0x6951F2C6)
+I (user\device.h)(0x6A14106A)
+I (user\sci_master.h)(0x69F1636B)
+I (user\wifia.h)(0x6A13EF03)
+F (.\user\system.c)(0x6A1502A6)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m0plus -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-4 -O0 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ./ -I common -I user -I driver/inc-I./RTE/_GasesB-IC:/Users/Administrator/AppData/Local/Arm/Packs/ARM/CMSIS/6.3.0/CMSIS/Core/Include-IC:/Users/Administrator/AppData/Local/Arm/Packs/HDSC/HC32L19X/1.0.1/Device/Include-D__UVISION_VERSION="543" -D_RTE_ -DMD_MEASURE_TYPE="MD_GASES"-o ./object_gasesb/system.o -MMD)
+I (driver\inc\ddl.h)(0x6826A3D3)
+I (common\base_types.h)(0x62133A56)
+I (common\board_hc32l19x.h)(0x6A150EDD)
+I (common\system_hc32l19x.h)(0x665E6B12)
+I (common\hc32l19x.h)(0x69539846)
+I (C:\Users\Administrator\AppData\Local\Arm\Packs\ARM\CMSIS\6.3.0\CMSIS\Core\Include\core_cm0plus.h)(0x69E183A6)
+I (driver\inc\sysctrl.h)(0x6953964F)
+I (common\interrupts_hc32l19x.h)(0x61F0D9DD)
+I (user\ddl_device.h)(0x6333D765)
+I (driver\inc\rtc.h)(0x61F0D9D5)
+I (driver\inc\gpio.h)(0x61F0D9D5)
+I (driver\inc\lpm.h)(0x61F0D9D5)
+I (driver\inc\lptim.h)(0x61F0D9D5)
+I (user\r_cg_sau.h)(0x6951FBDE)
+I (user\net_adapter.h)(0x6A150111)
+I (user\wifia.h)(0x6A13EF03)
+I (user\app_trans.h)(0x6A14124E)
+I (user\device.h)(0x6A14106A)
+I (user\net.h)(0x6768BBF5)
+I (user\protocol.h)(0x69604EFF)
+I (user\hum.h)(0x69242488)
+I (user\irc.h)(0x6951D96D)
+I (user\elora.h)(0x6969F8F3)
+I (user\sci_master.h)(0x69F1636B)
+I (user\modbus.h)(0x6951F2C6)
+I (user\adx.h)(0x66A1C177)
+I (user\system.h)(0x665D2CD7)
+F (.\user\sht4x.c)(0x68CBBEE4)()
+F (.\user\sw_i2c.c)(0x68941209)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m0plus -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-4 -O0 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ./ -I common -I user -I driver/inc-I./RTE/_GasesB-IC:/Users/Administrator/AppData/Local/Arm/Packs/ARM/CMSIS/6.3.0/CMSIS/Core/Include-IC:/Users/Administrator/AppData/Local/Arm/Packs/HDSC/HC32L19X/1.0.1/Device/Include-D__UVISION_VERSION="543" -D_RTE_ -DMD_MEASURE_TYPE="MD_GASES"-o ./object_gasesb/sw_i2c.o -MMD)
+I (driver\inc\ddl.h)(0x6826A3D3)
+I (common\base_types.h)(0x62133A56)
+I (common\board_hc32l19x.h)(0x6A150EDD)
+I (common\system_hc32l19x.h)(0x665E6B12)
+I (common\hc32l19x.h)(0x69539846)
+I (C:\Users\Administrator\AppData\Local\Arm\Packs\ARM\CMSIS\6.3.0\CMSIS\Core\Include\core_cm0plus.h)(0x69E183A6)
+I (driver\inc\sysctrl.h)(0x6953964F)
+I (common\interrupts_hc32l19x.h)(0x61F0D9DD)
+I (user\ddl_device.h)(0x6333D765)
+I (driver\inc\gpio.h)(0x61F0D9D5)
+I (user\sw_i2c.h)(0x6715BD1F)
+F (.\user\hum.c)(0x6A1515EC)()
+F (.\user\hum_gas.c)(0x69A79B31)()
+F (.\user\ertc.c)(0x671A0F28)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m0plus -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-4 -O0 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ./ -I common -I user -I driver/inc-I./RTE/_GasesB-IC:/Users/Administrator/AppData/Local/Arm/Packs/ARM/CMSIS/6.3.0/CMSIS/Core/Include-IC:/Users/Administrator/AppData/Local/Arm/Packs/HDSC/HC32L19X/1.0.1/Device/Include-D__UVISION_VERSION="543" -D_RTE_ -DMD_MEASURE_TYPE="MD_GASES"-o ./object_gasesb/ertc.o -MMD)
+I (driver\inc\ddl.h)(0x6826A3D3)
+I (common\base_types.h)(0x62133A56)
+I (common\board_hc32l19x.h)(0x6A150EDD)
+I (common\system_hc32l19x.h)(0x665E6B12)
+I (common\hc32l19x.h)(0x69539846)
+I (C:\Users\Administrator\AppData\Local\Arm\Packs\ARM\CMSIS\6.3.0\CMSIS\Core\Include\core_cm0plus.h)(0x69E183A6)
+I (driver\inc\sysctrl.h)(0x6953964F)
+I (common\interrupts_hc32l19x.h)(0x61F0D9DD)
+I (user\ddl_device.h)(0x6333D765)
+I (driver\inc\rtc.h)(0x61F0D9D5)
+I (user\ertc.h)(0x671A0414)
+I (user\sw_i2c.h)(0x6715BD1F)
+F (.\user\etemp.c)(0x69EF293D)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m0plus -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-4 -O0 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ./ -I common -I user -I driver/inc-I./RTE/_GasesB-IC:/Users/Administrator/AppData/Local/Arm/Packs/ARM/CMSIS/6.3.0/CMSIS/Core/Include-IC:/Users/Administrator/AppData/Local/Arm/Packs/HDSC/HC32L19X/1.0.1/Device/Include-D__UVISION_VERSION="543" -D_RTE_ -DMD_MEASURE_TYPE="MD_GASES"-o ./object_gasesb/etemp.o -MMD)
+I (driver\inc\ddl.h)(0x6826A3D3)
+I (common\base_types.h)(0x62133A56)
+I (common\board_hc32l19x.h)(0x6A150EDD)
+I (common\system_hc32l19x.h)(0x665E6B12)
+I (common\hc32l19x.h)(0x69539846)
+I (C:\Users\Administrator\AppData\Local\Arm\Packs\ARM\CMSIS\6.3.0\CMSIS\Core\Include\core_cm0plus.h)(0x69E183A6)
+I (driver\inc\sysctrl.h)(0x6953964F)
+I (common\interrupts_hc32l19x.h)(0x61F0D9DD)
+I (user\ddl_device.h)(0x6333D765)
+I (driver\inc\gpio.h)(0x61F0D9D5)
+I (user\etemp.h)(0x68940DC6)
+F (.\user\epress.c)(0x68941303)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m0plus -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-4 -O0 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ./ -I common -I user -I driver/inc-I./RTE/_GasesB-IC:/Users/Administrator/AppData/Local/Arm/Packs/ARM/CMSIS/6.3.0/CMSIS/Core/Include-IC:/Users/Administrator/AppData/Local/Arm/Packs/HDSC/HC32L19X/1.0.1/Device/Include-D__UVISION_VERSION="543" -D_RTE_ -DMD_MEASURE_TYPE="MD_GASES"-o ./object_gasesb/epress.o -MMD)
+I (driver\inc\ddl.h)(0x6826A3D3)
+I (common\base_types.h)(0x62133A56)
+I (common\board_hc32l19x.h)(0x6A150EDD)
+I (common\system_hc32l19x.h)(0x665E6B12)
+I (common\hc32l19x.h)(0x69539846)
+I (C:\Users\Administrator\AppData\Local\Arm\Packs\ARM\CMSIS\6.3.0\CMSIS\Core\Include\core_cm0plus.h)(0x69E183A6)
+I (driver\inc\sysctrl.h)(0x6953964F)
+I (common\interrupts_hc32l19x.h)(0x61F0D9DD)
+I (user\ddl_device.h)(0x6333D765)
+I (user\epress.h)(0x687073F0)
+I (user\sw_i2c.h)(0x6715BD1F)
+F (.\user\elora.c)(0x6A0FCA7B)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m0plus -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-4 -O0 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ./ -I common -I user -I driver/inc-I./RTE/_GasesB-IC:/Users/Administrator/AppData/Local/Arm/Packs/ARM/CMSIS/6.3.0/CMSIS/Core/Include-IC:/Users/Administrator/AppData/Local/Arm/Packs/HDSC/HC32L19X/1.0.1/Device/Include-D__UVISION_VERSION="543" -D_RTE_ -DMD_MEASURE_TYPE="MD_GASES"-o ./object_gasesb/elora.o -MMD)
+I (driver\inc\ddl.h)(0x6826A3D3)
+I (common\base_types.h)(0x62133A56)
+I (common\board_hc32l19x.h)(0x6A150EDD)
+I (common\system_hc32l19x.h)(0x665E6B12)
+I (common\hc32l19x.h)(0x69539846)
+I (C:\Users\Administrator\AppData\Local\Arm\Packs\ARM\CMSIS\6.3.0\CMSIS\Core\Include\core_cm0plus.h)(0x69E183A6)
+I (driver\inc\sysctrl.h)(0x6953964F)
+I (common\interrupts_hc32l19x.h)(0x61F0D9DD)
+I (user\ddl_device.h)(0x6333D765)
+I (driver\inc\rtc.h)(0x61F0D9D5)
+I (driver\inc\gpio.h)(0x61F0D9D5)
+I (user\device.h)(0x6A14106A)
+I (user\r_cg_sau.h)(0x6951FBDE)
+I (user\elora.h)(0x6969F8F3)
+I (user\sci_master.h)(0x69F1636B)
+I (user\24cxx.h)(0x665D2602)
+F (.\user\hum_b.c)(0x69683ADA)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m0plus -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-4 -O0 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ./ -I common -I user -I driver/inc-I./RTE/_GasesB-IC:/Users/Administrator/AppData/Local/Arm/Packs/ARM/CMSIS/6.3.0/CMSIS/Core/Include-IC:/Users/Administrator/AppData/Local/Arm/Packs/HDSC/HC32L19X/1.0.1/Device/Include-D__UVISION_VERSION="543" -D_RTE_ -DMD_MEASURE_TYPE="MD_GASES"-o ./object_gasesb/hum_b.o -MMD)
+I (driver\inc\ddl.h)(0x6826A3D3)
+I (common\base_types.h)(0x62133A56)
+I (common\board_hc32l19x.h)(0x6A150EDD)
+I (common\system_hc32l19x.h)(0x665E6B12)
+I (common\hc32l19x.h)(0x69539846)
+I (C:\Users\Administrator\AppData\Local\Arm\Packs\ARM\CMSIS\6.3.0\CMSIS\Core\Include\core_cm0plus.h)(0x69E183A6)
+I (driver\inc\sysctrl.h)(0x6953964F)
+I (common\interrupts_hc32l19x.h)(0x61F0D9DD)
+I (user\ddl_device.h)(0x6333D765)
+I (driver\inc\i2c.h)(0x61F0D9D5)
+I (driver\inc\gpio.h)(0x61F0D9D5)
+I (driver\inc\rtc.h)(0x61F0D9D5)
+I (driver\inc\lcd.h)(0x61F0D9D5)
+I (user\system.h)(0x665D2CD7)
+I (user\hum.h)(0x69242488)
+I (user\irc.h)(0x6951D96D)
+I (user\elora.h)(0x6969F8F3)
+I (user\net.h)(0x6768BBF5)
+I (user\protocol.h)(0x69604EFF)
+I (user\device.h)(0x6A14106A)
+I (user\modbus.h)(0x6951F2C6)
+I (user\ertc.h)(0x671A0414)
+I (user\sci_master.h)(0x69F1636B)
+I (user\hum_sw_i2c.h)(0x694CB5D9)
+F (.\user\sci_master.c)(0x69F163FF)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m0plus -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-4 -O0 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ./ -I common -I user -I driver/inc-I./RTE/_GasesB-IC:/Users/Administrator/AppData/Local/Arm/Packs/ARM/CMSIS/6.3.0/CMSIS/Core/Include-IC:/Users/Administrator/AppData/Local/Arm/Packs/HDSC/HC32L19X/1.0.1/Device/Include-D__UVISION_VERSION="543" -D_RTE_ -DMD_MEASURE_TYPE="MD_GASES"-o ./object_gasesb/sci_master.o -MMD)
+I (driver\inc\ddl.h)(0x6826A3D3)
+I (common\base_types.h)(0x62133A56)
+I (common\board_hc32l19x.h)(0x6A150EDD)
+I (common\system_hc32l19x.h)(0x665E6B12)
+I (common\hc32l19x.h)(0x69539846)
+I (C:\Users\Administrator\AppData\Local\Arm\Packs\ARM\CMSIS\6.3.0\CMSIS\Core\Include\core_cm0plus.h)(0x69E183A6)
+I (driver\inc\sysctrl.h)(0x6953964F)
+I (common\interrupts_hc32l19x.h)(0x61F0D9DD)
+I (user\ddl_device.h)(0x6333D765)
+I (driver\inc\gpio.h)(0x61F0D9D5)
+I (user\r_cg_sau.h)(0x6951FBDE)
+I (user\sci_master.h)(0x69F1636B)
+F (.\user\lora_module.c)(0x6A14169E)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m0plus -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-4 -O0 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ./ -I common -I user -I driver/inc-I./RTE/_GasesB-IC:/Users/Administrator/AppData/Local/Arm/Packs/ARM/CMSIS/6.3.0/CMSIS/Core/Include-IC:/Users/Administrator/AppData/Local/Arm/Packs/HDSC/HC32L19X/1.0.1/Device/Include-D__UVISION_VERSION="543" -D_RTE_ -DMD_MEASURE_TYPE="MD_GASES"-o ./object_gasesb/lora_module.o -MMD)
+I (driver\inc\ddl.h)(0x6826A3D3)
+I (common\base_types.h)(0x62133A56)
+I (common\board_hc32l19x.h)(0x6A150EDD)
+I (common\system_hc32l19x.h)(0x665E6B12)
+I (common\hc32l19x.h)(0x69539846)
+I (C:\Users\Administrator\AppData\Local\Arm\Packs\ARM\CMSIS\6.3.0\CMSIS\Core\Include\core_cm0plus.h)(0x69E183A6)
+I (driver\inc\sysctrl.h)(0x6953964F)
+I (common\interrupts_hc32l19x.h)(0x61F0D9DD)
+I (user\ddl_device.h)(0x6333D765)
+I (driver\inc\rtc.h)(0x61F0D9D5)
+I (driver\inc\gpio.h)(0x61F0D9D5)
+I (user\device.h)(0x6A14106A)
+I (user\r_cg_sau.h)(0x6951FBDE)
+F (.\user\wifia.c)(0x6A151981)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m0plus -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-4 -O0 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ./ -I common -I user -I driver/inc-I./RTE/_GasesB-IC:/Users/Administrator/AppData/Local/Arm/Packs/ARM/CMSIS/6.3.0/CMSIS/Core/Include-IC:/Users/Administrator/AppData/Local/Arm/Packs/HDSC/HC32L19X/1.0.1/Device/Include-D__UVISION_VERSION="543" -D_RTE_ -DMD_MEASURE_TYPE="MD_GASES"-o ./object_gasesb/wifia.o -MMD)
+I (driver\inc\ddl.h)(0x6826A3D3)
+I (common\base_types.h)(0x62133A56)
+I (common\board_hc32l19x.h)(0x6A150EDD)
+I (common\system_hc32l19x.h)(0x665E6B12)
+I (common\hc32l19x.h)(0x69539846)
+I (C:\Users\Administrator\AppData\Local\Arm\Packs\ARM\CMSIS\6.3.0\CMSIS\Core\Include\core_cm0plus.h)(0x69E183A6)
+I (driver\inc\sysctrl.h)(0x6953964F)
+I (common\interrupts_hc32l19x.h)(0x61F0D9DD)
+I (user\ddl_device.h)(0x6333D765)
+I (driver\inc\gpio.h)(0x61F0D9D5)
+I (user\r_cg_sau.h)(0x6951FBDE)
+I (user\wifia.h)(0x6A13EF03)
+I (user\net_adapter.h)(0x6A150111)
+F (.\user\app_trans.c)(0x6A150203)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m0plus -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-4 -O0 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ./ -I common -I user -I driver/inc-I./RTE/_GasesB-IC:/Users/Administrator/AppData/Local/Arm/Packs/ARM/CMSIS/6.3.0/CMSIS/Core/Include-IC:/Users/Administrator/AppData/Local/Arm/Packs/HDSC/HC32L19X/1.0.1/Device/Include-D__UVISION_VERSION="543" -D_RTE_ -DMD_MEASURE_TYPE="MD_GASES"-o ./object_gasesb/app_trans.o -MMD)
+I (driver\inc\ddl.h)(0x6826A3D3)
+I (common\base_types.h)(0x62133A56)
+I (common\board_hc32l19x.h)(0x6A150EDD)
+I (common\system_hc32l19x.h)(0x665E6B12)
+I (common\hc32l19x.h)(0x69539846)
+I (C:\Users\Administrator\AppData\Local\Arm\Packs\ARM\CMSIS\6.3.0\CMSIS\Core\Include\core_cm0plus.h)(0x69E183A6)
+I (driver\inc\sysctrl.h)(0x6953964F)
+I (common\interrupts_hc32l19x.h)(0x61F0D9DD)
+I (user\ddl_device.h)(0x6333D765)
+I (driver\inc\rtc.h)(0x61F0D9D5)
+I (user\device.h)(0x6A14106A)
+I (user\hum.h)(0x69242488)
+I (user\wifia.h)(0x6A13EF03)
+I (user\net_adapter.h)(0x6A150111)
+F (.\user\net_adapter.c)(0x6A150035)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m0plus -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-4 -O0 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ./ -I common -I user -I driver/inc-I./RTE/_GasesB-IC:/Users/Administrator/AppData/Local/Arm/Packs/ARM/CMSIS/6.3.0/CMSIS/Core/Include-IC:/Users/Administrator/AppData/Local/Arm/Packs/HDSC/HC32L19X/1.0.1/Device/Include-D__UVISION_VERSION="543" -D_RTE_ -DMD_MEASURE_TYPE="MD_GASES"-o ./object_gasesb/net_adapter.o -MMD)
+I (driver\inc\ddl.h)(0x6826A3D3)
+I (common\base_types.h)(0x62133A56)
+I (common\board_hc32l19x.h)(0x6A150EDD)
+I (common\system_hc32l19x.h)(0x665E6B12)
+I (common\hc32l19x.h)(0x69539846)
+I (C:\Users\Administrator\AppData\Local\Arm\Packs\ARM\CMSIS\6.3.0\CMSIS\Core\Include\core_cm0plus.h)(0x69E183A6)
+I (driver\inc\sysctrl.h)(0x6953964F)
+I (common\interrupts_hc32l19x.h)(0x61F0D9DD)
+I (user\ddl_device.h)(0x6333D765)
+I (driver\inc\rtc.h)(0x61F0D9D5)
+I (user\device.h)(0x6A14106A)
+I (user\net_adapter.h)(0x6A150111)
+I (user\wifia.h)(0x6A13EF03)
+I (user\app_trans.h)(0x6A14124E)

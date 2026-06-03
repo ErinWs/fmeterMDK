@@ -1,0 +1,8 @@
+-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m0plus -c
+-fno-rtti -funsigned-char -fshort-enums -fshort-wchar
+-D__MICROLIB -gdwarf-4 -O0 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ./ -I common -I user -I driver/inc
+-I./RTE/_GasesB
+-IC:/Users/Administrator/AppData/Local/Arm/Packs/ARM/CMSIS/6.3.0/CMSIS/Core/Include
+-IC:/Users/Administrator/AppData/Local/Arm/Packs/HDSC/HC32L19X/1.0.1/Device/Include
+-D__UVISION_VERSION="543" -D_RTE_ -DMD_MEASURE_TYPE="MD_GASES"
+-o ./object_gasesb/device.o -MMD "user/device.c"

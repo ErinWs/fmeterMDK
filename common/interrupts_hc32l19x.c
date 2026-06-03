@@ -22,6 +22,8 @@
  ******************************************************************************/
 #include "ddl.h"
 #include "interrupts_hc32l19x.h"
+#include "elora.h"
+#include "gpio.h"
 
 /*******************************************************************************
  *                       IRQ WEAK DEFINE
@@ -31,7 +33,14 @@ __WEAK void SysTick_IRQHandler(void);
 
 __WEAK void PortA_IRQHandler(void);
 __WEAK void PortB_IRQHandler(void);
- void PortC_IRQHandler(void);
+void PortC_IRQHandler(void);
+// {
+//     if (TRUE == Gpio_GetIrqStatus(GpioPortC, GpioPin3))
+//     {
+//         lora_comps.aux_irq_callback();
+//         Gpio_ClearIrq(GpioPortC, GpioPin3);
+//     }
+// }
 __WEAK void PortD_IRQHandler(void);
 __WEAK void PortE_IRQHandler(void);
 __WEAK void PortF_IRQHandler(void);
@@ -50,7 +59,7 @@ __WEAK void I2c1_IRQHandler(void);
 __WEAK void Tim0_IRQHandler(void);
 __WEAK void Tim1_IRQHandler(void);
 __WEAK void Tim2_IRQHandler(void);
- void LpTim0_IRQHandler(void);
+void LpTim0_IRQHandler(void);
 void LpTim1_IRQHandler(void);
 __WEAK void Tim4_IRQHandler(void);
 __WEAK void Tim5_IRQHandler(void);
@@ -103,7 +112,7 @@ void EnableNvic(IRQn_Type enIrq, en_irq_level_t enLevel, boolean_t bEn)
  ******************************************************************************/
 void HardFault_Handler(void)
 {    
-    volatile int16_t a = 0;
+    volatile int a = 0;
 
     while( 0 == a)
     {

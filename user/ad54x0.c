@@ -33,7 +33,7 @@
 
 #define SDI             (pcf857x_comps.read(&pcf857x_comps),pcf857x_comps.IN._bit.no4)//
 
-static void delay (int length)
+static void delay (volatile int length)
 {
 	while (length >0)
     	length--;

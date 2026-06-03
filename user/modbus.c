@@ -4,8 +4,6 @@
 
 #include "r_cg_sau.h"
 #include "device.h"
-#include "string.h"
-#include "stdio.h"
 #include "24cxx.h"
 #include "hum.h"
 #include "irc.h"
@@ -14,7 +12,11 @@
 #include "elora.h"
 #include "ertc.h"
 
+#include "string.h"
+#include "stdio.h"
 #define  MD_MODBUS_OP_WINDOW_TIME_OUT   (7200)
+#define  MD_SCI_SLAVE_COM_VCM_ON      Gpio_WriteOutputIO(MD_SCI_SLAVE_COM_VCM_PORT, MD_SCI_SLAVE_COM_VCM_PIN, TRUE)
+#define  MD_SCI_SLAVE_COM_VCM_OFF     Gpio_WriteOutputIO(MD_SCI_SLAVE_COM_VCM_PORT, MD_SCI_SLAVE_COM_VCM_PIN, FALSE)
 
 /*******************************************PORTABLE***************************************/
 
@@ -30,11 +32,11 @@ void enable_modbus_com(void)
     enable_LPuart0();
 }
 
-static void write_modbus(uint8_t * const buf,uint16_t len)
+static void write_modbus_com(uint8_t * const buf,uint16_t len)
 {
     if(len>0)
     {
-        MD_SET_RS_485_T_R;
+        MD_SET_SLAVE_RS485_T_R;
         __NOP();__NOP();__NOP();__NOP();__NOP();__NOP();__NOP();__NOP();
         R_LPUART0_Send(buf,len);
     }
@@ -71,20 +73,17 @@ static void Deconfig_modbus_com(void)
 
 
 /*************************************PORTABLE END*******************************/
-#define  MD_MODBUS_MAX_RECV_BUF_POS          192
-#define  MD_MODBUS_MAX_CFG_RECV_BUF_POS       32
-
 static struct 
 { 
 	uint8_t  send_buf[192];
-	uint8_t  recv_buf[MD_MODBUS_MAX_RECV_BUF_POS];
+	uint8_t  recv_buf[192];
 	uint8_t  recv_pos;
 
 
 	uint8_t  send_cfg_buf[32];
-    uint8_t  recv_cfg_buf[MD_MODBUS_MAX_CFG_RECV_BUF_POS];
+    uint8_t  recv_cfg_buf[32];
 	uint8_t  recv_cfg_pos;
-	modebs_param_t param;
+	modbus_param_t param;
 }
 modbusMisc=
 {
@@ -269,7 +268,7 @@ static int16_t pro_modus_err(int16_t err,uint8_t Cmd,int16_t len)
     crc=generateCRC(modbusMisc.send_buf, i);
     modbusMisc.send_buf[i++]=crc;
     modbusMisc.send_buf[i++]=crc>>8;
-    write_modbus(modbusMisc.send_buf,i);
+    write_modbus_com(modbusMisc.send_buf,i);
     return len;
 }
 
@@ -632,7 +631,7 @@ static uint8_t Pro_modbus(uint8_t Cmd,uint8_t *buf,int16_t len)
             crc=generateCRC(modbusMisc.send_buf, i);
             modbusMisc.send_buf[i++]=crc;
             modbusMisc.send_buf[i++]=crc>>8;
-            write_modbus(modbusMisc.send_buf,i);
+            write_modbus_com(modbusMisc.send_buf,i);
             return len;
       }
     
@@ -673,7 +672,7 @@ static uint8_t Pro_modbus(uint8_t Cmd,uint8_t *buf,int16_t len)
 //                crc=generateCRC(modbusMisc.send_buf, i);
 //                modbusMisc.send_buf[i++]=crc;
 //                modbusMisc.send_buf[i++]=crc>>8;
-//                write_modbus(modbusMisc.send_buf,i);
+//                write_modbus_com(modbusMisc.send_buf,i);
 //                return len;
 //         }
 //         else if((addr>0x2f)&&(addr<0x32)&&(num+addr<0x33))
@@ -704,7 +703,7 @@ static uint8_t Pro_modbus(uint8_t Cmd,uint8_t *buf,int16_t len)
 //            crc=generateCRC(modbusMisc.send_buf, i);
 //            modbusMisc.send_buf[i++]=crc;
 //            modbusMisc.send_buf[i++]=crc>>8;
-//            write_modbus(modbusMisc.send_buf,i);
+//            write_modbus_com(modbusMisc.send_buf,i);
 //            return len;
 //         }
          
@@ -776,7 +775,7 @@ static uint8_t Pro_modbus(uint8_t Cmd,uint8_t *buf,int16_t len)
 //            crc=generateCRC(modbusMisc.send_buf, i);
 //            modbusMisc.send_buf[i++]=crc;
 //            modbusMisc.send_buf[i++]=crc>>8;
-//            write_modbus(modbusMisc.send_buf,i);
+//            write_modbus_com(modbusMisc.send_buf,i);
 //            return len;
 //         }
          
@@ -792,7 +791,7 @@ static uint8_t Pro_modbus(uint8_t Cmd,uint8_t *buf,int16_t len)
             crc=generateCRC(modbusMisc.send_buf, i);
             modbusMisc.send_buf[i++]=crc;
             modbusMisc.send_buf[i++]=crc>>8;
-            write_modbus(modbusMisc.send_buf,i);
+            write_modbus_com(modbusMisc.send_buf,i);
             return len;
          }
          else if(addr>=0x3000 && addr<=0x3011)
@@ -891,7 +890,7 @@ static uint8_t Pro_modbus(uint8_t Cmd,uint8_t *buf,int16_t len)
             crc=generateCRC(modbusMisc.send_buf, i);
             modbusMisc.send_buf[i++]=crc;
             modbusMisc.send_buf[i++]=crc>>8;
-            write_modbus(modbusMisc.send_buf,i);
+            write_modbus_com(modbusMisc.send_buf,i);
             return len;
          }
          
@@ -999,13 +998,13 @@ static uint8_t Pro_modbus(uint8_t Cmd,uint8_t *buf,int16_t len)
                  break;
             case 0x34:
                   datu=((uint16_t)buf[4]<<8)+buf[5];
-                 modbusComps.param_pt->addr=datu;
+                 modbusMisc.param.addr=datu;
                  save_data_type=EM_MODBUS;
                  break;
             case 0x35:
                  datu=((uint16_t)buf[4]<<8)+buf[5];
-                modbusComps.param_pt->baud=datu%4;
-                modbusComps.modify_baud(modbusComps.param_pt->baud,0);
+                modbusMisc.param.baud=datu%4;
+                modify_modbus_baud_verify(modbusMisc.param.baud,0);
                 save_data_type=EM_MODBUS;
                 break;
             case 0x36:
@@ -1098,7 +1097,7 @@ static uint8_t Pro_modbus(uint8_t Cmd,uint8_t *buf,int16_t len)
 		crc=generateCRC(modbusMisc.send_buf, i);
 		modbusMisc.send_buf[i++]=crc;
 		modbusMisc.send_buf[i++]=crc>>8;
-		write_modbus(modbusMisc.send_buf,i);
+		write_modbus_com(modbusMisc.send_buf,i);
 		return len;
 		
 	}
@@ -1282,7 +1281,7 @@ static uint8_t Pro_modbus(uint8_t Cmd,uint8_t *buf,int16_t len)
         crc=generateCRC(modbusMisc.send_buf, i);
 		modbusMisc.send_buf[i++]=crc;
 		modbusMisc.send_buf[i++]=crc>>8;
-		write_modbus(modbusMisc.send_buf,i);
+		write_modbus_com(modbusMisc.send_buf,i);
 		return len;
 	}
     else if(Cmd==0x11)//many bytes wirte CAL
@@ -1364,7 +1363,7 @@ static uint8_t Pro_modbus(uint8_t Cmd,uint8_t *buf,int16_t len)
         crc=generateCRC(modbusMisc.send_buf, i);
 		modbusMisc.send_buf[i++]=crc;
 		modbusMisc.send_buf[i++]=crc>>8;
-		write_modbus(modbusMisc.send_buf,i);
+		write_modbus_com(modbusMisc.send_buf,i);
 		return len;
 	}
     else 
@@ -1572,14 +1571,14 @@ static void modbus_start(void)
     enable_modbus_com();
     modbusComps.op_window_time=MD_MODBUS_OP_WINDOW_TIME_OUT;
     modbusComps.sw._bit.runing=1;
-    MD_RESET_RS_485_T_R;
-    MD_IR_VCM_ON;
+    MD_RESET_SLAVE_RS485_T_R;
+    MD_SCI_SLAVE_COM_VCM_ON;
 }
 
 static void modbus_stop(void)
 {
-    MD_IR_VCM_OFF;
-    MD_RESET_RS_485_T_R;
+    MD_SCI_SLAVE_COM_VCM_OFF;
+    MD_RESET_SLAVE_RS485_T_R;
     modbusComps.op_window_time=0;
     disable_modbus_com();
     Deconfig_modbus_com();
@@ -1589,7 +1588,12 @@ static void modbus_stop(void)
 static void modbus_sendend_callback(void)
 {
     __NOP();__NOP();__NOP();__NOP();
-    MD_RESET_RS_485_T_R;
+    if(modbusComps.sw._bit.baud_modified)
+    {
+        modify_modbus_baud_verify(modbusMisc.param.baud,0);
+        modbusComps.sw._bit.baud_modified=0;
+    }
+    MD_RESET_SLAVE_RS485_T_R;
 }
 
 static void  modbusComps_task_handle(void)
@@ -1649,29 +1653,20 @@ static void  modbusComps_task_handle(void)
  void store_modbus_buffer(uint8_t data)
 {
     __disable_irq();
-    if (modbusMisc.recv_pos < MD_MODBUS_MAX_RECV_BUF_POS)
-    {
-        modbusMisc.recv_buf[modbusMisc.recv_pos++] = data;
-        if (modbusMisc.recv_pos >= MD_MODBUS_MAX_RECV_BUF_POS)
-        {
-            modbusMisc.recv_pos = 0;
-            memset(modbusMisc.recv_buf,0,sizeof(modbusMisc.recv_buf));
-        }
-    }
-    else
+    if (modbusMisc.recv_pos >= sizeof(modbusMisc.recv_buf))
     {
         modbusMisc.recv_pos = 0;
-        modbusMisc.recv_buf[modbusMisc.recv_pos++] = data;
+        memset(modbusMisc.recv_buf,0,sizeof(modbusMisc.recv_buf));
     }
+    modbusMisc.recv_buf[modbusMisc.recv_pos++] = data;
+    // if(modbusMisc.recv_cfg_pos>=sizeof(modbusMisc.recv_cfg_buf))
+    // {
+    //     modbusMisc.recv_cfg_pos=0;
+    //     memset(modbusMisc.recv_cfg_buf,0,sizeof(modbusMisc.recv_cfg_buf));
+    // }
+    // modbusMisc.recv_cfg_buf[modbusMisc.recv_cfg_pos]=data;
     __enable_irq();
     modbusComps.recv_timeout_timer = 0;
-    // modbusMisc.recv_buf[modbusMisc.recv_pos]=data;
-    // modbusMisc.recv_pos+=1;
-    // modbusMisc.recv_pos%=MD_MODBUS_MAX_RECV_BUF_POS;
-
-    // modbusMisc.recv_cfg_buf[modbusMisc.recv_cfg_pos]=data;
-    // modbusMisc.recv_cfg_pos+=1;
-    // modbusMisc.recv_cfg_pos%=MD_MODBUS_MAX_CFG_RECV_BUF_POS;
 }
 
 
@@ -1679,9 +1674,9 @@ static void modbus_recv_timeout_call_back(void)
 {
     if(modbusComps.sw._bit.runing)
     {
-			__NOP();
-      modbusMisc.recv_pos=0;
-      MD_RESET_RS_485_T_R;
+        __NOP();
+        modbusMisc.recv_pos=0;
+        MD_RESET_SLAVE_RS485_T_R;
     }
 }
 modbusComps_t modbusComps=
@@ -1699,7 +1694,3 @@ modbusComps_t modbusComps=
     modbus_sendend_callback,
     modbusComps_task_handle
 };
-
-
-
-

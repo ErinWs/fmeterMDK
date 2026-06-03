@@ -1380,8 +1380,8 @@ typedef struct
 
 typedef struct
 {
-    __IO uint32_t TPGS                      : 8;
-    __IO uint32_t RSV                       :24;
+    __IO uint32_t TPGS                      : 9;
+    __IO uint32_t RSV                       :23;
 } stc_flash_tpgs_field_t;
 
 typedef struct

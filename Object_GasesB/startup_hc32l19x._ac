@@ -1,0 +1,7 @@
+--target=arm-arm-none-eabi -mcpu=cortex-m0plus -masm=auto  -Wa,armasm,--diag_suppress=A1950W -c
+-gdwarf-4 -Wa,armasm,--pd,"__MICROLIB SETA 1"
+-I./RTE/_GasesB
+-IC:/Users/Administrator/AppData/Local/Arm/Packs/ARM/CMSIS/6.3.0/CMSIS/Core/Include
+-IC:/Users/Administrator/AppData/Local/Arm/Packs/HDSC/HC32L19X/1.0.1/Device/Include
+-Wa,armasm,--pd,"__UVISION_VERSION SETA 543" -Wa,armasm,--pd,"_RTE_ SETA 1"
+-o ./object_gasesb/startup_hc32l19x.o "startup_hc32l19x.s"

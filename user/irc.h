@@ -1,7 +1,6 @@
 #ifndef  IRC_H
 #define  IRC_H
-#define     MD_IR_VCM_ON      Gpio_WriteOutputIO(MD_IR_VCM_PORT, MD_IR_VCM_PIN, TRUE)
-#define     MD_IR_VCM_OFF     Gpio_WriteOutputIO(MD_IR_VCM_PORT, MD_IR_VCM_PIN, FALSE)
+
 typedef struct 
 {
  

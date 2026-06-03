@@ -29,13 +29,14 @@
 #include "ertc.h"
 #include "etemp.h"
 #include "modbus.h"
+#include "sci_master.h"
 
 
 #define  MD_PT100              0
 #define  MD_PT1000             1
 #define  MD_TEMP_MEASURE_TYPE  MD_PT1000
   
-			
+            
 static const int16_t pt100_tab[]=
 {   
     
@@ -170,20 +171,20 @@ static const uint16_t TC_tab[]=                             // base +2000uV
 //    51202,51565,51926,52285,52643,53000,53355,53708,54060,54410 //1210 1220...            1300
 };
 
-static void delay_us(int16_t t)
+static void delay_us(volatile int16_t t)
 {
-	while(t>0)
-	{
-		__NOP();__NOP();
-		t--;
-	}
+    while(t>0)
+    {
+        __NOP();__NOP();
+        t--;
+    }
 }
 
 static uint8_t Check_Sum_5A( const void* Data,uint8_t Len)
 {
     uint8_t Sum=0x5A;
     uint8_t i=0;
-	uint8_t *data=(uint8_t *)Data;
+    uint8_t *data=(uint8_t *)Data;
     for(i=0;i<Len;i++)
     {
         Sum+=data[i];
@@ -380,13 +381,6 @@ int16_t read_device_addr(void *buf,int16_t len)
  }
 
 
-
-
-
-
-
-
-
 int16_t read_time_seg_data_param(void *buf,int16_t len )
 {
     return _24cxx_comps.read(MD_TIME_SEG_DATA_PARAM_START_ADDR,buf,len);
@@ -505,7 +499,7 @@ static void stop_buzzer(void)
 
  static int16_t get_batt(void)
  {
-	  int cnt=0;
+      int cnt=0;
     stc_adc_cfg_t              stcAdcCfg;
     int16_t batt;
     uint32_t adc;
@@ -533,13 +527,14 @@ static void stop_buzzer(void)
     //Adc_EnableIrq();
    // EnableNvic(ADC_DAC_IRQn, IrqLevel3, TRUE);
     __NOP();__NOP();__NOP();__NOP();__NOP();__NOP();__NOP();__NOP();__NOP();__NOP();
+		delay10us(3);
     Adc_SGL_Start();
    // device_comps.sw._bit.adc_busy=1;
-		
-  //  while(device_comps.sw._bit.adc_busy)
-	//	{
-				delay10us(1);
-	//	}
+        
+   // while(device_comps.sw._bit.adc_busy)
+    //	{
+                delay10us(3);
+    //	}
     adc = Adc_GetSglResult();
     //EnableNvic(ADC_DAC_IRQn, IrqLevel3, FALSE)
     //Adc_DisableIrq();
@@ -568,10 +563,10 @@ static  int32_t calc_ad3_average(device_comps_t *const this)
     {
         return 0;
     }
-	for(i=0;i<count;i++)
-	{
-		average+=this-> ad3_convert_result[i];
-	}
+    for(i=0;i<count;i++)
+    {
+        average+=this-> ad3_convert_result[i];
+    }
     average=average*10/count;	
    return average;
 }
@@ -584,35 +579,35 @@ static int32_t calc_temp_p_temp_n_average(device_comps_t *const this)
     int16_t   i=0;
     const int16_t count=this->temp_p_pos;
     int32_t average=0;
-	int32_t difference[10]={0};//=malloc(count*sizeof(float32_t));
-	if(!count)
-	{
-	    return 0;
-	}
-	for(i=0;i<count;i++)
-	{
-		difference[i]=this-> temp_p_convert_result[i]-this-> temp_n_convert_result[i];
-	}
+    int32_t difference[10]={0};//=malloc(count*sizeof(float32_t));
+    if(!count)
+    {
+        return 0;
+    }
+    for(i=0;i<count;i++)
+    {
+        difference[i]=this-> temp_p_convert_result[i]-this-> temp_n_convert_result[i];
+    }
     /*
     for(i=0;i<count-1;i++)
     {
         for(j=0;j<count-1-i;j++)
         {
-        	if(difference[j]>difference[j+1])
-        	{
-        		temp_var=difference[j+1];
-        		difference[j+1]=difference[j];
-        		difference[j]=temp_var;
-        	}
+            if(difference[j]>difference[j+1])
+            {
+                temp_var=difference[j+1];
+                difference[j+1]=difference[j];
+                difference[j]=temp_var;
+            }
         }
     }
     */
     for(i=0;i<count;i++)
-	{
-		average+=difference[i];
-	}	
-	average=(average/(count));
-	return average;
+    {
+        average+=difference[i];
+    }	
+    average=(average/(count));
+    return average;
 
 }
 
@@ -620,7 +615,7 @@ static int32_t calc_pt_value(device_comps_t *const this)
 {
    #if(MD_TEMP_MEASURE_TYPE==MD_PT100)
     int32_t delta_y=this->res_cal_param.y[1]-this->res_cal_param.y[0];
-	int32_t delta_x=this->res_cal_param.x[1]-this->res_cal_param.x[0];
+    int32_t delta_x=this->res_cal_param.x[1]-this->res_cal_param.x[0];
     int32_t int32_t pt_value=(int32_t int32_t)delta_y*(this->temp_p_temp_n_average_result-this->res_cal_param.x[0])/delta_x+this->res_cal_param.y[0];
     if(pt_value>pt100_tab[sizeof(pt100_tab)/sizeof(pt100_tab[0])-1])
     {
@@ -633,7 +628,7 @@ static int32_t calc_pt_value(device_comps_t *const this)
         pt_value=pt1000_tab[sizeof(pt1000_tab)/sizeof(pt1000_tab[0])-1]*2;
     }
    #endif
-	return pt_value;
+    return pt_value;
 
 }
 
@@ -653,15 +648,15 @@ static int16_t calc_pt_temp(device_comps_t  *const this)
     if (this->pt_value <pt100_tab[0])                // ����ֵС�ڱ�����ֵ�����������ޡ�
     {
      this->sw._bit.isTempNoConnect=1;    
-	 return -600;
+     return -600;
          
     }
     if (this->pt_value >pt100_tab[limit])        // ����ֵ���ڱ������ֵ�������������� ��
     {
          this->sw._bit.isTempNoConnect=1;
-		return 5990;
+        return 5990;
     }
-	this->sw._bit.isTempNoConnect=0;
+    this->sw._bit.isTempNoConnect=0;
    
      for (i=limit/2; (cTop-cBottom)!=1; )        // 2�ַ������
     {
@@ -695,15 +690,15 @@ static int16_t calc_pt_temp(device_comps_t  *const this)
     if (this->pt_value <pt1000_tab[0])                // ����ֵС�ڱ�����ֵ�����������ޡ�
     {
      this->sw._bit.isTempNoConnect=1;    
-	 return -500;
+     return -500;
          
     }
     if (this->pt_value >pt1000_tab[limit])        // ����ֵ���ڱ������ֵ�������������� ��
     {
          this->sw._bit.isTempNoConnect=1;
-		return 2910;
+        return 2910;
     }
-	this->sw._bit.isTempNoConnect=0;
+    this->sw._bit.isTempNoConnect=0;
    
      for (i=limit/2; (cTop-cBottom)!=1; )        // 2�ַ������
     {
@@ -774,7 +769,7 @@ static int16_t calc_TC_temp(device_comps_t  *const this)
     else
     {
           
-	E_t_0=0; 
+    E_t_0=0; 
     }
    
 
@@ -790,8 +785,8 @@ static int16_t calc_TC_temp(device_comps_t  *const this)
        cBottom = 0; 
        cTop =1;  
     }
-	else
-	{
+    else
+    {
         for (i=cTop/2; (cTop-cBottom)!=1; )        // 2�ַ������
         {
 
@@ -811,7 +806,7 @@ static int16_t calc_TC_temp(device_comps_t  *const this)
                 cTop = cBottom+1;
             }
         }
-	}
+    }
     
     Tem = ( E_t_0 - (int32_t)TC_tab[cBottom])*100 /(int32_t)(TC_tab[cTop]-TC_tab[cBottom]) + cBottom * 100 -500;
   //  Tem=Tem*this->level_param.coe/10000;
@@ -829,35 +824,35 @@ static int32_t  calc_ad1_ad2_average(device_comps_t *const this)
     int16_t   i=0;
     const int16_t count=this->ad1_pos;
     int32_t average=0;
-	int32_t difference[8]={0};//=malloc(count*sizeof(float32_t));
-	if(!count)
+    int32_t difference[8]={0};//=malloc(count*sizeof(float32_t));
+    if(!count)
     {
         return 0;
     }
-	for(i=0;i<count;i++)
-	{
-		difference[i]=this-> ad1_convert_result[i]-this-> ad2_convert_result[i];
-	}
+    for(i=0;i<count;i++)
+    {
+        difference[i]=this-> ad1_convert_result[i]-this-> ad2_convert_result[i];
+    }
     /*for(i=0;i<count-1;i++)
     {
         for(j=0;j<count-1-i;j++)
         {
-        	if(difference[j]>difference[j+1])
-        	{
-        		temp_var=difference[j+1];
-        		difference[j+1]=difference[j];
-        		difference[j]=temp_var;
-        	}
+            if(difference[j]>difference[j+1])
+            {
+                temp_var=difference[j+1];
+                difference[j+1]=difference[j];
+                difference[j]=temp_var;
+            }
         }
     }
     */
     for(i=0;i<count;i++)
-	{
-		average+=difference[i];
-	}	
-	average=(average/(count));
-	//free (period);
-	return average;
+    {
+        average+=difference[i];
+    }	
+    average=(average/(count));
+    //free (period);
+    return average;
 
 }
 
@@ -865,7 +860,7 @@ static int32_t  calc_ad1_ad2_average(device_comps_t *const this)
 static  int32_t calc_current_press(device_comps_t *const this)
 {
     int32_t delta_v= this->ad1_ad2_average_result;
-	int32_t press=0;
+    int32_t press=0;
 
     int32_t  LowTValue;
     int32_t  HighTValue;        
@@ -883,9 +878,9 @@ static  int32_t calc_current_press(device_comps_t *const this)
         Bottom=Top-1;
         goto insert_calc;
     }
-	i=Top/2;
-	while(Top-Bottom>1)
-	{
+    i=Top/2;
+    while(Top-Bottom>1)
+    {
         if (delta_v<device_comps.press_cal_param.x[i])
         {
             Top = i;
@@ -915,19 +910,19 @@ insert_calc:
 }
 ret:
     press-=this->coe.press_clr_value;
-	if(press>999)//this->press_cal_param.y[3]*1/100)//>fs*1/100.
-	{
-		//press;
-	}
-	else if(press<-999)//this->press_cal_param.y[3]*1/100)
-	{
+    if(press>999)//this->press_cal_param.y[3]*1/100)//>fs*1/100.
+    {
         //press;
     }
-	else 
-	{
-		press=0;
-	}
-	return press*(this->coe.press/10000.);
+    else if(press<-999)//this->press_cal_param.y[3]*1/100)
+    {
+        //press;
+    }
+    else 
+    {
+        press=0;
+    }
+    return press*(this->coe.press/10000.);
 }
 
 
@@ -938,7 +933,7 @@ ret:
 static  int32_t mic_cal_calc(device_comps_t *const this)
 {
     //int32_t pv= this->flow_freq;
-	int32_t rslut=0;
+    int32_t rslut=0;
 //    int32_t x[8];
 //    int32_t  LowTValue;
 //    int32_t  HighTValue;        
@@ -1140,7 +1135,7 @@ static int16_t clr_press(int16_t cmd)
 //	memset(this->debug_info,0,sizeof(this->debug_info));
 //	if(line_num==0)
 //	{
-		
+        
 //		//start output attribute name(title)
 //		sprintf(this->debug_info+strlen(this->debug_info),"AD1-AD2\t\t");//
 //		sprintf(this->debug_info+strlen(this->debug_info),"ad2_pos\t\t");//
@@ -1154,7 +1149,7 @@ static int16_t clr_press(int16_t cmd)
 //		sprintf(this->debug_info+strlen(this->debug_info),"%05d\t\t",(int)this->ad2_pos);
 //		sprintf(this->debug_info+strlen(this->debug_info),"%05d\t\t",(int)this->ad3_average_result);
 //		sprintf(this->debug_info+strlen(this->debug_info),"%05d\r\n",(int)this->ad3_pos);
-		
+        
 //	}
 //	line_num++;
 //	if(line_num>=10)//Output attribute name(title) every 50 lines
@@ -1169,8 +1164,8 @@ static int16_t clr_press(int16_t cmd)
 //		tx_num=strlen(this->debug_info);
 //	}
 //	ircComps.write(this->debug_info,tx_num);
-	
-	
+    
+    
 }
 
 
@@ -1207,13 +1202,13 @@ int16_t get_gps_info_from_net(char const *loc)
     if(device_comps.gps.loc_times<2)
     {
         return 1;
-	}
-	device_comps.gps.glat=glat;
-	device_comps.gps.glng=glng;
-	device_comps.gps.cs=Check_Sum_5A(&device_comps.gps, &device_comps.gps.cs-(uint8_t *)&device_comps.gps);
-	device_comps.save_gps_param(&device_comps.gps,sizeof(device_comps.gps));
-	device_comps.gps.loc_times=0;
-	return 0;
+    }
+    device_comps.gps.glat=glat;
+    device_comps.gps.glng=glng;
+    device_comps.gps.cs=Check_Sum_5A(&device_comps.gps, &device_comps.gps.cs-(uint8_t *)&device_comps.gps);
+    device_comps.save_gps_param(&device_comps.gps,sizeof(device_comps.gps));
+    device_comps.gps.loc_times=0;
+    return 0;
 }
 
 static int32_t get_flow_meter_unit_display_value(int32_t cur_std_flow,uint8_t std_flow_dot,uint16_t dis_unit,uint8_t *dis_dot,uint16_t *calc_dis_unit)
@@ -1293,59 +1288,59 @@ static int32_t get_flow_meter_unit_display_value(int32_t cur_std_flow,uint8_t st
 
 static uint8_t device_comps_init(device_comps_t *const this)
 {
-	/**************START E2PROM TEST********************/
-	if(device_comps.sw._bit.e2prom_driver_err)	
-	{
-		char msg[32]="";// ep2rom low 32bytes use test
-		_24cxx_comps.write(MD_MEMORY_TEST_START_ADDR,"this is a e2prom driver test",strlen("this is a e2prom driver test"));
-		_24cxx_comps.read (MD_MEMORY_TEST_START_ADDR,msg,strlen("this is a e2prom driver test"));
-		if(!strcmp(msg,"this is a e2prom driver test"))
-		{
-			device_comps.sw._bit.e2prom_driver_err=0;	
-		}
-		else
-		{
-			device_comps.sw._bit.e2prom_driver_err=1;
-		}
-	}
+    /**************START E2PROM TEST********************/
+    if(device_comps.sw._bit.e2prom_driver_err)	
+    {
+        char msg[32]="";// ep2rom low 32bytes use test
+        _24cxx_comps.write(MD_MEMORY_TEST_START_ADDR,"this is a e2prom driver test",strlen("this is a e2prom driver test"));
+        _24cxx_comps.read (MD_MEMORY_TEST_START_ADDR,msg,strlen("this is a e2prom driver test"));
+        if(!strcmp(msg,"this is a e2prom driver test"))
+        {
+            device_comps.sw._bit.e2prom_driver_err=0;	
+        }
+        else
+        {
+            device_comps.sw._bit.e2prom_driver_err=1;
+        }
+    }
 
     if(device_comps.sw._bit.adx_driver_err)	
-	{
-		MD_SET_AVDD_ON;
+    {
+        MD_SET_AVDD_ON;
         adx_comps.current_channel=adx_comps.init_channel;
         if(!adx_comps.Init(adx_comps.current_channel,adx_comps.gain,adx_comps.rate)) 
         {
             device_comps.sw._bit.adx_driver_err=0;
         }
-	    MD_SET_AVDD_OFF;
+        MD_SET_AVDD_OFF;
     }
 
-	if(device_comps.sw._bit.lora_module_err)	
-	{
-	    if(loraComps.sw._bit.init_ok)	
-    	{
-    	    device_comps.sw._bit.lora_module_err=0;
-    	}
-	}
+    if(device_comps.sw._bit.lora_module_err)	
+    {
+        if(loraComps.sw._bit.init_ok)	
+        {
+            device_comps.sw._bit.lora_module_err=0;
+        }
+    }
 
     
     
     if(device_comps.sw._bit.rtc_module_err)	
-	{
-	    if(systemComps.sw._bit.is_xt1_running)	
-    	{
-    	    device_comps.sw._bit.rtc_module_err=0;
-    	}
-	}
+    {
+        if(systemComps.sw._bit.is_xt1_running)	
+        {
+            device_comps.sw._bit.rtc_module_err=0;
+        }
+    }
 
    if(!(device_comps.sw.All&0x00ff))
-	{
-		return 0;
-	}
-	else
-	{
-		return 1;
-	}
+    {
+        return 0;
+    }
+    else
+    {
+        return 1;
+    }
 
 
 }
@@ -1367,10 +1362,10 @@ static void read_all_param(struct _DEVICE_COMPONENTS  *const this)
                     device_comps.system_time.time.u8Hour=0x17;
                     device_comps.system_time.time.u8Minute=0x20;
                     device_comps.system_time.time.u8Second=0x30;
-    	        } 
+                } 
                 Rtc_SetTime(&device_comps.system_time.time);
                 ertc_comps.write_broken_time(&device_comps.system_time.time);
-    	    }
+            }
         }
        
         
@@ -1449,8 +1444,8 @@ static void read_all_param(struct _DEVICE_COMPONENTS  *const this)
                 memset(&device_comps.iot_param.deviceID,0,sizeof(device_comps.iot_param.deviceID));
             }
         }
-		
-		   if(!read_misc_param(&device_comps.misc_param,sizeof(device_comps.misc_param)))
+        
+           if(!read_misc_param(&device_comps.misc_param,sizeof(device_comps.misc_param)))
         {
             if(device_comps.misc_param.cs!=Check_Sum_5A(&device_comps.misc_param, & device_comps.misc_param.cs-(uint8_t *)&device_comps.misc_param))
             {
@@ -1623,7 +1618,7 @@ static void pressOverloadReport(struct _DEVICE_COMPONENTS  *const this )
 //                        {
 //                            if((device_comps.device_addr.addr[4]!=0)&&(device_comps.device_addr.addr[3]!=0))
 //                	        {
-//                                if(device_comps.batt>30)
+//                                if(device_comps.batt>30 || device_comps.sw._bit.isExtPowerConnected)
 //                                {
 //                                    protocolComps.triggerIrq._bit.PHighOver=1;
                                     
@@ -1645,7 +1640,7 @@ static void pressOverloadReport(struct _DEVICE_COMPONENTS  *const this )
 //                        {
 //                            if((device_comps.device_addr.addr[4]!=0)&&(device_comps.device_addr.addr[3]!=0))
 //                	        {
-//                                if(device_comps.batt>30)
+//                                if(device_comps.batt>30 || device_comps.sw._bit.isExtPowerConnected)
 //                                {
 //                                  protocolComps.triggerIrq._bit.PHighRealse=1;
                                    
@@ -1678,7 +1673,7 @@ static void pressOverloadReport(struct _DEVICE_COMPONENTS  *const this )
 //                       {
 //                           if((device_comps.device_addr.addr[4]!=0)&&(device_comps.device_addr.addr[3]!=0))
 //                           {
-//                               if(device_comps.batt>30)
+//                               if(device_comps.batt>30 || device_comps.sw._bit.isExtPowerConnected)
 //                               {
 //                                   protocolComps.triggerIrq._bit.PLowLess=1;
                                    
@@ -1700,7 +1695,7 @@ static void pressOverloadReport(struct _DEVICE_COMPONENTS  *const this )
 //                       {
 //                           if((device_comps.device_addr.addr[4]!=0)&&(device_comps.device_addr.addr[3]!=0))
 //                           {
-//                               if(device_comps.batt>30)
+//                               if(device_comps.batt>30 || device_comps.sw._bit.isExtPowerConnected)
 //                               {
 //                                  protocolComps.triggerIrq._bit.PLowRealse=1;
                                   
@@ -1734,14 +1729,14 @@ static void tempOverloadReport(struct _DEVICE_COMPONENTS  *const this )
                 if(!this->sw._bit.isTHighOverTriggered)
                 {
                     if((device_comps.device_addr.addr[4]!=0)&&(device_comps.device_addr.addr[3]!=0))
-        	        {
-                        if(device_comps.batt>30)
+                    {
+                        if(device_comps.batt>30 || device_comps.sw._bit.isExtPowerConnected)
                         {
                             protocolComps.triggerIrq._bit.THighOver=1;
                             
                         }
-        	        }
-        	        this->sw._bit.isTHighRealseTriggered=0;
+                    }
+                    this->sw._bit.isTHighRealseTriggered=0;
                     this->sw._bit.isTHighOverTriggered=1;
                 }
                 this->THihgOverTimer=0;
@@ -1756,14 +1751,14 @@ static void tempOverloadReport(struct _DEVICE_COMPONENTS  *const this )
                 if(!this->sw._bit.isTHighRealseTriggered)
                 {
                     if((device_comps.device_addr.addr[4]!=0)&&(device_comps.device_addr.addr[3]!=0))
-        	        {
-                        if(device_comps.batt>30)
+                    {
+                        if(device_comps.batt>30 || device_comps.sw._bit.isExtPowerConnected)
                         {
                          // protocolComps.triggerIrq._bit.THighRealse=1;
                            
                         }
-        	        }
-        	        this->sw._bit.isTHighRealseTriggered=1;
+                    }
+                    this->sw._bit.isTHighRealseTriggered=1;
                     this->sw._bit.isTHighOverTriggered=0;
                 }
                
@@ -1784,7 +1779,7 @@ static void tempOverloadReport(struct _DEVICE_COMPONENTS  *const this )
                {
                    if((device_comps.device_addr.addr[4]!=0)&&(device_comps.device_addr.addr[3]!=0))
                    {
-                       if(device_comps.batt>30)
+                       if(device_comps.batt>30 || device_comps.sw._bit.isExtPowerConnected)
                        {
                            protocolComps.triggerIrq._bit.TLowLess=1;
                            
@@ -1806,7 +1801,7 @@ static void tempOverloadReport(struct _DEVICE_COMPONENTS  *const this )
                {
                    if((device_comps.device_addr.addr[4]!=0)&&(device_comps.device_addr.addr[3]!=0))
                    {
-                       if(device_comps.batt>30)
+                       if(device_comps.batt>30 || device_comps.sw._bit.isExtPowerConnected)
                        {
                           //protocolComps.triggerIrq._bit.TLowRealse=1;
                           
@@ -1827,17 +1822,17 @@ static void net_power_off_call_back(void)
     if(!protocolComps.sw._bit.dataPushYet && !protocolComps.sw._bit.dataPushYet1 )
     {
         uint16_t StoreAddr=device_comps.TimeSegData.store_addr;
-	    if((StoreAddr < MD_TIME_SEG_DATA_START_ADDR )||(StoreAddr>MD_TIME_SEG_DATA_END_ADDR-16))
-    	{
+        if((StoreAddr < MD_TIME_SEG_DATA_START_ADDR )||(StoreAddr>MD_TIME_SEG_DATA_END_ADDR-16))
+        {
             StoreAddr=MD_TIME_SEG_DATA_START_ADDR;
-    	}
+        }
 
       //  _24cxx_comps.write(StoreAddr,&vmComps.channel_0_freq,16);
         StoreAddr+=16;
-		if(StoreAddr>=MD_TIME_SEG_DATA_END_ADDR)
-		{
-		        StoreAddr=MD_TIME_SEG_DATA_START_ADDR;
-		}
+        if(StoreAddr>=MD_TIME_SEG_DATA_END_ADDR)
+        {
+                StoreAddr=MD_TIME_SEG_DATA_START_ADDR;
+        }
         
         if(device_comps.TimeSegData.nums<12)
         {
@@ -1847,18 +1842,18 @@ static void net_power_off_call_back(void)
         {
             device_comps.TimeSegData.nums=12;
         }
-		device_comps.TimeSegData.store_addr=StoreAddr;
+        device_comps.TimeSegData.store_addr=StoreAddr;
         temp[0]=0x20;
-    	temp[1]=device_comps.system_time.time.u8Year;
-    	temp[2]=device_comps.system_time.time.u8Month;
-    	temp[3]=device_comps.system_time.time.u8Day;
-    	temp[4]=device_comps.system_time.time.u8Hour;
+        temp[1]=device_comps.system_time.time.u8Year;
+        temp[2]=device_comps.system_time.time.u8Month;
+        temp[3]=device_comps.system_time.time.u8Day;
+        temp[4]=device_comps.system_time.time.u8Hour;
         temp[5]=device_comps.system_time.time.u8Minute;
-    	temp[6]=device_comps.system_time.time.u8Second;
+        temp[6]=device_comps.system_time.time.u8Second;
         
         memcpy(device_comps.TimeSegData.lastSampleTime,&temp,sizeof(device_comps.TimeSegData.lastSampleTime));
-		device_comps.TimeSegData.cs=Check_Sum_5A(&device_comps.TimeSegData, &device_comps.TimeSegData.cs-(uint8_t *)&device_comps.TimeSegData);
-		device_comps.save_time_seg_data_param(&device_comps.TimeSegData,sizeof(device_comps.TimeSegData));
+        device_comps.TimeSegData.cs=Check_Sum_5A(&device_comps.TimeSegData, &device_comps.TimeSegData.cs-(uint8_t *)&device_comps.TimeSegData);
+        device_comps.save_time_seg_data_param(&device_comps.TimeSegData,sizeof(device_comps.TimeSegData));
        
     }
     else
@@ -1888,10 +1883,10 @@ static float32_t calc_s1_freq(struct _DEVICE_COMPONENTS  *const this )
     {
         return 0;
     }
-	for(i=0;i<count;i++)
-	{
-		freq += this->s1_cnt_value[i];
-	}
+    for(i=0;i<count;i++)
+    {
+        freq += this->s1_cnt_value[i];
+    }
     return (float32_t)freq/count;	
 }
 
@@ -1965,9 +1960,9 @@ static int32_t calc_s1_current_flow(struct _DEVICE_COMPONENTS  *const this )
                 }
                 else
                 {
-                	i=Top/2;
-                	while(Top-Bottom>1)
-                	{
+                    i=Top/2;
+                    while(Top-Bottom>1)
+                    {
                         if (pv<x_freq[i])
                         {
                             Top = i;
@@ -2049,10 +2044,10 @@ static int32_t calc_s1_current_flow(struct _DEVICE_COMPONENTS  *const this )
             device_comps.flow_cal_param.unit=0;
         }
     }
-	if(Q<0)
-	{
-		Q=0;
-	}
+    if(Q<0)
+    {
+        Q=0;
+    }
     
     return Q;  //m3/h
 }
@@ -2086,7 +2081,7 @@ static int32_t calc_s1_current_flowM(struct _DEVICE_COMPONENTS  *const this )
 static int16_t calc_current_v(struct _DEVICE_COMPONENTS  *const this)
 {
       float32_t MD_PIPE_S =(0.0000000314*this->flow_cal_param.RefDN*this->flow_cal_param.RefDN/4); //m^2
-	  float32_t v=f_div(f_div(this->current_flow,pwr(this->flow_cal_param.dot)),MD_PIPE_S);//m/h
+      float32_t v=f_div(f_div(this->current_flow,pwr(this->flow_cal_param.dot)),MD_PIPE_S);//m/h
       return (int16_t)(f_div(v,36));//0.01m/s
 }
 
@@ -2166,7 +2161,7 @@ void LpTim0_IRQHandler(void)
 static void calc_total_flow(struct _DEVICE_COMPONENTS  *const this )
 {
     static int16_t timer=0;
-	
+    
     float32_t total_L;
     int32_t    total_int=this->meter.total_int;
     float32_t   total_dec=this->meter.total_dec;
@@ -2192,7 +2187,7 @@ static void calc_total_flow(struct _DEVICE_COMPONENTS  *const this )
         device_comps.meter.total_int=total_int;
         device_comps.meter.total_dec=total_dec;
         device_comps.meter.cs=Check_Sum_5A(&device_comps.meter, & device_comps.meter.cs-(uint8_t *)&device_comps.meter);
-	    save_meter(&device_comps.meter,sizeof(device_comps.meter));
+        save_meter(&device_comps.meter,sizeof(device_comps.meter));
 //        read_meter(&meter,sizeof(meter));
 //	    if(memcmp(&meter,&device_comps.meter,sizeof(meter)))
 //        {
@@ -2240,7 +2235,7 @@ static void calc_total_flow(struct _DEVICE_COMPONENTS  *const this )
 static void calc_total_flowN(struct _DEVICE_COMPONENTS  *const this )
 {
     static int16_t timer=0;
-	
+    
     float32_t total_L;
     int32_t    total_int=this->meter.total_intN;
     float32_t   total_dec=this->meter.total_decN;
@@ -2266,7 +2261,7 @@ static void calc_total_flowN(struct _DEVICE_COMPONENTS  *const this )
         device_comps.meter.total_intN=total_int;
         device_comps.meter.total_decN=total_dec;
         device_comps.meter.cs=Check_Sum_5A(&device_comps.meter, & device_comps.meter.cs-(uint8_t *)&device_comps.meter);
-	    save_meter(&device_comps.meter,sizeof(device_comps.meter));
+        save_meter(&device_comps.meter,sizeof(device_comps.meter));
 //        read_meter(&meter,sizeof(meter));
 //	    if(memcmp(&meter,&device_comps.meter,sizeof(meter)))
 //        {
@@ -2452,10 +2447,10 @@ static void calc_freq_output(device_comps_t *this)
 
 static void calc_4_20ma_output( int32_t pv,int32_t lower,int32_t upper)
 {
-	/****START calc 4-20ma*******
-	I   4000        20000	      1uA  Positive output 
-	I   20000       4000          1uA  Reverse output
-	     
+    /****START calc 4-20ma*******
+    I   4000        20000	      1uA  Positive output 
+    I   20000       4000          1uA  Reverse output
+         
 ****************************/
 //    int16_t   pv_dot=device_comps.flow_cal_param.dot;
 //    float32_t flow=m_div(pv,pv_dot);
@@ -2485,27 +2480,27 @@ static void calc_4_20ma_output( int32_t pv,int32_t lower,int32_t upper)
     int32_t flow=pv;
     int32_t lower_range=lower;
     int32_t upper_range=upper;
-	if(1)
-	{
-		
-		uint32_t code=0;//code=(I-4)/16*65536
-	    int32_t output_i=0;
+    if(1)
+    {
+        
+        uint32_t code=0;//code=(I-4)/16*65536
+        int32_t output_i=0;
         int16_t i;
-		uint32_t  data=0;
+        uint32_t  data=0;
         uint8_t   dat[4];
         if(upper_range==lower_range)
         {
              output_i=4000;
         }
-		else if(!device_comps.misc_param.I_o_dir)
-		{
-		    output_i=(int64_t)(20000-4000)*(flow-lower_range)/(upper_range-lower_range)+4000;
-		}
-		else
-		{
+        else if(!device_comps.misc_param.I_o_dir)
+        {
+            output_i=(int64_t)(20000-4000)*(flow-lower_range)/(upper_range-lower_range)+4000;
+        }
+        else
+        {
            output_i=(int64_t)(4000-20000)*(flow-lower_range)/(upper_range-lower_range)+20000;
-		}
-		output_i=output_i * device_comps.coe.out_4_20ma/10000;
+        }
+        output_i=output_i * device_comps.coe.out_4_20ma/10000;
         if(output_i<4000)
         {
             output_i=4000;
@@ -2537,15 +2532,15 @@ static void calc_4_20ma_output( int32_t pv,int32_t lower,int32_t upper)
           #if(MD_MEASURE_TYPE!=MD_GASES) 
             code =(int64_t)(0x14000-0x4000)* (output_i - _4ma_raw_value) / (_20ma_raw_value - _4ma_raw_value)+0x4000;
            // code=(output_i-4000)*4096/1000+0x4000;
-    		if(code<0x3800)
-    		{
-    		    code=0x3800;
-    		}
+            if(code<0x3800)
+            {
+                code=0x3800;
+            }
             else if(code>0x18000)
-    		{
-    			code=0x18000;
-    		}
-    		data=code;
+            {
+                code=0x18000;
+            }
+            data=code;
             if( (hum_comps.current_mode == EM_PARAM_MODIFY_MODE && device_comps.param_type==EM_PARAM_FACTORY  && mode_comps[hum_comps.current_mode].dis_option==7) 
               || ( modbusComps.cmd_out_raw_4ma_20ma_timer && !device_comps.sw._bit.cmd_out_raw__4ma_20ma) )
             {
@@ -2592,14 +2587,14 @@ static void calc_4_20ma_output( int32_t pv,int32_t lower,int32_t upper)
              code =(int64_t)(3440-295)* (output_i - _4ma_raw_value) / (_20ma_raw_value - _4ma_raw_value)+295;
            // code=(int64_t)(output_i-2500)*24*4095/500000;
             if(code<0)
-    		{
-    			code=0;
-    		}
-    		else if(code>4095)
-    		{
-    		    code=4095;
-    		}
-    		data=code;
+            {
+                code=0;
+            }
+            else if(code>4095)
+            {
+                code=4095;
+            }
+            data=code;
 
             if( (hum_comps.current_mode == EM_PARAM_MODIFY_MODE && device_comps.param_type==EM_PARAM_FACTORY  && mode_comps[hum_comps.current_mode].dis_option==7) 
               || ( modbusComps.cmd_out_raw_4ma_20ma_timer && !device_comps.sw._bit.cmd_out_raw__4ma_20ma) )
@@ -2615,7 +2610,7 @@ static void calc_4_20ma_output( int32_t pv,int32_t lower,int32_t upper)
             dat[1]=data;
             sw_i2c_comps.write(0x60,dat,2,0);
           }
-		 #endif
+         #endif
        }
     }
 }
@@ -2708,62 +2703,62 @@ void Pcnt_IRQHandler(void)
 
 static void device_comps_task_handle(void)//Execution interval is 200 ms
 {
-	uint16_t sensor_calc_count;
+    uint16_t sensor_calc_count;
   device_comps_t *this=device_comps.this;
  (device_comps.sw._bit.isExtPowerConnected)?(sensor_calc_count=5):(sensor_calc_count=15);
-	if(this->do_init==1)
-	{
-		if(this->count<40)
-		{
-			if(!device_comps_init(this))
-			{
-				this->do_init=0;
-			}
-			else
-			{
-				this->count++;
-			}
-		}
-		else
-		{
-		    #ifdef  MD_IGNORE_ALL_ERR
-			    this->do_init=0;
-			#else
-					__disable_irq();
-			    NVIC_SystemReset();
-			#endif
-		}
-		if(this->do_init==0)
-		{
+    if(this->do_init==1)
+    {
+        if(this->count<40)
+        {
+            if(!device_comps_init(this))
+            {
+                this->do_init=0;
+            }
+            else
+            {
+                this->count++;
+            }
+        }
+        else
+        {
+            #ifdef  MD_IGNORE_ALL_ERR
+                this->do_init=0;
+            #else
+                    __disable_irq();
+                NVIC_SystemReset();
+            #endif
+        }
+        if(this->do_init==0)
+        {
            
-			this->count=0;
+            this->count=0;
             this->sensor_count=0; 
-			device_comps.batt=get_batt();
-		   
-			read_all_param(this);
+            device_comps.batt=get_batt();
+           
+            read_all_param(this);
             device_comps.this_pluse_L=0;
            
             this->s1_cnt_start();
             this->s1_pre_cnt=Pcnt_GetCnt();
-			//TODO
-		}
-	}
+            //TODO
+        }
+    }
 
-	if(hum_comps.dis_oper_mark._bit.test_ok && this->do_init==0)
-	{
-    	  hum_comps.dis_oper_mark._bit.test_ok=0;
+    if(hum_comps.dis_oper_mark._bit.test_ok && this->do_init==0)
+    {
+          hum_comps.dis_oper_mark._bit.test_ok=0;
           hum_comps.enter_default_mode(0);
-  	}
-	
-	//if((this->do_init==0)&&(!loraComps.sw._bit.runing))
-	if(this->do_init==0)//&&(!netComps.St._bit.running))//&&(!loraComps.sw._bit.runing))
-	{
-	    if(this->count==5)//every 1s calc press and temperature
-		{
+      }
+    
+    //if((this->do_init==0)&&(!loraComps.sw._bit.runing))
+    if(this->do_init==0)//&&(!netComps.St._bit.running))//&&(!loraComps.sw._bit.runing))
+    {
+        if(this->count==5)//every 1s calc press and temperature
+        {
             //int32_t delta_adc=0;
             uint16_t cnt;
             uint16_t temp;
-			this->count=0;
+            this->count=0;
           //  __disable_irq();
             cnt=Pcnt_GetCnt() ;
             temp=cnt - this->s1_pre_cnt;
@@ -2804,12 +2799,12 @@ static void device_comps_task_handle(void)//Execution interval is 200 ms
           
          #elif(MD_MEASURE_TYPE==MD_GASES)
 
-			this->current_flowN= calc_s1_current_flowN(this);//M3/H
+            this->current_flowN= calc_s1_current_flowN(this);//M3/H
            // this->current_flowM= calc_s1_current_flowM(this);//Kg/H
             calc_total_flowN(this);
            calc_4_20ma_output(this->current_flowN,this->misc_param.I_o_low,this->misc_param.I_o_high);
           
-		#endif
+        #endif
           
 //			if(this->current_press>this->max_press)
 //			{
@@ -2817,21 +2812,21 @@ static void device_comps_task_handle(void)//Execution interval is 200 ms
 //            }
            // pressOverloadReport(this);
             this->ad3_pos=0;
-			this->ad1_pos=0;
-			this->ad2_pos=0;
-			this->temp_p_pos=0;
-			this->temp_n_pos=0;
+            this->ad1_pos=0;
+            this->ad2_pos=0;
+            this->temp_p_pos=0;
+            this->temp_n_pos=0;
             hum_comps.dis_oper_mark._bit.refressh_meter_data=1;
             hum_comps.dis_oper_mark._bit.refresh_debug_param=1;
-		}
+        }
         
         if(device_comps.sensor_count>=sensor_calc_count)
         {
             device_comps.sensor_count=0;
         }
        
-	  #if(MD_MEASURE_TYPE==MD_GASES)		
-		if(this->sensor_count==0)
+      #if(MD_MEASURE_TYPE==MD_GASES)		
+        if(this->sensor_count==0)
         {
             MD_SET_AVDD_ON;
             //smp power on;
@@ -2893,7 +2888,7 @@ static void device_comps_task_handle(void)//Execution interval is 200 ms
            MD_SET_AVDD_OFF;
         }
        
-	  #else	
+      #else	
         if(this->count==3)
         {
              sht4x_comps.start_measure();
@@ -2905,15 +2900,15 @@ static void device_comps_task_handle(void)//Execution interval is 200 ms
             sht4x_comps.read_measure_relt(&temp,&humi);
             this->current_temp=temp*(this->coe.pt_temp/10000.);
         }
-	  #endif	
+      #endif	
         this->count++;
         this->sensor_count++;
-	}
+    }
 }
 
 static void NOP(void)
 {
-	__NOP();
+    __NOP();
 }
 
 #define  BK_LN
@@ -2925,7 +2920,8 @@ device_comps_t device_comps=
 
   0,//	uint32_t count;            //Called counter
   0,//uint32_t    sensor_count
-  {MD_E2PROM_DRIVER_ERR|MD_ADX_DRIVER_ERR|MD_LORA_MODULE_ERR|MD_RTC_MODULE_ERR}, //	sw_t sw;
+  {MD_E2PROM_DRIVER_ERR|MD_ADX_DRIVER_ERR|MD_LORA_MODULE_ERR|MD_RTC_MODULE_ERR}, //	device_sw_t sw;
+  {0},//device_trigger_t trigger;
                                         
   0,        //    int16_t PHihgOverTimer;
   0,       //    int16_t PHihgRealseTimer;
@@ -2935,7 +2931,7 @@ device_comps_t device_comps=
   0,        //    int16_t THihgRealseTimer;
   0,        //    int16_t TLowLessTimer;
   0,        //    int16_t TLowRealseTimer;
-          	
+              
   0,         //	uint16_t report_interval_timer;
   0,        //	int16_t _0_5s_timr_acc;
   0,        //	int16_t batt_blunt_timer;
@@ -2967,7 +2963,7 @@ device_comps_t device_comps=
   0,          //   int16_t current_i_n_1;
   0,         //    int16_t  outed_pluse_cnt;
   0,         //    float32_t this_pluse_L;
-	0,                //    int16_t lptimer_interrput_cnt;
+    0,                //    int16_t lptimer_interrput_cnt;
  start_out_pluse,   //    void (*const out_pluse_start)(int16_t pluse_width);   static void start_out_pluse(int16_t pluse_width)
  App_PcntInit,       //    void (* const s1_cnt_start)(void);
 
@@ -3069,16 +3065,16 @@ device_comps_t device_comps=
    
    {0},              //    report_param_t report_param;
    save_report_param,       //	int16_t (*save_report_param)(void const *,int16_t);
-                            	
+                                
    {0},                         //    access_param_t access_param;
    save_access_param,            //    int16_t (*save_access_param)(void const *,int16_t);
-                            	
+                                
    {0},                         //	lbs_param_t   lbs_param;
    save_lbs_param,              //    int16_t (*save_lbs_param)(void const * , int16_t);
 
    {0},             //   iot_param_t iot_param;
    save_iot_param,             //    int16_t (*save_iot_param)(void const * , int16_t);
-                                    	
+                                        
    {0},                  //	gps_t gps;
    save_gps_param,             //    int16_t (*save_gps_param)(void const *,int16_t);
    get_gps_info_from_net,     //    int16_t (*get_gps_info_from_net)(uint8_t const *);
@@ -3095,36 +3091,36 @@ device_comps_t device_comps=
 
 void CalcReportTime(uint8_t *hur,uint8_t *u8Minute,uint8_t *u8Second)
 {
-	uint32_t  DisPerTimeTotalSecond=(uint32_t)((device_comps.device_addr.addr[6]>>4)*10+(device_comps.device_addr.addr[6]&0x0f))* device_comps.report_param.disFactor;
-	uint32_t  Min=DisPerTimeTotalSecond/60;
-	uint32_t  DisPerTimehur=Min/60;
-	uint32_t  DisPerTimeMin=Min%60;//u8Minute
-	
-	
-	*u8Second=DisPerTimeTotalSecond%60;
-	*u8Minute=(device_comps.report_param.u8Minute+DisPerTimeMin)%60;
-	*hur=(device_comps.report_param.u8Hour+DisPerTimehur+(device_comps.report_param.u8Minute+DisPerTimeMin)/60)%24;
-	
-	*u8Second=(*u8Second/10<<4)+(*u8Second%10);
-	*u8Minute=(*u8Minute/10<<4)+(*u8Minute%10);
-	*hur=(*hur/10<<4)+(*hur%10);
+    uint32_t  DisPerTimeTotalSecond=(uint32_t)((device_comps.device_addr.addr[6]>>4)*10+(device_comps.device_addr.addr[6]&0x0f))* device_comps.report_param.disFactor;
+    uint32_t  Min=DisPerTimeTotalSecond/60;
+    uint32_t  DisPerTimehur=Min/60;
+    uint32_t  DisPerTimeMin=Min%60;//u8Minute
+    
+    
+    *u8Second=DisPerTimeTotalSecond%60;
+    *u8Minute=(device_comps.report_param.u8Minute+DisPerTimeMin)%60;
+    *hur=(device_comps.report_param.u8Hour+DisPerTimehur+(device_comps.report_param.u8Minute+DisPerTimeMin)/60)%24;
+    
+    *u8Second=(*u8Second/10<<4)+(*u8Second%10);
+    *u8Minute=(*u8Minute/10<<4)+(*u8Minute%10);
+    *hur=(*hur/10<<4)+(*hur%10);
 }
 
 void GSMReturnTimeChk(uint8_t RHur,uint8_t RMin,uint8_t RSec)
 {
-	//uint16_t cmp=device_comps.report_param.u8Hour_Interval;
-	uint16_t cmp=device_comps.report_param.u16Minute_Interval;
-	if(!cmp)
-	{
+    //uint16_t cmp=device_comps.report_param.u8Hour_Interval;
+    uint16_t cmp=device_comps.report_param.u16Minute_Interval;
+    if(!cmp)
+    {
         device_comps.report_interval_timer=0;
-	    return ;
-	}
+        return ;
+    }
     if(cmp<5)
-	{
-		cmp=5;
-	}
-	//if(device_comps.report_interval_timer>=(uint32_t)cmp*60)
-	if(device_comps.report_interval_timer>=cmp)
+    {
+        cmp=5;
+    }
+    //if(device_comps.report_interval_timer>=(uint32_t)cmp*60)
+    if(device_comps.report_interval_timer>=cmp)
     {
 //		uint8_t reltSec=((RSec>>4)*10+(RSec&0x0f)) +60-((device_comps.system_time.time.u8Second>>4)*10+(device_comps.system_time.time.u8Second&0x0f));
 //		uint8_t reltMin=((RMin>>4)*10+(RMin&0x0f)) +60-1-((device_comps.system_time.time.u8Minute>>4)*10+(device_comps.system_time.time.u8Minute&0x0f));
@@ -3135,70 +3131,72 @@ void GSMReturnTimeChk(uint8_t RHur,uint8_t RMin,uint8_t RSec)
 //		uint32_t InterTimer=(uint32_t)equHur*3600+   (uint32_t)equMin*60    +(uint32_t)equSec;
 //	     if(InterTimer>(uint32_t)5*60) 
         if(1)
-		{
-			 if((device_comps.device_addr.addr[4]!=0)&&(device_comps.device_addr.addr[3]!=0))
-	        {
-                if(device_comps.batt>30)
+        {
+             if((device_comps.device_addr.addr[4]!=0)&&(device_comps.device_addr.addr[3]!=0))
+            {
+                if(device_comps.batt>30 || device_comps.sw._bit.isExtPowerConnected)
                 {
                     protocolComps.triggerIrq._bit.intervalTime=1;
+                    device_comps.trigger_req._bit.interval_time=1;
                 }
-	        }
-	    }
-	    device_comps.report_interval_timer=0;
-	}
+            }
+        }
+        device_comps.report_interval_timer=0;
+    }
 }
 
 void  Timing_interval_report(void)
 {
     uint8_t ReportHur;
-	uint8_t ReportMin;
-	uint8_t ReportSec;
-	uint8_t ReportMin_30;
-	uint8_t temp[7];
-	
+    uint8_t ReportMin;
+    uint8_t ReportSec;
+    uint8_t ReportMin_30;
+    uint8_t temp[7];
+    
     CalcReportTime(&ReportHur,&ReportMin,&ReportSec);
     if(device_comps.system_time.time.u8Second == ReportSec)
-	{	
-		device_comps.report_interval_timer++;
+    {	
+        device_comps.report_interval_timer++;
         if((ReportHur==device_comps.system_time.time.u8Hour)&&(ReportMin==device_comps.system_time.time.u8Minute))
         {
-	        if((device_comps.device_addr.addr[4]!=0)&&(device_comps.device_addr.addr[3]!=0))
-	        {
-                if(device_comps.batt>30)
+            if((device_comps.device_addr.addr[4]!=0)&&(device_comps.device_addr.addr[3]!=0))
+            {
+                if(device_comps.batt>30 || device_comps.sw._bit.isExtPowerConnected)
                 {
                     if(device_comps.report_param.u8Hour || device_comps.report_param.u8Minute )
                     {
                         protocolComps.triggerIrq._bit.timeAuto=1;
+                       //device_comps.trigger_req._bit.time_auto=1;
                        // device_comps.report_interval_timer=0;
                     }
                 }
                 
-	        }
-	        if(!device_comps.report_param.u16Minute_Interval && !device_comps.report_param.u8Hour && !device_comps.report_param.u8Minute )
-	        {
+            }
+            if(!device_comps.report_param.u16Minute_Interval && !device_comps.report_param.u8Hour && !device_comps.report_param.u8Minute )
+            {
                if(device_comps.system_time.time.u8Day==1 || device_comps.system_time.time.u8Day==0x11 || device_comps.system_time.time.u8Day==0x21)
                {
                     protocolComps.triggerIrq._bit.batteryBlunt=1;
                }
-	        }
+            }
             
-			if(device_comps.system_time.time.u8Day==1 || device_comps.system_time.time.u8Day==0x11 || device_comps.system_time.time.u8Day==0x21)
+            if(device_comps.system_time.time.u8Day==1 || device_comps.system_time.time.u8Day==0x11 || device_comps.system_time.time.u8Day==0x21)
             {
                   device_comps.sw._bit.isBatBluntNow=1;
                   device_comps.batt_blunt_timer=10;
             }
-	     }
-		GSMReturnTimeChk(ReportHur,ReportMin,ReportSec); 
+         }
+        GSMReturnTimeChk(ReportHur,ReportMin,ReportSec); 
 
         ReportMin_30=ReportMin+0x30;
         if(ReportMin_30>=0x60)
         {
             ReportMin_30-=0x60;
         }
-		if(device_comps.system_time.time.u8Minute == ReportMin  || device_comps.system_time.time.u8Minute == ReportMin_30)
-		{
-			if(device_comps.press_cal_param.is_calibrated)
-			{
+        if(device_comps.system_time.time.u8Minute == ReportMin  || device_comps.system_time.time.u8Minute == ReportMin_30)
+        {
+            if(device_comps.press_cal_param.is_calibrated)
+            {
 //				uint16_t StoreAddr=device_comps.TimeSegData.store_addr;
 //				
 //				if((StoreAddr>= MD_TIME_SEG_DATA_START_ADDR )&&(StoreAddr<=MD_TIME_SEG_DATA_END_ADDR-4))
@@ -3232,9 +3230,9 @@ void  Timing_interval_report(void)
 //					device_comps.TimeSegData.cs=Check_Sum_5A(&device_comps.TimeSegData, &device_comps.TimeSegData.cs-(uint8_t *)&device_comps.TimeSegData);
 //					device_comps.save_time_seg_data_param(&device_comps.TimeSegData,sizeof(device_comps.TimeSegData));
 //				}
-			}
-		}
-	}
+            }
+        }
+    }
 }
 
 
@@ -3242,122 +3240,127 @@ void  Timing_interval_report(void)
 void _0_5s_task_handle(void)
 {
     Wdt_Feed();
-    if(hum_comps.current_mode!=EM_SELF_TEST_MODE)
+    if (hum_comps.current_mode != EM_SELF_TEST_MODE)
     {
         device_comps._0_5s_timr_acc++;
-    	if(device_comps._0_5s_timr_acc>1)
-    	{
-            if( (ircComps.op_window_time>0)&&(hum_comps.current_mode!=EM_CAL_MODIFY_MODE))
-    		{
-    			ircComps.op_window_time--;
-    			if(ircComps.op_window_time==0)
-    			{
-    				ircComps.stop();
-    			}
-    		}
-            if(modbusComps.cmd_out_raw_4ma_20ma_timer>0)
+        if (device_comps._0_5s_timr_acc > 1)
+        {
+            if ((ircComps.op_window_time > 0) && (hum_comps.current_mode != EM_CAL_MODIFY_MODE))
             {
-               if(modbusComps.cmd_out_raw_4ma_20ma_timer%4==0)
+                ircComps.op_window_time--;
+                if (ircComps.op_window_time == 0)
                 {
-                   device_comps.sw._bit.cmd_out_raw__4ma_20ma=!device_comps.sw._bit.cmd_out_raw__4ma_20ma;
+                    ircComps.stop();
+                }
+            }
+            if (modbusComps.cmd_out_raw_4ma_20ma_timer > 0)
+            {
+                if (modbusComps.cmd_out_raw_4ma_20ma_timer % 4 == 0)
+                {
+                    device_comps.sw._bit.cmd_out_raw__4ma_20ma = !device_comps.sw._bit.cmd_out_raw__4ma_20ma;
                 }
                 modbusComps.cmd_out_raw_4ma_20ma_timer--;
-                if(modbusComps.cmd_out_raw_4ma_20ma_timer==0)
+                if (modbusComps.cmd_out_raw_4ma_20ma_timer == 0)
                 {
-                    device_comps.sw._bit.cmd_out_raw__4ma_20ma=0;
+                    device_comps.sw._bit.cmd_out_raw__4ma_20ma = 0;
                 }
-            }   
-          
-           if( (modbusComps.op_window_time>0)&&(hum_comps.current_mode!=EM_CAL_MODIFY_MODE))
-           {
-               modbusComps.op_window_time--;
-               if(modbusComps.op_window_time==0)
-               {
-                  device_comps.sw._bit.com_key_en=0;
-               }
-           }
-          
-       	    if(hum_comps.current_mode==EM_DEBUG_MODE || hum_comps.current_mode==EM_NORMAL_MODE)
-    	    {
-    	        if(mode_comps[hum_comps.current_mode].displayTimer>0)
-    	        {
-    	            mode_comps[hum_comps.current_mode].displayTimer--;
-    	            if(!mode_comps[hum_comps.current_mode].displayTimer)
-    	            {
-                       // hum_comps.enter_default_mode(0);
-    	            }
-    	        }
-    	    }
+            }
 
-	     
-				if(hum_comps.back_led_timer>0)
-				{
-					hum_comps.back_led_timer--;
-					if(hum_comps.back_led_timer==0)
-					{
-						MD_BACK_LED_OFF;
-					}
-				}
-            device_comps.batt=get_batt();
-			hum_comps.dis_oper_mark._bit.refresh_special_symbol=1;			 
-            if(device_comps.batt_blunt_timer>0)
+            if ((modbusComps.op_window_time > 0) && (hum_comps.current_mode != EM_CAL_MODIFY_MODE))
             {
-                 if(!netComps.St._bit.running) 
-                 {
+                modbusComps.op_window_time--;
+                if (modbusComps.op_window_time == 0)
+                {
+                    device_comps.sw._bit.com_key_en = 0;
+                }
+            }
+
+            if (hum_comps.current_mode == EM_DEBUG_MODE || hum_comps.current_mode == EM_NORMAL_MODE)
+            {
+                if (mode_comps[hum_comps.current_mode].displayTimer > 0)
+                {
+                    mode_comps[hum_comps.current_mode].displayTimer--;
+                    if (!mode_comps[hum_comps.current_mode].displayTimer)
+                    {
+                        // hum_comps.enter_default_mode(0);
+                    }
+                }
+            }
+            if (hum_comps.back_led_timer > 0)
+            {
+                hum_comps.back_led_timer--;
+                if (hum_comps.back_led_timer == 0)
+                {
+                    MD_BACK_LED_OFF;
+                }
+            }
+            device_comps.batt = get_batt();
+            hum_comps.dis_oper_mark._bit.refresh_special_symbol = 1;
+            if (device_comps.batt_blunt_timer > 0)
+            {
+                if (!netComps.St._bit.running)
+                {
                     MD_BAT_BLUNT_CTL_ON;
                     device_comps.batt_blunt_timer--;
-                    if(!device_comps.batt_blunt_timer)
+                    if (!device_comps.batt_blunt_timer)
                     {
                         MD_BAT_BLUNT_CTL_OFF;
-                        device_comps.sw._bit.isBatBluntNow=0;
+                        device_comps.sw._bit.isBatBluntNow = 0;
                     }
-                 }
-           }
-			if(!netComps.St._bit.modifyed_time_just)
-			{   
-                if(!device_comps.sw._bit.rtc_module_err)
-    		    {			
-                     Rtc_ReadDateTime(&device_comps.system_time.time);
-    	        }
-                ertc_comps.read_broken_time(&device_comps.system_time.time);
-			}
-            else
-            {
-                netComps.St._bit.modifyed_time_just=0;
-            }
-            hum_comps.dis_oper_mark._bit.refressh_broken_date=1;
-        #if(MD_PRODUCT_NAME==MD_4G)
-              if(netComps.op_window_tmr>0)
-            {
-                netComps.op_window_tmr--;
-                if(!netComps.op_window_tmr)
-                {
-                    netComps.St._bit.windowTimeOut=1;
                 }
             }
-            if(protocolComps.AckTmr>0)
+            if (!netComps.St._bit.modifyed_time_just)
+            {
+                if (!device_comps.sw._bit.rtc_module_err)
+                {
+                    Rtc_ReadDateTime(&device_comps.system_time.time);
+                }
+                ertc_comps.read_broken_time(&device_comps.system_time.time);
+            }
+            else
+            {
+                netComps.St._bit.modifyed_time_just = 0;
+            }
+            hum_comps.dis_oper_mark._bit.refressh_broken_date = 1;
+#if (MD_PRODUCT_NAME == MD_4G)
+            if (netComps.op_window_tmr > 0)
+            {
+                netComps.op_window_tmr--;
+                if (!netComps.op_window_tmr)
+                {
+                    netComps.St._bit.windowTimeOut = 1;
+                }
+            }
+            if (protocolComps.AckTmr > 0)
             {
                 protocolComps.AckTmr--;
             }
-			
-           Timing_interval_report();
-        #endif
-            if(device_comps.system_time.time.u8Hour==0x21&&device_comps.system_time.time.u8Minute==0x21&&device_comps.system_time.time.u8Second==0x21)
+
+            Timing_interval_report();
+#endif
+
+#if (MD_PRODUCT_NAME == MD_LORA)
+            if (loraComps.dis_rssi_tmr_s > 0)
             {
-                device_comps.gps.sw._bit.isActive=1;
+                loraComps.dis_rssi_tmr_s--;
+            }
+#endif
+            if (device_comps.system_time.time.u8Hour == 0x21 && device_comps.system_time.time.u8Minute == 0x21 && device_comps.system_time.time.u8Second == 0x21)
+            {
+                device_comps.gps.sw._bit.isActive = 1;
             }
 
-           if(device_comps.system_time.time.u8Second==0x30)
-           {
-                device_comps.system_time.cs=Check_Sum_5A(&device_comps.system_time, &device_comps.system_time.cs-(uint8_t *)&device_comps.system_time);
-                device_comps.save_system_time(&device_comps.system_time,sizeof(device_comps.system_time));
-           }
-           device_comps.sw._bit.isExtPowerConnected=MD_GET_EXT_POWER_STATUS();
-           device_comps.sw._bit.is_4_20ma_Connected=!MD_GET_4_20MA_STATUS();
-            device_comps._0_5s_timr_acc=0;
-    	}//end 1s
+            if (device_comps.system_time.time.u8Second == 0x30)
+            {
+                device_comps.system_time.cs = Check_Sum_5A(&device_comps.system_time, &device_comps.system_time.cs - (uint8_t *)&device_comps.system_time);
+                device_comps.save_system_time(&device_comps.system_time, sizeof(device_comps.system_time));
+            }
+            device_comps.sw._bit.isExtPowerConnected = MD_GET_EXT_POWER_STATUS();
+            device_comps.sw._bit.is_4_20ma_Connected = !MD_GET_4_20MA_STATUS();
+            device_comps._0_5s_timr_acc = 0;
+        } // end 1s
 
-        if(netComps.AckTmr>0)
+        if (netComps.AckTmr > 0)
         {
             netComps.AckTmr--;
         }
@@ -3394,12 +3397,11 @@ void _50ms_task_handle(void)
 }
 
 void Adc_IRQHandler(void)
-{    
-    if(TRUE == Adc_GetIrqStatus(AdcMskIrqSgl))
+{
+    if (TRUE == Adc_GetIrqStatus(AdcMskIrqSgl))
     {
-        Adc_ClrIrqStatus(AdcMskIrqSgl);       ///< 清除中断标志位
-        Adc_SGL_Stop();                       ///< ADC 单次转换停止
-        device_comps.sw._bit.adc_busy=0;
+        Adc_ClrIrqStatus(AdcMskIrqSgl); ///< 清除中断标志位
+        Adc_SGL_Stop();                 ///< ADC 单次转换停止
+        device_comps.sw._bit.adc_busy = 0;
     }
 }
-

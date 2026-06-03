@@ -139,7 +139,7 @@ typedef enum
     VcInNCh10   = 10u,        //   输入通道10 DAC0              输入通道10 DAC1              输入通道10 DAC0   
     ResDivOut   = 11u,        //   电阻分压                     电阻分压                     NA
     AiTs        = 12u,        //   内部温度传感器输出电压       内部温度传感器输出电压       内部温度传感器输出电压
-    AiBg1p2     = 13u,        //   内部基准1.2V                 内部基准1.2V                 内部基准1.2V 
+   // AiBg1p2     = 13u,        //   内部基准1.2V                 内部基准1.2V                 内部基准1.2V 
     AiAdcVref   = 14u,        //   ADC参考电压VREF              ADC参考电压VREF              ADC参考电压VREF
     AiLdo       = 15u,        //   LDO输出电压                  LDO输出电压                  LDO输出电压
 }en_vc_input_n_src_t;

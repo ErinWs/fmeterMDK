@@ -100,13 +100,10 @@ void App_LpUart0DeCfg(void)
     //<RX
     stcGpioCfg.enDir =  GpioDirIn;
     Gpio_Init(MD_RS485_M0P_LPUART0_RXD_PORT,MD_RS485_M0P_LPUART0_RXD_PIN,&stcGpioCfg);
-   // Gpio_SetAfMode(MD_RS485_M0P_LPUART0_RXD_PORT,MD_RS485_M0P_LPUART0_RXD_PIN,MD_RS485_M0P_LPUART0_RXD_PIN_AFN); 
- 
     stcGpioCfg.enPd=GpioPdEnable;
     Gpio_Init(MD_RS485_M0P_LPUART0_TXD_PORT,MD_RS485_M0P_LPUART0_TXD_PIN,&stcGpioCfg);
    
 }
-
 
 
 void App_LpUart0Cfg(uint32_t baud,int16_t parity)
@@ -261,16 +258,82 @@ MD_STATUS R_LPUART0_Send(uint8_t * const tx_buf, uint16_t tx_num)
 
     return (status);
 }
-/***********************************************************************************************************************
-* Function Name: R_LPUART1_Create
-* Description  : This function initializes the LPUART1 module.
-* Arguments    : None
-* Return Value : None
-***********************************************************************************************************************/
+
+void App_LpUart1DeCfg(void)
+{
+    stc_lpuart_cfg_t  stcLpuartCfg;
+    stc_gpio_cfg_t     stcGpioCfg;
+    Sysctrl_SetPeripheralGate(SysctrlPeripheralLpUart0,TRUE);
+    Sysctrl_SetPeripheralGate(SysctrlPeripheralGpio,TRUE);  ///< 使能GPIO时钟
+    LPUart_DisableFunc(M0P_LPUART1,LPUartRenFunc);
+    LPUart_ClrStatus(M0P_LPUART1,LPUartRC);         ///<清接收中断请求
+    LPUart_ClrStatus(M0P_LPUART1,LPUartTC);         ///<清发送中断请求
+    LPUart_DisableIrq(M0P_LPUART1,LPUartRxIrq);     ///<禁止接收中断
+    LPUart_DisableIrq(M0P_LPUART1,LPUartTxIrq);      ///<使能发送中断
+    EnableNvic(LPUART1_IRQn,IrqLevel3,FALSE);        ///<系统中断使能
+
+    DDL_ZERO_STRUCT(stcGpioCfg);                            ///< 结构体变量初始值置零
+    //<RX
+    stcGpioCfg.enDir =  GpioDirIn;
+    stcGpioCfg.enPd=GpioPdEnable;
+    Gpio_Init(MD_RS485_M0P_LPUART1_RXD_PORT,MD_RS485_M0P_LPUART1_RXD_PIN,&stcGpioCfg);
+    Gpio_Init(MD_RS485_M0P_LPUART1_TXD_PORT,MD_RS485_M0P_LPUART1_TXD_PIN,&stcGpioCfg);
+   
+}
+
  void App_LpUart1Cfg(uint32_t baud,int16_t parity)
 {
-   
-   
+    stc_lpuart_cfg_t  stcLpuartCfg;
+    stc_gpio_cfg_t     stcGpioCfg;
+    Sysctrl_SetPeripheralGate(SysctrlPeripheralLpUart1,TRUE);
+    Sysctrl_SetPeripheralGate(SysctrlPeripheralGpio,TRUE);  ///< 使能GPIO时钟
+    LPUart_DisableFunc(M0P_LPUART1,LPUartRenFunc);
+    LPUart_ClrStatus(M0P_LPUART1,LPUartRC);         ///<清接收中断请求
+    LPUart_ClrStatus(M0P_LPUART1,LPUartTC);         ///<清发送中断请求
+    LPUart_DisableIrq(M0P_LPUART1,LPUartRxIrq);     ///<禁止接收中断
+    LPUart_DisableIrq(M0P_LPUART1,LPUartTxIrq);      ///<使能发送中断
+    EnableNvic(LPUART1_IRQn,IrqLevel3,FALSE);        ///<系统中断使能
+
+    DDL_ZERO_STRUCT(stcGpioCfg);                            ///< 结构体变量初始值置零
+    //<RX
+    stcGpioCfg.enDir =  GpioDirIn;
+    stcGpioCfg.enPu =  GpioPuEnable;
+    Gpio_Init(MD_RS485_M0P_LPUART1_RXD_PORT,MD_RS485_M0P_LPUART1_RXD_PIN,&stcGpioCfg);
+    Gpio_SetAfMode(MD_RS485_M0P_LPUART1_RXD_PORT,MD_RS485_M0P_LPUART1_RXD_PIN,MD_RS485_M0P_LPUART1_RXD_PIN_AFN); 
+
+    //<TX
+    stcGpioCfg.enDir =  GpioDirOut;
+    Gpio_Init(MD_RS485_M0P_LPUART1_TXD_PORT,MD_RS485_M0P_LPUART1_TXD_PIN,&stcGpioCfg);
+    Gpio_SetAfMode(MD_RS485_M0P_LPUART1_TXD_PORT,MD_RS485_M0P_LPUART1_TXD_PIN,MD_RS485_M0P_LPUART1_TXD_PIN_AFN);
+
+
+    DDL_ZERO_STRUCT(stcLpuartCfg);                        ///< 结构体变量初始值置零
+    ///<LPUART 初始化
+    stcLpuartCfg.enStopBit = LPUart1bit;                   ///<1停止位    
+                      ///<偶校验
+    stcLpuartCfg.stcBaud.enSclkSel = LPUartMskPclk;         ///<传输时钟源
+    stcLpuartCfg.stcBaud.u32Sclk = Sysctrl_GetPClkFreq();                  ///<时钟频率
+    stcLpuartCfg.stcBaud.enSclkDiv = LPUartMsk4Or8Div;     ///<采样分频
+    stcLpuartCfg.stcBaud.u32Baud = baud;                   ///<波特率
+    if(parity==2 || parity==3)
+    {
+        if(parity==2)
+        {
+             stcLpuartCfg.enMmdorCk = LPUartEven; 
+        }
+        else
+        {
+            stcLpuartCfg.enMmdorCk = LPUartOdd;
+        }
+        stcLpuartCfg.enRunMode = LPUartMskMode3;               ///<工作模式
+    }
+    else
+    {
+        stcLpuartCfg.enRunMode = LPUartMskMode1; 
+    }
+    LPUart_Init(M0P_LPUART1, &stcLpuartCfg);
+    LPUart_DisableFunc(M0P_LPUART1,LPUartRenFunc);
+    Sysctrl_SetPeripheralGate(SysctrlPeripheralLpUart1,FALSE);
 }
 
 /***********************************************************************************************************************

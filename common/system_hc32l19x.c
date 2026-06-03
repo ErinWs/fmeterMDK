@@ -35,7 +35,11 @@ uint32_t SystemCoreClock = 4000000;
 //add clock source.
 void SystemCoreClockUpdate (void) // Update SystemCoreClock variable
 {
-    SystemCoreClock = Sysctrl_GetHClkFreq();
+	SystemCoreClock = Sysctrl_GetHClkFreq();
+	SysTick->LOAD = 0xFFFFFF;
+	SysTick->VAL  = 0;
+	SysTick->CTRL = SysTick_CTRL_ENABLE_Msk | SysTick_CTRL_CLKSOURCE_Msk;
+
 }
 
 /**
@@ -149,7 +153,7 @@ void SystemInit(void)
 #if defined (__CC_ARM)
 extern int32_t $Super$$main(void);
 /* re-define main function */
-int16_t $Sub$$main(void)
+int $Sub$$main(void)
 {
     SystemInit();
     $Super$$main();
@@ -158,7 +162,7 @@ int16_t $Sub$$main(void)
 #elif defined (__ARMCC_VERSION) && (__ARMCC_VERSION >= 6010050)
 extern int32_t $Super$$main(void);
 /* re-define main function */
-int16_t $Sub$$main(void)
+int $Sub$$main(void)
 {
    // SystemInit();
     $Super$$main();
@@ -168,7 +172,7 @@ int16_t $Sub$$main(void)
 extern int32_t main(void);
 /* __low_level_init will auto called by IAR cstartup */
 extern void __iar_data_init3(void);
-int16_t __low_level_init(void)
+int __low_level_init(void)
 {
     // call IAR table copy function.
     __iar_data_init3();

@@ -14,7 +14,6 @@
 #include "net.h"
 #include "irc.h"
 #include "hum.h"
-#include "collector.h"
 #include "24cxx.h"
 #include "adx.h"
 #include "modbus.h"
@@ -48,7 +47,7 @@ static int32_t formatAd(int32_t addat)
 // return addat;
 }
 
-static void spi_delay(uint32_t tms)
+static void spi_delay(volatile uint32_t tms)
 {
   while (tms--);
 }
@@ -187,7 +186,7 @@ static uint16_t SPI_Read(uint8_t *data,uint8_t size)
 
 /* AD7793_CONF_REFSEL(x) options */
 #define AD7793_REFSEL_INT   1	/* Internal Reference Selected. */
-#define AD7793_REFSEL_EXT   0	/* External Reference Applied between REFIN(+) and REFIN(¨C). */
+#define AD7793_REFSEL_EXT   0	/* External Reference Applied between REFIN(+) and REFIN(ï¿½C). */
 
 /* AD7793_CONF_CHAN(x) options */
 #define AD7793_CH_AIN1P_AIN1M	0 /* AIN1(+) - AIN1(-) */

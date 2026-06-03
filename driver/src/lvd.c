@@ -32,15 +32,6 @@
  * Local pre-processor symbols/macros ('#define')
  ******************************************************************************/
 
-#define IS_VALID_INPUT(x)       ( (x) <= LvdInputPB07 )
-
-#define IS_VALID_THRESHOLD(x)   ( (x) <= LvdTH3p3V )
-
-#define IS_VALID_FILTER(x)      ( (x) <= LvdFilter29ms )
-
-#define IS_VALID_IRQTYPE(x)     ( (x) <= LvdIrqFall )
-
-
 /******************************************************************************
  * Global variable definitions (declared in header file with 'extern')        *
  ******************************************************************************/

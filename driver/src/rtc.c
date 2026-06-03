@@ -74,11 +74,14 @@ void Rtc_Cmd(boolean_t NewState)
 void Rtc_StartWait(void)
 {
     M0P_RTC->CR1_f.WAIT = 1;
+    
     while (M0P_RTC->CR1_f.WAITF != 1)  //等待直到WAITF=1
     {
         ;
     }
+    
     M0P_RTC->CR1_f.WAIT = 0;
+    
     while (M0P_RTC->CR1_f.WAITF != 0)  //等待直到WAITF=0 
     {
         ;
@@ -110,7 +113,9 @@ void Rtc_Hz1Cmd(en_rtc_hz1sel_t pricision, boolean_t NewState)
 en_result_t Rtc_SetCyc(stc_rtc_cyccfg_t* pstCyc)
 {
     en_result_t enRet = Error;
+    
     M0P_RTC->CR0_f.PRDSEL = pstCyc->rtcPrdsel;
+    
     if(pstCyc->rtcPrdsel == RtcPrds)
     {
         M0P_RTC->CR0_f.PRDS = pstCyc->rtcPrds; 
@@ -128,7 +133,9 @@ en_result_t Rtc_SetCyc(stc_rtc_cyccfg_t* pstCyc)
     {
         ;
     }
+    
     enRet = Ok;
+    
     return enRet;
 }    
 
@@ -223,17 +230,17 @@ boolean_t Rtc_GetPridItStatus(void)
 ******************************************************************************/
 en_result_t Rtc_CompCfg(uint16_t CompVlue, en_rtc_compen_t NewStatus)
 {
-    en_result_t enRet = Error;
-    if(CompVlue<=256)
+    if(CompVlue > 0x1FF)
+    {
+        return ErrorInvalidParameter;
+    }
+    else
     {
         M0P_RTC->COMPEN_f.EN = NewStatus;
         M0P_RTC->COMPEN_f.CR = CompVlue;
     }
-    else
-    {
-        enRet = ErrorInvalidParameter;
-    }
-    return enRet;
+    
+    return Ok;
 }
 
 /**
@@ -255,6 +262,7 @@ en_result_t Check_BCD_Format(uint8_t u8data,uint8_t u8limit_min, uint8_t u8limit
     {
         return Error;
     }
+    
     return Ok;
 }
 
@@ -269,9 +277,10 @@ en_result_t Check_BCD_Format(uint8_t u8data,uint8_t u8limit_min, uint8_t u8limit
  ******************************************************************************/
 uint8_t Rtc_CheckLeapYear(uint8_t u8year)
 {
-        uint16_t tmp;
-        tmp=2000+u8year;
-        if((((tmp % 4)==0) && ((tmp % 100) !=0))|| ((tmp % 400) ==0))
+    uint16_t tmp;
+    tmp=2000+u8year;
+    
+    if((((tmp % 4)==0) && ((tmp % 100) !=0))|| ((tmp % 400) ==0))
     {
         return 1;
     }
@@ -299,6 +308,7 @@ uint8_t Get_Month2_Day( uint8_t u8year)
     {
         u8day++;
     }
+    
     return u8day;
 }
 
@@ -306,51 +316,57 @@ uint8_t Get_Month2_Day( uint8_t u8year)
  ******************************************************************************
  ** \brief  RTC获取时间函数
  **
- ** \param time: 用于存放读取自时间寄存器的时间数据，格式为BCD码格式
+ ** \param pstcTimeDate: 用于存放读取自时间寄存器的时间数据，格式为BCD码格式
  **
  ** \retval Ok  获取正常
  ** \retval ErrorTimeout 时间溢出错误
  ******************************************************************************/
-en_result_t Rtc_ReadDateTime(stc_rtc_time_t* time)
+en_result_t Rtc_ReadDateTime(stc_rtc_time_t* pstcTimeDate)
 {
     uint32_t u32TimeOut;
-    ASSERT(NULL != pstcTimeDate);  
-    u32TimeOut = 1000;
+    ASSERT(NULL != pstcTimeDate);
+    
     if(1 == M0P_RTC->CR0_f.START)
     {
         M0P_RTC->CR1_f.WAIT = 1;
-        while(u32TimeOut--)
+        u32TimeOut = 0x1000;
+        while (FALSE == M0P_RTC->CR1_f.WAITF)
         {
-            if(M0P_RTC->CR1_f.WAITF)
+            if(0 == u32TimeOut--)
             {
-            break;
+                return ErrorTimeout;
             }
-        }
-        if(u32TimeOut==0)
-        {
-            return ErrorTimeout;
-        }
+        }       
     }
-    time->u8Second  = M0P_RTC->SEC;
-    time->u8Minute  = M0P_RTC->MIN;
+    
+    pstcTimeDate->u8Second  = M0P_RTC->SEC;
+    pstcTimeDate->u8Minute  = M0P_RTC->MIN;
+    
     if(1 == M0P_RTC->CR0_f.AMPM)
     {
-        time->u8Hour   = M0P_RTC->HOUR;
+        pstcTimeDate->u8Hour   = M0P_RTC->HOUR;
     }
     else
     {
-        time->u8Hour   = M0P_RTC->HOUR&0x1f;
+        pstcTimeDate->u8Hour   = M0P_RTC->HOUR&0x1f;
     }
-    time->u8Day       = M0P_RTC->DAY;
-    time->u8DayOfWeek = M0P_RTC->WEEK;
-    time->u8Month     = M0P_RTC->MON;
-    time->u8Year      = M0P_RTC->YEAR;
+    
+    pstcTimeDate->u8Day       = M0P_RTC->DAY;
+    pstcTimeDate->u8DayOfWeek = M0P_RTC->WEEK;
+    pstcTimeDate->u8Month     = M0P_RTC->MON;
+    pstcTimeDate->u8Year      = M0P_RTC->YEAR;
 
     M0P_RTC->CR1_f.WAIT = 0;
     if(1 == M0P_RTC->CR0_f.START)
     {
-            while(M0P_RTC->CR1_f.WAITF)
-            {}
+        u32TimeOut = 0x1000;
+        while (TRUE == M0P_RTC->CR1_f.WAITF)
+        {
+            if(0 == u32TimeOut--)
+            {
+                return ErrorTimeout;
+            }
+        }
     }
     
     return Ok;
@@ -368,23 +384,21 @@ en_result_t Rtc_ReadDateTime(stc_rtc_time_t* time)
 en_result_t Rtc_SetTime(stc_rtc_time_t* time)
 {
     en_result_t enRet = Ok;
-    uint16_t u16TimeOut;
-    u16TimeOut = 1000;
+    uint32_t u32TimeOut;
+    
     if(M0P_RTC->CR0_f.START == 1)
     {
         M0P_RTC->CR1_f.WAIT = 1;
-        while(--u16TimeOut)
+        u32TimeOut = 0x1000;
+        while (FALSE == M0P_RTC->CR1_f.WAITF)
         {
-            if(M0P_RTC->CR1_f.WAITF)
+            if(0 == u32TimeOut--)
             {
-                    break;
+                return ErrorTimeout;
             }
         }
-        if(u16TimeOut==0)
-        {
-            return ErrorTimeout;
-        }
     }
+    
     M0P_RTC->SEC   = time->u8Second;
     M0P_RTC->MIN   = time->u8Minute;
     M0P_RTC->HOUR  = time->u8Hour;
@@ -396,9 +410,16 @@ en_result_t Rtc_SetTime(stc_rtc_time_t* time)
     M0P_RTC->CR1_f.WAIT = 0;
     if(M0P_RTC->CR0_f.START == 1)
     {
-        while(M0P_RTC->CR1_f.WAITF)
-        {}
+        u32TimeOut = 0x1000;
+        while (TRUE == M0P_RTC->CR1_f.WAITF)
+        {
+            if(0 == u32TimeOut--)
+            {
+                return ErrorTimeout;
+            }
+        }
     }
+    
     enRet = Ok;
     return enRet;
 }
@@ -432,16 +453,20 @@ void Rtc_GetAlarmTime(stc_rtc_alarmtime_t* pstcAlarmTime)
 en_result_t Rtc_SetAlarmTime(stc_rtc_alarmtime_t* pstcAlarmTime)
 {
     en_result_t enRet = Ok;
-//    ASSERT(NULL != pstcAlarmTime);
+    ASSERT(NULL != pstcAlarmTime);
     Rtc_AlmEnCmd(FALSE);      //闹钟禁止以后再设置闹钟时间
     enRet = Check_BCD_Format(pstcAlarmTime->RtcAlarmSec,0x00,0x59);
+	if(enRet != Ok)
+    {
+            return enRet; 
+    }
     if(M0P_RTC->CR0_f.AMPM == RtcAm)
     {
-        enRet = Check_BCD_Format(pstcAlarmTime->RtcAlarmHour,0x00,0x12);
+        enRet = Check_BCD_Format(pstcAlarmTime->RtcAlarmHour,0x01,0x12);
     }
     else
     {
-        enRet = Check_BCD_Format(pstcAlarmTime->RtcAlarmHour,0x00,0x24);
+        enRet = Check_BCD_Format(pstcAlarmTime->RtcAlarmHour,0x00,0x23);
     }
     if(enRet != Ok)
     {
@@ -452,11 +477,7 @@ en_result_t Rtc_SetAlarmTime(stc_rtc_alarmtime_t* pstcAlarmTime)
     {
         return enRet;
     }
-
-    if(enRet != Ok)
-    {
-            return enRet; 
-    }
+	
     M0P_RTC->ALMSEC  = pstcAlarmTime->RtcAlarmSec & 0x7f;
     M0P_RTC->ALMMIN  = pstcAlarmTime->RtcAlarmMinute & 0x7f;
     M0P_RTC->ALMHOUR = pstcAlarmTime->RtcAlarmHour & 0x3f;

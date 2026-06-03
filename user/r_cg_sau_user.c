@@ -41,6 +41,8 @@ Includes
 #include "elora.h"
 #include "modbus.h"
 #include "device.h"
+#include "sci_master.h"
+#include "wifia.h"
 
 
 
@@ -93,12 +95,19 @@ extern volatile uint8_t * gp_uart3_rx_address;         /* uart3 receive buffer a
 extern volatile uint16_t  g_uart3_rx_count;            /* uart3 receive data number */
 extern volatile uint16_t  g_uart3_rx_length;           /* uart3 receive data length */
 /* Start user code for global. Do not edit comment generated here */
-uint8_t LPuart0_rx_data;
-uint8_t LPuart1_rx_data;
-uint8_t uart0_rx_data;
-uint8_t uart1_rx_data;
-uint8_t uart2_rx_data;
-uint8_t uart3_rx_data;
+static uint8_t LPuart0_rx_data;
+static uint8_t LPuart1_rx_data;
+static uint8_t uart0_rx_data;
+static uint8_t uart1_rx_data;
+static uint8_t uart2_rx_data;
+static uint8_t uart3_rx_data;
+
+uint8_t LPUart0_is_running = 0;
+uint8_t LPUart1_is_running = 0;
+uint8_t Uart0_is_running = 0;
+uint8_t Uart1_is_running = 0;
+uint8_t Uart2_is_running = 0;
+uint8_t Uart3_is_running = 0;
 
 #define   BK_LN
 
@@ -128,21 +137,9 @@ static void  r_LPuart0_callback_sendend(void)
     }
     else
     {
-        if(modbusComps.sw._bit.baud_modified)
-        {
-           modbusComps.modify_baud(modbusComps.param_pt->baud,0);
-           modbusComps.sw._bit.baud_modified=0;
-        }
         modbusComps.sendend_callback();
 	}
-    
-//    if(loraComps.sw._bit.param_modified)
-//    {
-//          __disable_irq();
-//    	NVIC_SystemReset();
-//    }
-    
-}
+ }
 
 static void r_LPuart0_callback_error(uint8_t err_type)
 {
@@ -211,7 +208,6 @@ void LpUart0_IRQHandler(void)
        
         LPUart_ClrStatus(M0P_LPUART0, LPUartRC);      ///<清接收中断请求
         r_LPuart0_interrupt_receive();
-
     }
 }
 
@@ -219,7 +215,7 @@ void LpUart0_IRQHandler(void)
 
 static void r_LPuart1_callback_receiveend(void)
 {
-     
+    sci_comps.recv_1byte_callback(LPuart1_rx_data);
     R_LPUART1_Receive(&LPuart1_rx_data,1);
 
 }
@@ -231,7 +227,7 @@ static void  r_LPuart1_callback_softwareoverrun(uint16_t rx_data)
 
 static void  r_LPuart1_callback_sendend(void)
 {
-
+    sci_comps.sendend_callback();
 }
 
 
@@ -282,7 +278,7 @@ static void  r_LPuart1_interrupt_send(void)
     if (g_LPuart1_tx_count > 0U)
     {
        // TXD0 = *gp_LPuart1_tx_address;
-        LPUart_SendDataIt(M0P_LPUART0, *gp_LPuart1_tx_address); 
+        LPUart_SendDataIt(M0P_LPUART1, *gp_LPuart1_tx_address); 
         gp_LPuart1_tx_address++;
         g_LPuart1_tx_count--;
     }
@@ -439,6 +435,7 @@ static void r_uart1_callback_receiveend(void)
     
      netComps.store_buffer(uart1_rx_data);
      loraComps.store_buffer(uart1_rx_data);
+     wifi_com_rx_byte_isr(uart1_rx_data);
      R_UART1_Receive(&uart1_rx_data,1);
     /* End user code. Do not edit comment generated here */
 }
@@ -452,6 +449,8 @@ static void r_uart1_callback_softwareoverrun(uint16_t rx_data)
 static void r_uart1_callback_sendend(void)
 {
     /* Start user code. Do not edit comment generated here */
+    wifi_com_tx_complete_callback();
+   
     #if(MD_PRODUCT_NAME == MD_LORA)
      {
           loraComps.sw._bit.busy=0;
@@ -734,71 +733,81 @@ void Uart3_IRQHandler(void)
 
 void enable_LPuart0(void)
 {
-   
     R_LPUART0_Receive(&LPuart0_rx_data,1);
     R_LPUART0_Start();
+    LPUart0_is_running = 1;
 }
 
 void disable_LPuart0(void)
 {
     R_LPUART0_Stop();
-    
+    LPUart0_is_running = 0;
 }
+
 void enable_LPuart1(void)
 {
-   
     R_LPUART1_Receive(&LPuart1_rx_data,1);
     R_LPUART1_Start();
+    LPUart1_is_running = 1;
 }
 
 void disable_LPuart1(void)
 {
     R_LPUART1_Stop();
-    
+    LPUart1_is_running = 0;
 }
 
 void enable_uart0(void)
 {
     R_UART0_Receive(&uart0_rx_data,1);
     R_UART0_Start();
+    Uart0_is_running = 1;
 }
 void disable_uart0(void)
 {
     R_UART0_Stop();
+    Uart0_is_running = 0;
 }
 
 void enable_uart1(void)
 {
     R_UART1_Receive(&uart1_rx_data,1);
     R_UART1_Start();
+    Uart1_is_running = 1;
 }
 void disable_uart1(void)
 {
     R_UART1_Stop();
+    Uart1_is_running = 0;
 }
 
 void enable_uart2(void)
 {
     R_UART2_Receive(&uart2_rx_data,1);
     R_UART2_Start();
+    Uart2_is_running = 1;
 }
 
 void disable_uart2(void)
 {
     R_UART2_Stop();
-}
-
-
-void disable_uart3(void)
-{
-    R_UART3_Stop();
+    Uart2_is_running = 0;
 }
 
 void enable_uart3(void)
 {
     R_UART3_Receive(&uart3_rx_data,1);
     R_UART3_Start();
+    Uart3_is_running = 1;
 }
+
+void disable_uart3(void)
+{
+    R_UART3_Stop();
+    Uart3_is_running = 0;
+}
+
+
 
 #define  BK_LN
 

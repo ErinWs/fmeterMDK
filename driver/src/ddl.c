@@ -101,24 +101,32 @@ void ddl_memclr(void *pu8Address, uint32_t u32Count)
  * \retval  void
  */
 void delay1ms(uint32_t u32Cnt)
-{
-    uint32_t u32end;
-    
-    SysTick->LOAD = 0xFFFFFF;
-    SysTick->VAL  = 0;
-    SysTick->CTRL = SysTick_CTRL_ENABLE_Msk | SysTick_CTRL_CLKSOURCE_Msk;
-    
-    while(u32Cnt-- > 0)
-    {
-        SysTick->VAL  = 0;
-        u32end = 0x1000000 - SystemCoreClock/1000;
-        while(SysTick->VAL > u32end)
-        {
-            ;
-        }
-    }
-    
-    SysTick->CTRL = (SysTick->CTRL & (~SysTick_CTRL_ENABLE_Msk));
+{   
+	uint32_t ValNow,CNT = 0;
+	uint32_t end = (u32Cnt*(SystemCoreClock/1000));
+			   	 
+	uint32_t StaVal = SysTick->VAL;        				    
+	while(1)
+	{
+		ValNow=SysTick->VAL;	
+		
+		if(ValNow != StaVal)
+		{			
+			if(ValNow<StaVal)
+            {
+                CNT += StaVal -ValNow;
+            }
+			else
+            {
+                CNT += SysTick->LOAD - ValNow+StaVal;
+            }				
+			StaVal = ValNow;			
+			if(CNT >= end ) 
+            {
+                break;
+            }
+		}
+	}
 }
 
 /**
@@ -129,24 +137,33 @@ void delay1ms(uint32_t u32Cnt)
  */
 void delay100us(uint32_t u32Cnt)
 {
-    uint32_t u32end;
-    
-    SysTick->LOAD = 0xFFFFFF;
-    SysTick->VAL  = 0;
-    SysTick->CTRL = SysTick_CTRL_ENABLE_Msk | SysTick_CTRL_CLKSOURCE_Msk;
-    
-    while(u32Cnt-- > 0)
-    {
-        SysTick->VAL = 0;
-
-        u32end = 0x1000000 - SystemCoreClock/10000;
-        while(SysTick->VAL > u32end)
-        {
-            ;
-        }
-    }
-    
-    SysTick->CTRL = (SysTick->CTRL & (~SysTick_CTRL_ENABLE_Msk));
+    uint32_t ValNow,CNT = 0;
+	uint32_t end = (u32Cnt*(SystemCoreClock/10000));
+			   	 
+	uint32_t StaVal = SysTick->VAL;        				    
+	while(1)
+	{
+		ValNow=SysTick->VAL;	
+		
+		if(ValNow != StaVal)
+		{			
+			if(ValNow<StaVal)
+            {
+                CNT += StaVal -ValNow;
+            }
+			else
+            {
+                CNT += SysTick->LOAD - ValNow+StaVal;
+            }
+            
+			StaVal = ValNow;
+            
+			if(CNT >=end)
+            {
+                break;
+            }
+		}
+	}
 }
 
 /**
@@ -157,24 +174,32 @@ void delay100us(uint32_t u32Cnt)
  */
 void delay10us(uint32_t u32Cnt)
 {
-    uint32_t u32end;
-    
-    SysTick->LOAD = 0xFFFFFF;
-    SysTick->VAL  = 0;
-    SysTick->CTRL = SysTick_CTRL_ENABLE_Msk | SysTick_CTRL_CLKSOURCE_Msk;
-    
-    while(u32Cnt-- > 0)
-    {
-        SysTick->VAL = 0;
-
-        u32end = 0x1000000 - SystemCoreClock/100000;
-        while(SysTick->VAL > u32end)
-        {
-            ;
-        }
-    }
-    
-    SysTick->CTRL = (SysTick->CTRL & (~SysTick_CTRL_ENABLE_Msk));
+    uint32_t ValNow,CNT = 0;
+	   	 
+	uint32_t StaVal = SysTick->VAL;        				    
+	while(1)
+	{
+		ValNow=SysTick->VAL;	
+		
+		if(ValNow != StaVal)
+		{			
+			if(ValNow<StaVal)
+            {
+                CNT += StaVal -ValNow;
+            }
+			else
+            {
+                CNT += SysTick->LOAD - ValNow+StaVal;
+            }
+            
+			StaVal = ValNow;
+            
+			if(CNT >=(u32Cnt*(SystemCoreClock/100000)))
+            {
+                break;
+            }
+		}
+	}
 }
 
 /**

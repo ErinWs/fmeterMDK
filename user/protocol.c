@@ -14,7 +14,7 @@
 #include "net.h"
 #include "irc.h"
 #include "hum.h"
-#include "collector.h"
+#include "sci_master.h"
 #include "24cxx.h"
 #include "adx.h"
 #include "modbus.h"
@@ -394,13 +394,13 @@ static int16_t AddPressInfo(char *buf)
       if(device_comps.press_cal_param.is_calibrated)
       {
             temp=f_div(device_comps.press_full_scale,pwr(device_comps.press_cal_param.dot));
-            temp=f_mul(temp, Mpa2Kpa[device_comps.flow_cal_param.unit&1]);
-            sprintf(&buf[i],"PFS:%fKPa;",temp);
+            temp=f_mul(temp, Mpa2Kpa[device_comps.press_cal_param.unit&1]);
+            sprintf(&buf[i],"PFS:%0.4fKPa;",temp);
             i+=strlen(&buf[i]);
             
             temp=f_div(device_comps.current_press,pwr(device_comps.press_cal_param.dot));
-            temp=f_mul(temp, Mpa2Kpa[device_comps.flow_cal_param.unit&1]);
-            sprintf(&buf[i],"PRES:%fKPa;",temp);
+            temp=f_mul(temp, Mpa2Kpa[device_comps.press_cal_param.unit&1]);
+            sprintf(&buf[i],"PRES:%0.4fKPa;",temp);
             i+=strlen(&buf[i]);
          
       }
@@ -409,21 +409,6 @@ static int16_t AddPressInfo(char *buf)
              sprintf(&buf[i],"PFS:NOCAL;PRES:NOCAL;");
              i+=strlen(&buf[i]);
       }
-      
-//      if(collectorComps.sw._bit.isGetExternPressNoTimeOut)
-//      {
-//            temp=collectorComps.extern_press_span;
-//            sprintf(&buf[i],"PFSE:%fKpa;",temp);
-//            i+=strlen(&buf[i]);
-//            temp=collectorComps.extern_press;
-//            sprintf(&buf[i],"PRESE:%fKPa;",temp);
-//            i+=strlen(&buf[i]);
-//      }
-//      else
-//      {
-//            sprintf(&buf[i],"PFSE:NC;PRESE:NC;");
-//            i+=strlen(&buf[i]);
-//      }
       return i;
  }
 
@@ -584,7 +569,7 @@ static int16_t encapsulate_self_pack(char *const buf,int16_t event)
     i+=strlen(&buf[i]);
     ///////Protocol header end/////////////////
 
-    sprintf(&buf[i],"WK_FLOW:%f;",f_div(device_comps.current_flow,pwr(device_comps.flow_cal_param.dot)));
+    sprintf(&buf[i],"WK_FLOW:%0.4f;",f_div(device_comps.current_flow,pwr(device_comps.flow_cal_param.dot)));
     i+=strlen(&buf[i]);
 
     sprintf(&buf[i],"TOTAL_FLOW:%d.%06d;",(int)device_comps.meter.total_int,(int)(device_comps.meter.total_dec*1000));
@@ -595,7 +580,7 @@ static int16_t encapsulate_self_pack(char *const buf,int16_t event)
 
     i+=AddPressInfo(&buf[i]);
 
-    sprintf(&buf[i],"STD_FLOW:%f;",f_div(device_comps.current_flowN,pwr(device_comps.flow_cal_param.dot)));
+    sprintf(&buf[i],"STD_FLOW:%0.4f;",f_div(device_comps.current_flowN,pwr(device_comps.flow_cal_param.dot)));
     i+=strlen(&buf[i]);
 
     sprintf(&buf[i],"TOTAL_FLOWN:%d.%06d;",(int)device_comps.meter.total_intN,(int)(device_comps.meter.total_decN*1000));
@@ -1166,10 +1151,10 @@ static void Srv_Protol(int16_t event)
 
 static void protocolComps_report_callback(void)
 {
-   #if(defined (MD_EXT_COLLECTOR) && MD_EXT_COLLECTOR_TYPE==MD_PRESS)
-      if(!collectorComps.sw._bit.isGetExternPressReq)
+   #if(defined (MD_EXT_SCI) && MD_EXT_SCI_TYPE==MD_PRESS)
+      if(!sci_comps.sw._bit.isGetExternPressReq)
        {
-            collectorComps.sw._bit.isGetExternPressReq=1;
+            sci_comps.sw._bit.isGetExternPressReq=1;
        }
    #endif 
 	
@@ -1177,8 +1162,8 @@ static void protocolComps_report_callback(void)
 
 static int16_t wait_for_signal(void)
 {
-  #if(defined (MD_EXT_COLLECTOR) && MD_EXT_COLLECTOR_TYPE==MD_PRESS)
-    if(collectorComps.sw._bit.isGetExternPressReq)
+  #if(defined (MD_EXT_SCI) && MD_EXT_SCI_TYPE==MD_PRESS)
+    if(sci_comps.sw._bit.isGetExternPressReq)
 	  {
 		    return 0;
 	  } 
