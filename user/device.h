@@ -234,13 +234,13 @@ typedef struct flow_cal_param_t
     uint16_t  freq_divd_value[MD_FLOW_MAX_CAL_POS];//0.1hz
     float32_t     freq_divd_value_meter_coe[MD_FLOW_MAX_CAL_POS];
     float32_t     freq_poly_coe[5];
-    float32_t     meter_coe;
+    float32_t     meter_coe;//p/L
     uint16_t  RefMaxQ;
     uint16_t RefDN;
     
     uint8_t   dot;
     uint8_t   unit;// 0：m3/h
-    uint8_t   calc_mode;   //0:freq divied  1:freq calc  2:average coe
+    uint8_t   calc_mode;   //0:freq divied  1:freq calc  2:average coe 3: freq divied insert calc
     uint8_t   freq_divd_pos;
     uint8_t   freq_out_mode;//0:comped  1:uncomped
     uint8_t   cs;
@@ -562,7 +562,7 @@ typedef struct _DEVICE_COMPONENTS
     uint16_t s1_pre_cnt;
     int16_t  flow_freq_cur;          //1hz
     uint32_t flow_total_cnts;          //1
-    float32_t  flow_run_meter_coe; 
+    float32_t  flow_run_meter_coe; //p/L
     int32_t  flow_roll_freq_cur;   //0.1hz
     float32_t flow_roll_freq_cur_ft;
     int32_t  flow_roll_freq_comped_cur;   //0.1hz
